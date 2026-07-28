@@ -1,0 +1,20 @@
+{
+  "name": "upstream",
+  "private": true,
+  "version": "0.1.0",
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
+  "scripts": {
+    "dev": "npm run dev --workspace=apps/web",
+    "build": "npm run build --workspace=apps/web",
+    "lint": "npm run lint --workspace=apps/web",
+    "extension:build": "npm run build --workspace=apps/extension",
+    "extension:dev": "npm run dev --workspace=apps/extension",
+    "desktop:start": "npm run start --workspace=apps/desktop"
+  },
+  "engines": {
+    "node": ">=20"
+  }
+}

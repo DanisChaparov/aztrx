@@ -1,0 +1,24 @@
+{
+  "manifest_version": 3,
+  "name": "Upstream",
+  "description": "Verified focus sessions for programmers — blocks distracting sites and logs real activity during a session.",
+  "version": "0.1.0",
+  "action": {
+    "default_popup": "popup.html",
+    "default_title": "Upstream"
+  },
+  "background": {
+    "service_worker": "background.js"
+  },
+  "permissions": ["storage", "tabs", "alarms", "declarativeNetRequest"],
+  "host_permissions": ["<all_urls>"],
+  "externally_connectable": {
+    "matches": ["http://localhost:3000/*", "https://*.upstream.app/*"]
+  },
+  "web_accessible_resources": [
+    {
+      "resources": ["blocked.html"],
+      "matches": ["<all_urls>"]
+    }
+  ]
+}

@@ -1,0 +1,28 @@
+{
+  "name": "@focus-forge/desktop",
+  "version": "0.1.0",
+  "private": true,
+  "main": "dist/main.js",
+  "scripts": {
+    "build": "node build.mjs",
+    "start": "npm run build && electron ."
+  },
+  "dependencies": {
+    "@focus-forge/api-client": "*",
+    "@focus-forge/core": "*",
+    "@modelcontextprotocol/sdk": "^1.12.0",
+    "@supabase/supabase-js": "^2.45.4",
+    "active-win": "^9.0.0",
+    "cross-spawn": "^7.0.6",
+    "kokoro-js": "^1.2.1",
+    "ws": "^8.18.0",
+    "zod": "^3.25.0"
+  },
+  "devDependencies": {
+    "@types/cross-spawn": "^6.0.6",
+    "@types/ws": "^8.5.13",
+    "electron": "^33.0.0",
+    "esbuild": "^0.24.0",
+    "typescript": "^5.6.3"
+  }
+}

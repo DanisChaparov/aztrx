@@ -1,0 +1,13 @@
+node_modules/
+.next/
+dist/
+.env
+.env.local
+*.log
+.DS_Store
+supabase/.branches/
+supabase/.temp/
+
+# esbuild output mixed into apps/extension/public alongside hand-written manifest/html
+apps/extension/public/*.js
+apps/extension/public/*.js.map
