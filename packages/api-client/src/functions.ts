@@ -5,6 +5,7 @@ export interface VerifySessionResult {
   verified: boolean;
   distractionEventCount: number;
   githubActivityDetected: boolean | null;
+  localActivityDetected: boolean | null;
   impactEntries: { dependencyId: string; simulatedAmount: number }[];
   commits: {
     sha: string;
@@ -16,13 +17,20 @@ export interface VerifySessionResult {
   }[];
 }
 
-/** Invokes the verify-session Edge Function, which does the GitHub check server-side. */
+/**
+ * Invokes the verify-session Edge Function, which does the GitHub check
+ * server-side. `localActivityDetected` is an optional second verification
+ * signal — only the desktop app can compute it (it has real filesystem
+ * access to a project's local folder), so web/extension callers simply omit
+ * it and verification falls back to the GitHub-only check as before.
+ */
 export async function verifySession(
   client: SupabaseClient<Database>,
-  sessionId: string
+  sessionId: string,
+  localActivityDetected?: boolean | null
 ): Promise<VerifySessionResult> {
   const { data, error } = await client.functions.invoke<VerifySessionResult>("verify-session", {
-    body: { sessionId },
+    body: { sessionId, localActivityDetected: localActivityDetected ?? null },
   });
   if (error) throw error;
   if (!data || typeof data.verified !== "boolean") {
@@ -33,5 +41,10 @@ export async function verifySession(
     const message = (data as unknown as { error?: string })?.error ?? "verify-session returned an unexpected response";
     throw new Error(message);
   }
-  return { ...data, impactEntries: data.impactEntries ?? [], commits: data.commits ?? [] };
+  return {
+    ...data,
+    localActivityDetected: data.localActivityDetected ?? null,
+    impactEntries: data.impactEntries ?? [],
+    commits: data.commits ?? [],
+  };
 }

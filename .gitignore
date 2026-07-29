@@ -7,6 +7,7 @@ dist/
 .DS_Store
 supabase/.branches/
 supabase/.temp/
+.overnight/
 
 # esbuild output mixed into apps/extension/public alongside hand-written manifest/html
 apps/extension/public/*.js

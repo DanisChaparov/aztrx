@@ -3,6 +3,7 @@ import { join } from "node:path";
 import {
   abandonSession,
   getActiveSession,
+  listProjects,
   listSessions,
   recordSessionAppUsage,
   startSession,
@@ -12,6 +13,8 @@ import { calculateStreak } from "@focus-forge/core";
 import { DesktopActivityMonitor } from "./activityMonitor";
 import { startChatRunner } from "./chatRunner";
 import { startCommandRunner } from "./commandRunner";
+import { startIdleNudge } from "./idleNudge";
+import { detectLocalActivity } from "./localVerification";
 import { startTtsRunner, warmTtsModel } from "./ttsRunner";
 import { createDesktopSupabaseClient } from "./supabaseClient";
 
@@ -119,6 +122,7 @@ app.whenReady().then(() => {
   startCommandRunner(supabase);
   startChatRunner(supabase);
   startTtsRunner(supabase);
+  startIdleNudge(supabase);
   warmTtsModel();
 
   app.on("activate", () => {
@@ -162,9 +166,27 @@ ipcMain.handle("start-session", async (_event, plannedDurationMin: number) => {
   return { session };
 });
 
+async function checkLocalActivity(sessionId: string): Promise<boolean | null> {
+  try {
+    const active = await getActiveSession(supabase);
+    if (active?.id !== sessionId || !active.projectId) return null;
+    const projects = await listProjects(supabase);
+    const project = projects.find((p) => p.id === active.projectId);
+    if (!project?.localPath) return null;
+    return await detectLocalActivity(project.localPath, active.startedAt);
+  } catch (err) {
+    console.error("Local activity check failed:", err);
+    return null;
+  }
+}
+
 ipcMain.handle("complete-session", async (_event, sessionId: string) => {
   const appUsage = activityMonitor.getAppUsageSnapshot();
-  const result = await verifySession(supabase, sessionId);
+  // Checked before verifySession flips the session to "completed" — the
+  // active-session lookup inside checkLocalActivity depends on it still
+  // being active.
+  const localActivityDetected = await checkLocalActivity(sessionId);
+  const result = await verifySession(supabase, sessionId, localActivityDetected);
   syncActivityMonitor(null);
   recordSessionAppUsage(supabase, sessionId, appUsage).catch((err) => console.error("Failed to record app usage:", err));
   new Notification({

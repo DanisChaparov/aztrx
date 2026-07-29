@@ -48,7 +48,7 @@ export class DesktopActivityMonitor {
     const appName = window?.owner?.name;
     if (!appName) return;
 
-    const tracked = matchTrackedTool(appName);
+    const tracked = matchTrackedTool(appName, undefined, window?.title);
     if (tracked) {
       this.appSeconds.set(tracked.name, (this.appSeconds.get(tracked.name) ?? 0) + POLL_INTERVAL_MS / 1000);
     }

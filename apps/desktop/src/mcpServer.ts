@@ -83,6 +83,28 @@ function text(value: string) {
 const server = new McpServer({ name: "upstream", version: "1.0.0" });
 
 server.tool(
+  "get_active_session",
+  "Check whether the user currently has a focus session running right now, and if so, how long it's been " +
+    "running and how much time is left. Read-only — use this to answer questions like 'am I in a session', " +
+    "'how much time do I have left', or before deciding whether start_focus_session even makes sense.",
+  {},
+  async () => {
+    const active = await getActiveSession(supabase);
+    if (!active) return text(JSON.stringify({ active: false }));
+    const elapsedMin = Math.round((Date.now() - new Date(active.startedAt).getTime()) / 60000);
+    return text(
+      JSON.stringify({
+        active: true,
+        startedAt: active.startedAt,
+        plannedDurationMin: active.plannedDurationMin,
+        elapsedMin,
+        remainingMin: Math.max(0, active.plannedDurationMin - elapsedMin),
+      })
+    );
+  }
+);
+
+server.tool(
   "get_dashboard_stats",
   "Get the current user's real focus streak, level, XP, and session counts.",
   {},

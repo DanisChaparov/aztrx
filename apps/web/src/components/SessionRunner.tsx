@@ -159,6 +159,10 @@ export function SessionRunner({
           {result.distractionEventCount > 0 &&
             `${result.distractionEventCount} distraction event(s) logged. `}
           {result.githubActivityDetected === false &&
+            result.localActivityDetected === true &&
+            "No GitHub commits yet, but real local commits were detected during this session — verified from your local activity. "}
+          {result.githubActivityDetected === false &&
+            result.localActivityDetected !== true &&
             "No matching commits were found on the linked repo during this session. "}
           {result.githubActivityDetected === true && "Commits landed on the linked repo during this session. "}
           {result.impactEntries.length > 0 &&
