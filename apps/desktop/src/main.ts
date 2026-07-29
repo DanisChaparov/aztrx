@@ -12,6 +12,7 @@ import { calculateStreak } from "@focus-forge/core";
 import { DesktopActivityMonitor } from "./activityMonitor";
 import { startChatRunner } from "./chatRunner";
 import { startCommandRunner } from "./commandRunner";
+import { startIdleNudge } from "./idleNudge";
 import { startTtsRunner, warmTtsModel } from "./ttsRunner";
 import { createDesktopSupabaseClient } from "./supabaseClient";
 
@@ -119,6 +120,7 @@ app.whenReady().then(() => {
   startCommandRunner(supabase);
   startChatRunner(supabase);
   startTtsRunner(supabase);
+  startIdleNudge(supabase);
   warmTtsModel();
 
   app.on("activate", () => {
