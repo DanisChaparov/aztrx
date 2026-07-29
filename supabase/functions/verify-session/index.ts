@@ -12,6 +12,10 @@ const SIMULATED_CENTS_PER_MINUTE = 2;
 
 interface VerifyRequestBody {
   sessionId: string;
+  // Only the desktop app can compute this (real filesystem access to a
+  // project's local folder) — web/extension callers omit it, which is
+  // equivalent to null and falls back to the GitHub-only check below.
+  localActivityDetected?: boolean | null;
 }
 
 function splitImpact(plannedDurationMin: number, dependencyIds: string[]) {
@@ -47,7 +51,7 @@ Deno.serve(async (req) => {
 
   try {
     const authHeader = req.headers.get("Authorization") ?? "";
-    const { sessionId } = (await req.json()) as VerifyRequestBody;
+    const { sessionId, localActivityDetected = null } = (await req.json()) as VerifyRequestBody;
     if (!sessionId) {
       return new Response(JSON.stringify({ error: "sessionId is required" }), {
         status: 400,
@@ -211,10 +215,14 @@ Deno.serve(async (req) => {
       }
     }
 
+    // A repo linked but no GitHub commits found no longer fails verification
+    // outright if the desktop app detected real local commits during the
+    // session window — genuine focused work that just hasn't been pushed yet
+    // shouldn't read as "didn't happen".
     const verified =
       session.status !== "broken" &&
       (distractionEventCount ?? 0) <= DISTRACTION_TOLERANCE &&
-      githubActivityDetected !== false;
+      (githubActivityDetected !== false || localActivityDetected === true);
 
     await admin
       .from("focus_sessions")
@@ -270,6 +278,7 @@ Deno.serve(async (req) => {
         verified,
         distractionEventCount: distractionEventCount ?? 0,
         githubActivityDetected,
+        localActivityDetected,
         impactEntries,
         commits: commitDetails,
       }),
