@@ -4,6 +4,7 @@
 // already-authenticated Supabase session (read from the same session-store.json,
 // located via the UPSTREAM_USERDATA_DIR env var chatRunner passes in) so it
 // never needs its own separate login or API key.
+import { exec } from "node:child_process";
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js";
 import { createClient, type SupabaseClient } from "@supabase/supabase-js";
@@ -31,8 +32,40 @@ import {
   getLevelInfo,
   isAiAssistedTool,
   LAUNCHABLE_APPS,
+  matchTrackedTool,
+  TRACKED_TOOL_PROCESS_NAMES,
 } from "@focus-forge/core";
 import { createFileStorageAdapter } from "./store";
+
+/** Windows-only best-effort process list for "is this tool running right now"
+ *  checks — other platforms just get an empty list, degrading to focused-window
+ *  info only rather than erroring. */
+function listRunningProcessNames(): Promise<string[]> {
+  return new Promise((resolve) => {
+    if (process.platform !== "win32") {
+      resolve([]);
+      return;
+    }
+    exec("tasklist /fo csv /nh", { timeout: 5000 }, (err, stdout) => {
+      if (err) {
+        resolve([]);
+        return;
+      }
+      const names = stdout
+        .split("\n")
+        .map((line) => line.split(",")[0]?.replace(/"/g, "").trim())
+        .filter((name): name is string => Boolean(name));
+      resolve(names);
+    });
+  });
+}
+
+async function getRunningTrackedTools(): Promise<string[]> {
+  const running = new Set((await listRunningProcessNames()).map((n) => n.toLowerCase()));
+  return Object.entries(TRACKED_TOOL_PROCESS_NAMES)
+    .filter(([, exeName]) => running.has(exeName.toLowerCase()))
+    .map(([toolName]) => toolName);
+}
 
 function requiredEnv(name: string): string {
   const value = process.env[name];
@@ -99,6 +132,35 @@ server.tool(
         plannedDurationMin: active.plannedDurationMin,
         elapsedMin,
         remainingMin: Math.max(0, active.plannedDurationMin - elapsedMin),
+      })
+    );
+  }
+);
+
+server.tool(
+  "get_current_activity",
+  "Check what's happening on the user's computer RIGHT NOW — not historical totals. Returns the currently " +
+    "focused app/window, and which tracked IDEs/AI coding tools (Cursor, VS Code, JetBrains IDEs, etc.) are " +
+    "currently running even if not the focused window. Use this for real-time questions like 'what am I doing " +
+    "right now', 'is Cursor open', or 'what's Claude doing'.",
+  {},
+  async () => {
+    // Pure-ESM package — dynamic import() from this CJS-bundled process, same
+    // reason as apps/desktop/src/activityMonitor.ts.
+    const { activeWindow } = await import("active-win");
+    const window = await activeWindow();
+    const focusedAppName = window?.owner?.name ?? null;
+    const focusedTool = focusedAppName ? matchTrackedTool(focusedAppName, undefined, window?.title) : null;
+
+    const runningTools = await getRunningTrackedTools();
+
+    return text(
+      JSON.stringify({
+        focusedApp: focusedAppName,
+        focusedTool: focusedTool?.name ?? null,
+        focusedToolIsAiAssisted: focusedTool?.aiAssisted ?? false,
+        windowTitle: window?.title ?? null,
+        runningTools,
       })
     );
   }
