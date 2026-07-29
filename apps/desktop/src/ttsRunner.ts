@@ -7,6 +7,17 @@ const MODEL_ID = "onnx-community/Kokoro-82M-ONNX";
 // af_heart is one of the highest-rated voices in the Kokoro pack (natural,
 // warm American female) — af_sky sounded noticeably more robotic.
 const VOICE = "af_heart";
+// A one-line status update ("streak's at 2 days") read at the same pace as a
+// full explanation drags — short replies get a slightly quicker, punchier
+// delivery instead of every reply sounding identical regardless of length.
+const SHORT_REPLY_WORD_THRESHOLD = 15;
+const SHORT_REPLY_SPEED = 1.15;
+const DEFAULT_SPEED = 1.0;
+
+function speedFor(text: string): number {
+  const wordCount = text.trim().split(/\s+/).filter(Boolean).length;
+  return wordCount <= SHORT_REPLY_WORD_THRESHOLD ? SHORT_REPLY_SPEED : DEFAULT_SPEED;
+}
 
 let modelPromise: Promise<KokoroTTSType> | null = null;
 
@@ -50,7 +61,7 @@ export function startTtsRunner(supabase: SupabaseClient<Database>): () => void {
     console.log(`[ttsRunner] generating audio for ${id} (${text.length} chars)...`);
     try {
       const tts = await loadModel();
-      const audio = await tts.generate(text, { voice: VOICE });
+      const audio = await tts.generate(text, { voice: VOICE, speed: speedFor(text) });
       const audioBase64 = Buffer.from(audio.toWav()).toString("base64");
       await updateTtsStatus(supabase, id, { status: "completed", audioBase64 });
       console.log(`[ttsRunner] ${id} completed`);
