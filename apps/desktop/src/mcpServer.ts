@@ -60,11 +60,57 @@ function listRunningProcessNames(): Promise<string[]> {
   });
 }
 
-async function getRunningTrackedTools(): Promise<string[]> {
-  const running = new Set((await listRunningProcessNames()).map((n) => n.toLowerCase()));
+/** Maps each running process's name (lowercased, no .exe) to its main window
+ *  title — for every process with a visible window, regardless of focus.
+ *  This is what lets get_current_activity report which file/project is open
+ *  in a background VS Code (etc.) window without the user switching to it;
+ *  active-win alone only ever reports the single focused window's title. */
+function listWindowTitles(): Promise<Map<string, string>> {
+  return new Promise((resolve) => {
+    if (process.platform !== "win32") {
+      resolve(new Map());
+      return;
+    }
+    const command =
+      "powershell -NoProfile -Command \"Get-Process | Where-Object { $_.MainWindowTitle -ne '' } | Select-Object ProcessName, MainWindowTitle | ConvertTo-Json -Compress\"";
+    exec(command, { timeout: 5000 }, (err, stdout) => {
+      if (err) {
+        resolve(new Map());
+        return;
+      }
+      try {
+        // ConvertTo-Json returns a single object (not an array) when there's
+        // only one match — normalize both shapes.
+        const parsed = JSON.parse(stdout.trim() || "[]") as
+          | { ProcessName: string; MainWindowTitle: string }
+          | { ProcessName: string; MainWindowTitle: string }[];
+        const list = Array.isArray(parsed) ? parsed : [parsed];
+        const map = new Map<string, string>();
+        for (const entry of list) {
+          if (entry?.ProcessName) map.set(entry.ProcessName.toLowerCase(), entry.MainWindowTitle ?? "");
+        }
+        resolve(map);
+      } catch {
+        resolve(new Map());
+      }
+    });
+  });
+}
+
+interface RunningTool {
+  name: string;
+  windowTitle: string | null;
+}
+
+async function getRunningTrackedTools(): Promise<RunningTool[]> {
+  const [processNames, windowTitles] = await Promise.all([listRunningProcessNames(), listWindowTitles()]);
+  const running = new Set(processNames.map((n) => n.toLowerCase()));
   return Object.entries(TRACKED_TOOL_PROCESS_NAMES)
     .filter(([, exeName]) => running.has(exeName.toLowerCase()))
-    .map(([toolName]) => toolName);
+    .map(([toolName, exeName]) => {
+      const processKey = exeName.replace(/\.exe$/i, "").toLowerCase();
+      return { name: toolName, windowTitle: windowTitles.get(processKey) ?? null };
+    });
 }
 
 function requiredEnv(name: string): string {
@@ -140,9 +186,12 @@ server.tool(
 server.tool(
   "get_current_activity",
   "Check what's happening on the user's computer RIGHT NOW — not historical totals. Returns the currently " +
-    "focused app/window, and which tracked IDEs/AI coding tools (Cursor, VS Code, JetBrains IDEs, etc.) are " +
-    "currently running even if not the focused window. Use this for real-time questions like 'what am I doing " +
-    "right now', 'is Cursor open', or 'what's Claude doing'.",
+    "focused app/window and its title, plus which tracked IDEs/AI coding tools (Cursor, VS Code, JetBrains " +
+    "IDEs, etc.) are currently running along with THEIR window titles too — even ones running in the " +
+    "background, not just the focused one. A background tool's window title often reveals what file or " +
+    "project is open in it (e.g. VS Code's title bar shows the open file/folder) without the user needing to " +
+    "switch focus to it. Use this for real-time questions like 'what am I doing right now', 'is Cursor open', " +
+    "or 'what project is open in VS Code'.",
   {},
   async () => {
     // Pure-ESM package — dynamic import() from this CJS-bundled process, same
