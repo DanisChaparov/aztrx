@@ -76,3 +76,34 @@ export function matchTrackedTool(
 export function isAiAssistedTool(appName: string, windowTitle?: string | null): boolean {
   return matchTrackedTool(appName, TRACKED_TOOLS, windowTitle)?.aiAssisted ?? false;
 }
+
+// Windows process image names for "is this tool running at all right now"
+// checks (via tasklist), separate from the friendly names active-win reports
+// for the *focused* window — a background/unfocused app never shows up there.
+// JetBrains Toolbox launchers follow a well-documented "<product>64.exe"
+// pattern (high confidence); a few newer apps (Antigravity, Zed, Warp on
+// Windows) are best-effort guesses that may need correcting against a real
+// install — a wrong name here just means that one tool won't be detected as
+// running, not a false positive.
+export const TRACKED_TOOL_PROCESS_NAMES: Record<string, string> = {
+  Cursor: "Cursor.exe",
+  "Visual Studio Code": "Code.exe",
+  Antigravity: "Antigravity.exe",
+  Windsurf: "Windsurf.exe",
+  Zed: "Zed.exe",
+  WebStorm: "webstorm64.exe",
+  "IntelliJ IDEA": "idea64.exe",
+  PyCharm: "pycharm64.exe",
+  GoLand: "goland64.exe",
+  CLion: "clion64.exe",
+  RubyMine: "rubymine64.exe",
+  Rider: "rider64.exe",
+  PhpStorm: "phpstorm64.exe",
+  DataGrip: "datagrip64.exe",
+  Fleet: "Fleet.exe",
+  "Android Studio": "studio64.exe",
+  "Sublime Text": "sublime_text.exe",
+  Warp: "Warp.exe",
+  "Windows Terminal": "WindowsTerminal.exe",
+  Obsidian: "Obsidian.exe",
+};
