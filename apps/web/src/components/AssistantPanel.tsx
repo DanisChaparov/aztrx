@@ -29,6 +29,51 @@ interface SpeechRecognitionLike extends EventTarget {
   onerror: (() => void) | null;
 }
 
+type OrbState = "idle" | "listening" | "thinking" | "speaking";
+
+const ORB_STATE_STYLE: Record<OrbState, { color: string; ringDuration: number; coreDuration: number }> = {
+  idle: { color: "#5ed29c", ringDuration: 3.2, coreDuration: 2.4 },
+  listening: { color: "#ff6b6b", ringDuration: 1, coreDuration: 0.8 },
+  thinking: { color: "#5ed29c", ringDuration: 1.4, coreDuration: 1.6 },
+  speaking: { color: "#79dba8", ringDuration: 1.8, coreDuration: 1.1 },
+};
+
+/** The always-present visual identity of the assistant — a breathing, glowing
+ *  orb whose animation and color shift with what it's actually doing, instead
+ *  of a static icon. Used both small (the floating launcher) and large (the
+ *  panel's primary control) so press-to-talk always feels like the same thing. */
+function KarnezzOrb({ size, state }: { size: number; state: OrbState }) {
+  const { color, ringDuration, coreDuration } = ORB_STATE_STYLE[state];
+  const Icon = state === "listening" ? Mic : state === "speaking" ? Volume2 : Sparkles;
+
+  return (
+    <div style={{ width: size, height: size }} className="relative flex shrink-0 items-center justify-center">
+      <motion.div
+        className="absolute inset-0 rounded-full"
+        style={{ background: `radial-gradient(circle, ${color}55, transparent 70%)` }}
+        animate={{ scale: [1, 1.25, 1], opacity: [0.45, 0.9, 0.45] }}
+        transition={{ duration: ringDuration, repeat: Infinity, ease: "easeInOut" }}
+      />
+      <motion.div
+        className="absolute rounded-full"
+        style={{
+          width: size * 0.74,
+          height: size * 0.74,
+          background: `linear-gradient(135deg, ${color}, #79dba8)`,
+          boxShadow: `0 0 ${size * 0.3}px ${color}88`,
+        }}
+        animate={state === "thinking" ? { rotate: 360 } : { scale: [1, 1.07, 1] }}
+        transition={
+          state === "thinking"
+            ? { duration: coreDuration, repeat: Infinity, ease: "linear" }
+            : { duration: coreDuration, repeat: Infinity, ease: "easeInOut" }
+        }
+      />
+      <Icon size={size * 0.3} className="relative z-10 text-[#070b0a]" />
+    </div>
+  );
+}
+
 export function AssistantPanel() {
   const router = useRouter();
   const [open, setOpen] = useState(false);
@@ -45,6 +90,7 @@ export function AssistantPanel() {
   const scrollRef = useRef<HTMLDivElement>(null);
   const recognitionRef = useRef<SpeechRecognitionLike | null>(null);
   const audioRef = useRef<HTMLAudioElement | null>(null);
+  const lastTranscriptRef = useRef("");
 
   useEffect(() => {
     scrollRef.current?.scrollTo({ top: scrollRef.current.scrollHeight, behavior: "smooth" });
@@ -175,34 +221,53 @@ export function AssistantPanel() {
       for (let i = 0; i < Object.keys(event.results).length; i++) {
         transcript += event.results[i][0].transcript;
       }
+      lastTranscriptRef.current = transcript;
       setInput(transcript);
     };
-    recognition.onend = () => setListening(false);
+    // Press-to-talk, not press-to-fill-a-textbox: when speech ends, whatever
+    // was transcribed gets sent immediately — "press the orb, say the thing,
+    // hear the answer" with no separate manual send step.
+    recognition.onend = () => {
+      setListening(false);
+      const finalTranscript = lastTranscriptRef.current.trim();
+      lastTranscriptRef.current = "";
+      if (finalTranscript) sendMessageRef.current(finalTranscript);
+    };
     recognition.onerror = () => setListening(false);
 
     recognitionRef.current = recognition;
     setVoiceSupported(true);
   }, []);
 
-  function toggleListening() {
+  function startListening() {
     const recognition = recognitionRef.current;
-    if (!recognition) return;
+    if (!recognition || listening || busy) return;
+    setInput("");
+    lastTranscriptRef.current = "";
+    recognition.start();
+    setListening(true);
+  }
+
+  function stopListening() {
+    recognitionRef.current?.stop();
+  }
+
+  /** The orb's single entry point — open the panel if needed and start
+   *  listening in one press, or stop an in-progress listen if pressed again. */
+  function handleOrbPress() {
+    if (!open) setOpen(true);
     if (listening) {
-      recognition.stop();
-      setListening(false);
-    } else {
-      setInput("");
-      recognition.start();
-      setListening(true);
+      stopListening();
+    } else if (!busy) {
+      startListening();
     }
   }
 
-  async function handleSubmit(e: FormEvent) {
-    e.preventDefault();
-    const text = input.trim();
-    if (!text || busy) return;
+  async function sendMessage(text: string) {
+    const trimmed = text.trim();
+    if (!trimmed || busy) return;
 
-    const nextMessages: ChatMessage[] = [...messages, { role: "user", content: text }];
+    const nextMessages: ChatMessage[] = [...messages, { role: "user", content: trimmed }];
     setMessages(nextMessages);
     setInput("");
     setBusy(true);
@@ -211,7 +276,7 @@ export function AssistantPanel() {
       const res = await fetch("/api/assistant", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ message: text, history: messages }),
+        body: JSON.stringify({ message: trimmed, history: messages }),
       });
       if (!res.ok) throw new Error("Request failed");
       const { chatId } = (await res.json()) as { chatId: string };
@@ -245,6 +310,19 @@ export function AssistantPanel() {
     }
   }
 
+  function handleSubmit(e: FormEvent) {
+    e.preventDefault();
+    sendMessage(input);
+  }
+
+  // Keeps the speech-recognition callbacks (set up once below) calling the
+  // latest sendMessage instead of a stale closure from the render they were
+  // first attached in.
+  const sendMessageRef = useRef(sendMessage);
+  sendMessageRef.current = sendMessage;
+
+  const orbState: OrbState = listening ? "listening" : busy ? "thinking" : speaking ? "speaking" : "idle";
+
   return (
     <div className="fixed bottom-6 right-6 z-40 flex flex-col items-end gap-3">
       <AnimatePresence>
@@ -254,13 +332,10 @@ export function AssistantPanel() {
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: 16, scale: 0.96 }}
             transition={{ type: "spring", stiffness: 300, damping: 28 }}
-            className="glass-panel flex h-[420px] w-[340px] flex-col overflow-hidden"
+            className="glass-panel flex h-[500px] w-[340px] flex-col overflow-hidden"
           >
             <div className="flex items-center justify-between border-b border-white/10 px-4 py-3">
-              <span className="flex items-center gap-2 font-manrope text-sm font-medium text-white">
-                <Sparkles size={14} className="text-[#5ed29c]" />
-                Assistant
-              </span>
+              <span className="font-manrope text-sm font-medium text-white">Karnezz</span>
               <div className="flex items-center gap-1">
                 {speechSupported && (
                   <button
@@ -276,6 +351,29 @@ export function AssistantPanel() {
                 </button>
               </div>
             </div>
+
+            {voiceSupported && (
+              <div className="flex flex-col items-center gap-2 border-b border-white/10 py-5">
+                <button
+                  type="button"
+                  onClick={handleOrbPress}
+                  disabled={busy}
+                  aria-label={listening ? "Stop talking to Karnezz" : "Talk to Karnezz"}
+                  className="rounded-full transition-transform hover:scale-105 active:scale-95 disabled:cursor-default"
+                >
+                  <KarnezzOrb size={72} state={orbState} />
+                </button>
+                <span className="font-inter text-[11px] text-neutral-500">
+                  {orbState === "listening"
+                    ? "Listening…"
+                    : orbState === "thinking"
+                      ? "Thinking…"
+                      : orbState === "speaking"
+                        ? "Speaking…"
+                        : "Tap to talk"}
+                </span>
+              </div>
+            )}
 
             {speechSupported && voiceOutputEnabled && voices.length > 1 && (
               <div className="border-b border-white/10 px-4 py-1.5">
@@ -299,7 +397,8 @@ export function AssistantPanel() {
             <div ref={scrollRef} className="flex-1 space-y-3 overflow-y-auto px-4 py-3">
               {messages.length === 0 && (
                 <p className="font-inter text-xs text-neutral-500">
-                  Ask about your streak, projects, or say "start a 25 minute session".
+                  Tap the orb and just talk — "what's my streak", "what's Cursor doing right now", "start a 25
+                  minute session". Or type below.
                 </p>
               )}
               {messages.map((m, i) => (
@@ -314,34 +413,13 @@ export function AssistantPanel() {
                   {m.content}
                 </div>
               ))}
-              {busy && (
-                <div className="flex items-center gap-1.5 font-inter text-xs text-neutral-500">
-                  <span>Thinking</span>
-                  <span className="flex items-center gap-0.5">
-                    {[0, 1, 2].map((i) => (
-                      <motion.span
-                        key={i}
-                        className="h-1 w-1 rounded-full bg-neutral-500"
-                        animate={{ opacity: [0.2, 1, 0.2] }}
-                        transition={{ duration: 1, repeat: Infinity, delay: i * 0.2, ease: "easeInOut" }}
-                      />
-                    ))}
-                  </span>
-                </div>
-              )}
-              {!busy && speaking && (
-                <div className="flex items-center gap-1.5 font-inter text-xs text-[#5ed29c]">
-                  <Volume2 size={12} />
-                  <span>Speaking…</span>
-                </div>
-              )}
             </div>
 
             <form onSubmit={handleSubmit} className="flex items-center gap-2 border-t border-white/10 p-3">
               {voiceSupported && (
                 <button
                   type="button"
-                  onClick={toggleListening}
+                  onClick={listening ? stopListening : startListening}
                   disabled={busy}
                   aria-label={listening ? "Stop voice input" : "Start voice input"}
                   className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-full transition-colors disabled:opacity-40 ${
@@ -373,15 +451,19 @@ export function AssistantPanel() {
         )}
       </AnimatePresence>
 
-      <motion.button
-        whileHover={{ scale: 1.05 }}
-        whileTap={{ scale: 0.95 }}
-        onClick={() => setOpen((v) => !v)}
-        aria-label="Toggle assistant"
-        className="flex h-12 w-12 items-center justify-center rounded-full bg-[#5ed29c] text-[#070b0a] shadow-[0_4px_24px_-6px_rgba(94,210,156,0.7)]"
-      >
-        {open ? <X size={18} /> : <Sparkles size={18} />}
-      </motion.button>
+      {!open && (
+        <motion.button
+          initial={{ opacity: 0, scale: 0.8 }}
+          animate={{ opacity: 1, scale: 1 }}
+          whileHover={{ scale: 1.06 }}
+          whileTap={{ scale: 0.94 }}
+          onClick={handleOrbPress}
+          aria-label="Talk to Karnezz"
+          className="rounded-full"
+        >
+          <KarnezzOrb size={56} state={orbState} />
+        </motion.button>
+      )}
     </div>
   );
 }
