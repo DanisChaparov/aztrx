@@ -18,8 +18,10 @@ function formatClock(totalSeconds: number): string {
 function renderSignedOut() {
   app.innerHTML = `
     <h1>Upstream</h1>
-    <p>Sign in on the web app first, then reopen this popup — it connects automatically.</p>
-    <a href="${WEB_APP_URL}/login" target="_blank">Open Upstream →</a>
+    <div class="card">
+      <p>Sign in on the web app first, then reopen this popup — it connects automatically.</p>
+      <a href="${WEB_APP_URL}/login" target="_blank">Open Upstream →</a>
+    </div>
   `;
 }
 
@@ -30,12 +32,14 @@ function renderActiveSession(session: FocusSession, streak: number) {
 
   app.innerHTML = `
     <h1>Upstream</h1>
-    <div class="timer" id="timer">--:--</div>
-    <div class="row">
-      <button class="primary" id="complete">I'm done</button>
-      <button id="abandon">Give up</button>
+    <div class="card">
+      <div class="timer active" id="timer">--:--</div>
+      <div class="row">
+        <button class="primary" id="complete">I'm done</button>
+        <button id="abandon">Give up</button>
+      </div>
+      <div class="streak">🔥 ${streak} day streak</div>
     </div>
-    <div class="streak">🔥 ${streak} day streak</div>
   `;
 
   const timerEl = document.getElementById("timer")!;
@@ -62,8 +66,10 @@ function renderResult(result: { verified: boolean }) {
   if (countdownTimer) clearInterval(countdownTimer);
   app.innerHTML = `
     <h1>Upstream</h1>
-    <p>${result.verified ? "Verified ✓ — nice work." : "Session completed, but not verified."}</p>
-    <button class="primary" id="again">Start another</button>
+    <div class="card">
+      <p>${result.verified ? "Verified ✓ — nice work." : "Session completed, but not verified."}</p>
+      <button class="primary" id="again">Start another</button>
+    </div>
   `;
   document.getElementById("again")!.addEventListener("click", init);
 }
@@ -73,11 +79,13 @@ function renderIdle(streak: number) {
 
   app.innerHTML = `
     <h1>Upstream</h1>
-    <div class="row" id="durations">
-      ${DURATIONS.map((d) => `<button data-d="${d}" class="${d === selected ? "selected" : ""}">${d}m</button>`).join("")}
+    <div class="card">
+      <div class="row" id="durations">
+        ${DURATIONS.map((d) => `<button data-d="${d}" class="${d === selected ? "selected" : ""}">${d}m</button>`).join("")}
+      </div>
+      <button class="primary" id="start">Start focus session</button>
+      <div class="streak">🔥 ${streak} day streak</div>
     </div>
-    <button class="primary" id="start">Start focus session</button>
-    <div class="streak">🔥 ${streak} day streak</div>
   `;
 
   const buttons = Array.from(document.querySelectorAll<HTMLButtonElement>("#durations button"));

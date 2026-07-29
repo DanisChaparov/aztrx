@@ -4,37 +4,96 @@
     <meta charset="utf-8" />
     <title>Upstream</title>
     <style>
+      * {
+        box-sizing: border-box;
+      }
       body {
         margin: 0;
-        width: 280px;
-        background: #0a0a0a;
+        width: 300px;
+        background: #070b0a;
         color: #f5f5f5;
-        font-family: system-ui, sans-serif;
+        font-family:
+          -apple-system,
+          "Segoe UI",
+          system-ui,
+          sans-serif;
       }
       #app {
+        padding: 18px;
+        display: flex;
+        flex-direction: column;
+        gap: 14px;
+        animation: fade-in 0.25s ease-out;
+      }
+      @keyframes fade-in {
+        from {
+          opacity: 0;
+          transform: translateY(4px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+      h1 {
+        font-size: 13px;
+        font-weight: 600;
+        letter-spacing: 0.02em;
+        margin: 0;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+      }
+      h1::before {
+        content: "";
+        display: inline-block;
+        width: 6px;
+        height: 6px;
+        border-radius: 999px;
+        background: #5ed29c;
+        box-shadow: 0 0 8px rgba(94, 210, 156, 0.8);
+      }
+      p {
+        font-size: 12px;
+        line-height: 1.5;
+        color: #a3a3a3;
+        margin: 0;
+      }
+      a {
+        color: #5ed29c;
+        text-decoration: none;
+        font-weight: 500;
+      }
+      a:hover {
+        text-decoration: underline;
+      }
+      .card {
+        border-radius: 16px;
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        background: rgba(255, 255, 255, 0.03);
         padding: 16px;
         display: flex;
         flex-direction: column;
         gap: 14px;
       }
-      h1 {
-        font-size: 14px;
-        font-weight: 600;
-        margin: 0;
-      }
-      p {
-        font-size: 12px;
-        color: #a3a3a3;
-        margin: 0;
-      }
-      a {
-        color: #f97316;
-      }
       .timer {
-        font-size: 36px;
+        font-size: 38px;
         font-weight: 600;
         text-align: center;
         font-variant-numeric: tabular-nums;
+        letter-spacing: -0.02em;
+      }
+      .timer.active {
+        animation: pulse 1.8s ease-in-out infinite;
+      }
+      @keyframes pulse {
+        0%,
+        100% {
+          opacity: 1;
+        }
+        50% {
+          opacity: 0.55;
+        }
       }
       .row {
         display: flex;
@@ -43,27 +102,50 @@
       button {
         font: inherit;
         font-size: 12px;
+        font-weight: 500;
         border-radius: 999px;
-        padding: 8px 14px;
-        border: 1px solid #404040;
-        background: transparent;
+        padding: 9px 14px;
+        border: 1px solid rgba(255, 255, 255, 0.12);
+        background: rgba(255, 255, 255, 0.03);
         color: #f5f5f5;
         cursor: pointer;
         flex: 1;
+        transition:
+          background 0.15s ease,
+          border-color 0.15s ease,
+          transform 0.1s ease,
+          opacity 0.15s ease;
+      }
+      button:hover:not(:disabled) {
+        background: rgba(255, 255, 255, 0.07);
+        border-color: rgba(255, 255, 255, 0.2);
+      }
+      button:active:not(:disabled) {
+        transform: scale(0.97);
+      }
+      button:disabled {
+        opacity: 0.5;
+        cursor: default;
       }
       button.primary {
-        background: #f97316;
-        border-color: #f97316;
-        color: #000;
+        background: #5ed29c;
+        border-color: #5ed29c;
+        color: #070b0a;
         font-weight: 600;
       }
+      button.primary:hover:not(:disabled) {
+        background: #79dba8;
+        border-color: #79dba8;
+      }
       button.selected {
-        border-color: #f97316;
-        color: #f97316;
+        border-color: #5ed29c;
+        color: #5ed29c;
+        background: rgba(94, 210, 156, 0.1);
       }
       .streak {
         font-size: 12px;
-        color: #fb923c;
+        color: #5ed29c;
+        text-align: center;
       }
     </style>
   </head>
