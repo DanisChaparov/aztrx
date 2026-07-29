@@ -31,6 +31,14 @@ export const TRACKED_TOOLS: TrackedTool[] = [
   { name: "iTerm2", aiAssisted: false },
   { name: "Windows Terminal", aiAssisted: false },
   { name: "Terminal", aiAssisted: false },
+  // Synthesized by matchTrackedTool below when a terminal's window title
+  // reveals an AI CLI running inside it. Also listed here directly so later
+  // by-name-only lookups (e.g. summarizing already-aggregated usage, where
+  // the original window title is long gone) still resolve correctly.
+  { name: "Claude Code", aiAssisted: true },
+  { name: "Codex CLI", aiAssisted: true },
+  { name: "Gemini CLI", aiAssisted: true },
+  { name: "Aider", aiAssisted: true },
 ];
 
 // Terminal apps whose window *title* (not just process name) is where AI-CLI

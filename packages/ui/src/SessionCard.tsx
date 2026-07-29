@@ -1,4 +1,7 @@
+"use client";
+
 import { CheckCircle2, CircleDashed, XCircle } from "lucide-react";
+import { motion } from "framer-motion";
 import type { FocusSession } from "@focus-forge/core";
 import { CommitList, type CommitListItem } from "./CommitList";
 
@@ -27,10 +30,25 @@ export function SessionCard({
   const StatusIcon = STATUS_ICON[session.status];
 
   return (
-    <div className="glass-panel flex flex-col gap-3 px-4 py-3">
+    <motion.div
+      className="glass-panel flex flex-col gap-3 px-4 py-3"
+      initial={{ opacity: 0, y: 10 }}
+      animate={{ opacity: 1, y: 0 }}
+      whileHover={{ y: -2, transition: { duration: 0.15 } }}
+      transition={{ duration: 0.35, ease: "easeOut" }}
+    >
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-3">
-          <StatusIcon size={16} className="shrink-0 text-neutral-500" />
+          {session.status === "active" ? (
+            <motion.div
+              animate={{ opacity: [0.4, 1, 0.4] }}
+              transition={{ duration: 1.6, repeat: Infinity, ease: "easeInOut" }}
+            >
+              <StatusIcon size={16} className="shrink-0 text-[#5ed29c]" />
+            </motion.div>
+          ) : (
+            <StatusIcon size={16} className="shrink-0 text-neutral-500" />
+          )}
           <div>
             <div className="font-manrope text-sm font-medium text-neutral-100">{projectName ?? "No project"}</div>
             <div className="font-inter text-xs text-neutral-500">
@@ -39,16 +57,19 @@ export function SessionCard({
           </div>
         </div>
         {session.status === "completed" && (
-          <span
+          <motion.span
+            initial={{ opacity: 0, scale: 0.7 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ type: "spring", stiffness: 400, damping: 20 }}
             className={`rounded-full px-2.5 py-1 font-manrope text-xs font-medium ${
               session.verified ? "bg-emerald-500/15 text-emerald-400" : "bg-white/5 text-neutral-400"
             }`}
           >
             {session.verified ? "Verified" : "Unverified"}
-          </span>
+          </motion.span>
         )}
       </div>
       {commits.length > 0 && <CommitList commits={commits} />}
-    </div>
+    </motion.div>
   );
 }

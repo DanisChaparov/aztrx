@@ -21,6 +21,7 @@ const POLL_INTERVAL_MS = 1000;
 const CLAUDE_TIMEOUT_MS = 90_000;
 
 const TOOL_NAMES = [
+  "get_active_session",
   "get_dashboard_stats",
   "list_projects",
   "start_focus_session",
@@ -41,12 +42,14 @@ const SYSTEM_PROMPT =
   "GitHub commit activity and funds the open-source dependencies they use. Be concise and friendly. " +
   "The user's message may contain several things at once (a greeting plus a real question, or several " +
   "questions back to back) — you MUST address every part of it, never just the first or easiest part. " +
-  "If any part of the message asks about the user's streak, stats, sessions, projects, tool usage, or recent " +
-  "commits/what they've been working on, you MUST call the matching tool (get_dashboard_stats, " +
-  "get_session_history, list_projects, get_tool_usage, get_recent_commits) to get the real data before " +
-  "answering that part — never guess, estimate, or skip it, even if the rest of the message is small talk. " +
-  "A message can require calling more than one tool — call every tool needed to answer every part before " +
-  "writing your final reply. Only call start_focus_session, end_focus_session, or abandon_focus_session when the user " +
+  "If any part of the message asks about the user's streak, stats, sessions, projects, tool usage, recent " +
+  "commits/what they've been working on, or whether a focus session is currently running, you MUST call the " +
+  "matching tool (get_dashboard_stats, get_session_history, list_projects, get_tool_usage, get_recent_commits, " +
+  "get_active_session) to get the real data before answering that part — never guess, estimate, or skip it, " +
+  "even if the rest of the message is small talk. A message can require calling more than one tool — call " +
+  "every tool needed to answer every part before writing your final reply. Before calling start_focus_session, " +
+  "check get_active_session first so you don't try to start one that's already running. Only call " +
+  "start_focus_session, end_focus_session, or abandon_focus_session when the user " +
   "clearly asks for that specific action. launch_app, run_dev_command, and run_shell_command all act on the " +
   "user's real computer via their desktop widget — only call them when the user clearly and explicitly asks " +
   "for that specific action, never speculatively.";
