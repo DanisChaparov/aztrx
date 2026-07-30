@@ -1,6 +1,7 @@
 import {
   getCommitsForSessions,
   getImpactLedgerSummary,
+  getPlan,
   getToolUsageSummary,
   listProjects,
   listSessions,
@@ -24,6 +25,7 @@ import {
   ToolUsageList,
 } from "@focus-forge/ui";
 import { DeveloperTwin } from "@/components/DeveloperTwin";
+import { PlanBadge } from "@/components/PlanBadge";
 import { EnableNotificationsButton } from "@/components/EnableNotificationsButton";
 import { LiveActivityFeed } from "@/components/LiveActivityFeed";
 import { WaterButton } from "@/components/WaterButton";
@@ -42,11 +44,12 @@ export default async function DashboardPage() {
   // Gamification (streak/XP/achievements/heatmap) needs full history, not just
   // the handful shown in "Recent sessions" below — a low limit here would make
   // the streak and level silently wrong once someone has more than a few sessions.
-  const [allSessions, projects, impactSummary, toolUsage] = await Promise.all([
+  const [allSessions, projects, impactSummary, toolUsage, plan] = await Promise.all([
     listSessions(supabase, { limit: 1000 }),
     listProjects(supabase),
     getImpactLedgerSummary(supabase),
     getToolUsageSummary(supabase),
+    getPlan(supabase),
   ]);
 
   const streak = calculateStreak(allSessions);
@@ -86,6 +89,7 @@ export default async function DashboardPage() {
       <div className="flex flex-wrap items-center gap-4">
         <StreakFlame streak={streak} />
         <LevelBadge levelInfo={levelInfo} />
+        <PlanBadge plan={plan} />
         <EnableNotificationsButton />
       </div>
 

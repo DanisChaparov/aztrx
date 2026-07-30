@@ -117,6 +117,9 @@ export type ProfileRow = {
   id: string;
   github_access_token: string | null;
   github_username: string | null;
+  /** Mirrors migration 0010. Only the service role can change it. */
+  plan: "free" | "pro";
+  plan_since: string | null;
   updated_at: string;
 };
 
