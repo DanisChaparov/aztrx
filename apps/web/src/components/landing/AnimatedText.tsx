@@ -1,3 +1,5 @@
+import { Fragment } from "react";
+
 /**
  * Reveals a line of copy word-by-word.
  *
@@ -5,6 +7,10 @@
  * index, so the whole line resolves as one sweep rather than a single block
  * fade. `startIndex` lets a multi-line heading keep one continuous cadence
  * across separate <AnimatedText> calls instead of restarting per line.
+ *
+ * The separating space is a real text node *between* the spans, not padding
+ * inside them: adjacent inline-blocks with no whitespace between them give the
+ * browser nowhere to break, which leaves the line overflowing on narrow screens.
  */
 export function AnimatedText({
   text,
@@ -19,17 +25,21 @@ export function AnimatedText({
   startIndex?: number;
   className?: string;
 }) {
+  const words = text.split(" ");
+
   return (
     <span className={className}>
-      {text.split(" ").map((word, i) => (
-        <span
-          // Words repeat within a line, so the index has to be part of the key.
-          key={`${word}-${i}`}
-          className="animate-fade-in-up inline-block whitespace-pre"
-          style={{ animationDelay: `${startDelay + (startIndex + i) * step}s` }}
-        >
-          {word}{" "}
-        </span>
+      {words.map((word, i) => (
+        // Words repeat within a line, so the index has to be part of the key.
+        <Fragment key={`${word}-${i}`}>
+          <span
+            className="animate-fade-in-up inline-block"
+            style={{ animationDelay: `${startDelay + (startIndex + i) * step}s` }}
+          >
+            {word}
+          </span>
+          {i < words.length - 1 ? " " : null}
+        </Fragment>
       ))}
     </span>
   );

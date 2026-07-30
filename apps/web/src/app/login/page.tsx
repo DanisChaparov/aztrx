@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { GithubSignInButton } from "@/components/GithubSignInButton";
+import { Logo } from "@/components/Logo";
 import { SiteBackground } from "@/components/SiteBackground";
 
 export default async function LoginPage({
@@ -14,8 +15,9 @@ export default async function LoginPage({
     <main className="relative flex min-h-screen flex-col items-center justify-center overflow-hidden px-6">
       <SiteBackground />
       <div className="liquid-glass relative z-10 flex w-full max-w-sm flex-col items-center gap-6 px-8 py-10 text-center">
-        <Link href="/" className="font-jakarta text-lg font-extrabold tracking-tight text-white">
-          Upstream
+        <Link href="/" className="flex items-center gap-2">
+          <Logo size={24} />
+          <span className="font-jakarta text-lg font-extrabold tracking-tight text-white">Upstream</span>
         </Link>
         <div className="flex flex-col gap-2">
           <h1 className="font-instrument-serif text-3xl text-white">Sign in</h1>

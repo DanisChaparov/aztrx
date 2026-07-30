@@ -3,7 +3,9 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { Menu, X } from "lucide-react";
+import { Logo } from "@/components/Logo";
 import { AnimatedText } from "@/components/landing/AnimatedText";
+import { DashboardPreview } from "@/components/landing/DashboardPreview";
 
 const NAV_LINKS = [
   { label: "Product", href: "#features" },
@@ -14,8 +16,6 @@ const NAV_LINKS = [
 
 const HERO_VIDEO_URL =
   "https://cdn.sceneai.art/Hero%20Section%20Video/973fa3f6-7715-4e73-9cfd-100ee86285b5.mp4";
-const HERO_IMAGE_URL =
-  "https://cdn.sceneai.art/Hero%20section%20image/f818ffa9-3074-43cc-8ca5-953c97da9edd.png";
 
 const HEADLINE_LINE_ONE = "Prove your focus is real,";
 const HEADLINE_LINE_TWO = "fund the code you build on.";
@@ -23,28 +23,6 @@ const SUBHEAD =
   "Upstream checks every session against your real GitHub commits, stays in sync across web, browser and desktop, and turns honest work into funding for the open source you depend on.";
 
 const HEADLINE_ONE_WORDS = HEADLINE_LINE_ONE.split(" ").length;
-
-/** Circular wave mark — the "upstream" of the name, as a logo. */
-function LogoMark() {
-  return (
-    <svg width="26" height="26" viewBox="0 0 26 26" fill="none" aria-hidden>
-      <circle cx="13" cy="13" r="13" fill="white" />
-      <path
-        d="M3 15c2.2-2.6 4.4-2.6 6.6 0s4.4 2.6 6.6 0 4.4-2.6 6.6 0"
-        stroke="#0b0c10"
-        strokeWidth="1.8"
-        strokeLinecap="round"
-      />
-      <path
-        d="M3 10.5c2.2-2.6 4.4-2.6 6.6 0s4.4 2.6 6.6 0 4.4-2.6 6.6 0"
-        stroke="#0b0c10"
-        strokeWidth="1.8"
-        strokeLinecap="round"
-        opacity="0.45"
-      />
-    </svg>
-  );
-}
 
 export function Hero() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -80,7 +58,7 @@ export function Hero() {
       >
         <div className="mx-auto flex max-w-[1400px] items-center justify-between px-6 py-4 md:py-5">
           <Link href="#top" className="flex items-center gap-2.5">
-            <LogoMark />
+            <Logo size={26} />
             <span className="font-inter text-[20px] font-bold tracking-tight text-white">Upstream</span>
           </Link>
 
@@ -118,7 +96,7 @@ export function Hero() {
         <div className="fixed inset-0 z-50 flex flex-col bg-[#0b0c10] px-6 py-4 md:hidden">
           <div className="flex items-center justify-between">
             <span className="flex items-center gap-2.5">
-              <LogoMark />
+              <Logo size={26} />
               <span className="font-inter text-[20px] font-bold text-white">Upstream</span>
             </span>
             <button type="button" onClick={() => setMobileMenuOpen(false)} aria-label="Close menu">
@@ -146,7 +124,13 @@ export function Hero() {
         </div>
       )}
 
-      <section id="top" className="relative z-10 mx-auto max-w-[1400px] px-6 pt-[140px] lg:pt-[180px]">
+      {/* w-full matters: `mx-auto` on a column-flex child opts it out of
+          stretching, so without it the section sizes to its widest child (the
+          dashboard preview) and drags the whole page into a sideways scroll. */}
+      <section
+        id="top"
+        className="relative z-10 mx-auto w-full max-w-[1400px] px-6 pt-[140px] lg:pt-[180px]"
+      >
         {/* No max-width: the two lines are set explicitly by the <br>, and a
             character cap would re-wrap them into four ragged ones. */}
         <h1 className="font-inter text-[2.5rem] font-extrabold leading-[1.1] tracking-tight text-white sm:text-[3.5rem] lg:text-[4.5rem]">
@@ -184,16 +168,11 @@ export function Hero() {
           className="animate-fade-in-scale mx-auto mt-[100px] w-full max-w-[1200px] overflow-hidden rounded-t-[24px] border border-white/10 bg-[#0e0f14]"
           style={{ animationDelay: "2.8s" }}
         >
-          {/* Plain <img>: this is a fixed remote asset on another CDN, so
-              next/image would only add a proxy hop and a remotePatterns entry. */}
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img
-            src={HERO_IMAGE_URL}
-            alt="A product dashboard mockup"
-            className="block w-full"
-            loading="lazy"
-            decoding="async"
-          />
+          {/* The preview is wider than a phone, so let it scroll sideways in
+              place rather than squashing the layout it is meant to show off. */}
+          <div className="overflow-x-auto">
+            <DashboardPreview />
+          </div>
         </div>
       </section>
     </>
