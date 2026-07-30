@@ -20,7 +20,7 @@ export function StreakFlame({ streak }: { streak: number }) {
           <div
             className="absolute inset-0 rounded-full blur-md"
             style={{
-              backgroundColor: "#5ed29c",
+              backgroundColor: "#8b74ff",
               opacity: 0.3 + intensity * 0.35,
               animation: "ff-streak-pulse 2.2s ease-in-out infinite",
             }}
@@ -33,8 +33,8 @@ export function StreakFlame({ streak }: { streak: number }) {
         >
           <Flame
             size={26}
-            className={isActive ? "text-[#5ed29c]" : "text-neutral-600"}
-            fill={isActive ? "#5ed29c" : "none"}
+            className={isActive ? "text-[#8b74ff]" : "text-neutral-600"}
+            fill={isActive ? "#8b74ff" : "none"}
             fillOpacity={isActive ? 0.25 : 0}
           />
         </motion.div>

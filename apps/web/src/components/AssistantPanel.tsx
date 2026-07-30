@@ -32,10 +32,10 @@ interface SpeechRecognitionLike extends EventTarget {
 type OrbState = "idle" | "listening" | "thinking" | "speaking";
 
 const ORB_STATE_STYLE: Record<OrbState, { color: string; ringDuration: number; coreDuration: number }> = {
-  idle: { color: "#5ed29c", ringDuration: 3.2, coreDuration: 2.4 },
+  idle: { color: "#8b74ff", ringDuration: 3.2, coreDuration: 2.4 },
   listening: { color: "#ff6b6b", ringDuration: 1, coreDuration: 0.8 },
-  thinking: { color: "#5ed29c", ringDuration: 1.4, coreDuration: 1.6 },
-  speaking: { color: "#79dba8", ringDuration: 1.8, coreDuration: 1.1 },
+  thinking: { color: "#8b74ff", ringDuration: 1.4, coreDuration: 1.6 },
+  speaking: { color: "#5a39f0", ringDuration: 1.8, coreDuration: 1.1 },
 };
 
 /** The always-present visual identity of the assistant — a breathing, glowing
@@ -59,7 +59,7 @@ function KarnezzOrb({ size, state }: { size: number; state: OrbState }) {
         style={{
           width: size * 0.74,
           height: size * 0.74,
-          background: `linear-gradient(135deg, ${color}, #79dba8)`,
+          background: `linear-gradient(135deg, ${color}, #5a39f0)`,
           boxShadow: `0 0 ${size * 0.3}px ${color}88`,
         }}
         animate={state === "thinking" ? { rotate: 360 } : { scale: [1, 1.07, 1] }}
@@ -69,7 +69,7 @@ function KarnezzOrb({ size, state }: { size: number; state: OrbState }) {
             : { duration: coreDuration, repeat: Infinity, ease: "easeInOut" }
         }
       />
-      <Icon size={size * 0.3} className="relative z-10 text-[#070b0a]" />
+      <Icon size={size * 0.3} className="relative z-10 text-white" />
     </div>
   );
 }
@@ -341,7 +341,7 @@ export function AssistantPanel() {
                   <button
                     onClick={toggleVoiceOutput}
                     aria-label={voiceOutputEnabled ? "Mute voice replies" : "Unmute voice replies"}
-                    className={`transition-colors ${voiceOutputEnabled ? "text-[#5ed29c]" : "text-neutral-500 hover:text-white"}`}
+                    className={`transition-colors ${voiceOutputEnabled ? "text-[#8b74ff]" : "text-neutral-500 hover:text-white"}`}
                   >
                     {voiceOutputEnabled ? <Volume2 size={15} /> : <VolumeX size={15} />}
                   </button>
@@ -386,7 +386,7 @@ export function AssistantPanel() {
                   {voices
                     .filter((v) => v.lang.startsWith("en"))
                     .map((v) => (
-                      <option key={v.voiceURI} value={v.voiceURI} className="bg-[#070b0a] text-white">
+                      <option key={v.voiceURI} value={v.voiceURI} className="bg-[#0b0c10] text-white">
                         {v.name}
                       </option>
                     ))}
@@ -406,7 +406,7 @@ export function AssistantPanel() {
                   key={i}
                   className={`max-w-[85%] rounded-xl px-3 py-2 font-inter text-sm ${
                     m.role === "user"
-                      ? "ml-auto bg-[#5ed29c] text-[#070b0a]"
+                      ? "ml-auto bg-[#6744FF] text-white"
                       : "bg-white/5 text-neutral-200"
                   }`}
                 >
@@ -436,12 +436,12 @@ export function AssistantPanel() {
                 onChange={(e) => setInput(e.target.value)}
                 placeholder={listening ? "Listening…" : "Ask something…"}
                 disabled={busy}
-                className="flex-1 rounded-full border border-white/10 bg-white/[0.03] px-3 py-2 font-inter text-sm text-white outline-none focus:border-[#5ed29c] disabled:opacity-50"
+                className="flex-1 rounded-full border border-white/10 bg-white/[0.03] px-3 py-2 font-inter text-sm text-white outline-none focus:border-[#6744FF] disabled:opacity-50"
               />
               <button
                 type="submit"
                 disabled={busy || !input.trim()}
-                className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-[#5ed29c] text-[#070b0a] transition-colors hover:bg-[#79dba8] disabled:opacity-40"
+                className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-[#6744FF] text-white transition-colors hover:bg-[#5a39f0] disabled:opacity-40"
                 aria-label="Send"
               >
                 <Send size={14} />

@@ -33,7 +33,7 @@ export function ImpactLedgerList({ items }: { items: ImpactLedgerListItem[] }) {
         transition={{ duration: 0.4, ease: "easeOut" }}
       >
         Simulated impact so far:{" "}
-        <span className="font-manrope font-semibold text-[#5ed29c]">{formatCents(total)}</span>
+        <span className="font-manrope font-semibold text-[#8b74ff]">{formatCents(total)}</span>
       </motion.div>
       <ul className="flex flex-col gap-2">
         {items.map((item, index) => (

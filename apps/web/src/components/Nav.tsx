@@ -33,7 +33,7 @@ export function Nav() {
                 {isActive && (
                   <motion.div
                     layoutId="nav-active"
-                    className="absolute inset-0 rounded-full bg-[#5ed29c]/15"
+                    className="absolute inset-0 rounded-full bg-[#6744FF]/15"
                     transition={{ type: "spring", stiffness: 350, damping: 30 }}
                   />
                 )}

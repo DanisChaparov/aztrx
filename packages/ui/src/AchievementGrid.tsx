@@ -73,15 +73,15 @@ export function AchievementGrid({
             whileHover={unlocked ? { scale: 1.08, y: -2 } : undefined}
             title={`${achievement.name} — ${achievement.description}`}
             className={`glass-panel flex flex-col items-center gap-2 p-3 text-center transition-colors ${
-              unlocked ? "border-[#5ed29c]/40" : "opacity-40 grayscale"
+              unlocked ? "border-[#6744FF]/40" : "opacity-40 grayscale"
             }`}
           >
             <div
               className={`flex h-9 w-9 items-center justify-center rounded-full ${
-                unlocked ? "bg-[#5ed29c]/20" : "bg-white/5"
+                unlocked ? "bg-[#6744FF]/20" : "bg-white/5"
               }`}
             >
-              <Icon size={16} className={unlocked ? "text-[#5ed29c]" : "text-neutral-500"} />
+              <Icon size={16} className={unlocked ? "text-[#8b74ff]" : "text-neutral-500"} />
             </div>
             <span className="font-manrope text-[10px] leading-tight text-neutral-300">{achievement.name}</span>
           </motion.div>

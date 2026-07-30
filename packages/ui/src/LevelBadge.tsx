@@ -23,7 +23,7 @@ export function LevelBadge({ levelInfo }: { levelInfo: LevelInfo }) {
             cy="30"
             r={radius}
             fill="none"
-            stroke="#5ed29c"
+            stroke="#8b74ff"
             strokeWidth="5"
             strokeLinecap="round"
             strokeDasharray={circumference}

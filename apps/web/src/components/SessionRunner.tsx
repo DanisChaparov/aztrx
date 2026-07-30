@@ -148,12 +148,12 @@ export function SessionRunner({
       <div className="glass-panel relative flex flex-col items-center gap-4 overflow-hidden p-8 text-center">
         {result.verified && <Confetti />}
         <div
-          className={`font-instrument-serif text-3xl ${result.verified ? "text-emerald-400" : "text-neutral-300"}`}
+          className={`font-instrument-serif text-3xl ${result.verified ? "text-[#a996ff]" : "text-neutral-300"}`}
         >
           {result.verified ? "Verified ✓" : "Completed, unverified"}
         </div>
         {result.verified && (
-          <div className="font-manrope text-sm font-medium text-[#5ed29c]">+{completedDurationMin} XP</div>
+          <div className="font-manrope text-sm font-medium text-[#8b74ff]">+{completedDurationMin} XP</div>
         )}
         <p className="max-w-sm font-inter text-sm text-neutral-400">
           {result.distractionEventCount > 0 &&
@@ -192,7 +192,7 @@ export function SessionRunner({
             <button
               onClick={handleComplete}
               disabled={busy}
-              className="rounded-[10px] bg-emerald-500 px-5 py-2.5 font-cabin text-sm font-medium text-black transition-colors hover:bg-emerald-400 disabled:cursor-wait disabled:opacity-50"
+              className="rounded-[10px] bg-[#6744FF] px-5 py-2.5 font-cabin text-sm font-medium text-white transition-colors hover:bg-[#5a39f0] disabled:cursor-wait disabled:opacity-50"
             >
               {busy ? "Verifying…" : "I'm done"}
             </button>
@@ -219,7 +219,7 @@ export function SessionRunner({
         <select
           value={projectId}
           onChange={(e) => setProjectId(e.target.value)}
-          className="rounded-[10px] border border-white/10 bg-white/[0.03] px-3 py-2 font-inter text-sm text-white outline-none transition-colors focus:border-[#5ed29c]"
+          className="rounded-[10px] border border-white/10 bg-white/[0.03] px-3 py-2 font-inter text-sm text-white outline-none transition-colors focus:border-[#6744FF]"
         >
           <option value="">No project</option>
           {projects.map((project) => (
@@ -241,7 +241,7 @@ export function SessionRunner({
               }}
               className={`rounded-full px-4 py-1.5 font-cabin text-sm transition-colors ${
                 duration === preset && customDuration === ""
-                  ? "bg-[#5ed29c] text-[#070b0a]"
+                  ? "bg-[#6744FF] text-white"
                   : "border border-white/10 text-neutral-300 hover:border-white/30"
               }`}
             >
@@ -250,7 +250,7 @@ export function SessionRunner({
           ))}
           <div
             className={`flex items-center gap-1.5 rounded-full border px-3 py-1.5 transition-colors ${
-              customDuration !== "" ? "border-[#5ed29c]" : "border-white/10"
+              customDuration !== "" ? "border-[#6744FF]" : "border-white/10"
             }`}
           >
             <input

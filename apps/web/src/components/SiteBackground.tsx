@@ -1,39 +1,43 @@
-"use client";
-
-import { HlsVideo } from "@/components/HlsVideo";
-
-export const SITE_VIDEO_URL = "https://stream.mux.com/tLkHO1qZoaaQOUeVWo8hEBeGQfySP02EPS02BmnNFyXys.m3u8";
-
 /**
- * The same video/grid/glow backdrop used behind the landing hero, reused
- * across login and the in-app shell so every page shares one look.
+ * The video/gradient/glow backdrop shared by login and the in-app shell, so
+ * every screen after the landing page keeps the same look.
+ *
+ * Deliberately the same plain mp4 the hero uses, not an HLS stream: it means
+ * signing in continues the exact backdrop you were just looking at, and it
+ * keeps hls.js out of every authenticated route's bundle. No "use client"
+ * needed either — a bare <video> with autoplay attributes needs no JS.
  */
+export const SITE_VIDEO_URL =
+  "https://cdn.sceneai.art/Hero%20Section%20Video/973fa3f6-7715-4e73-9cfd-100ee86285b5.mp4";
+
 export function SiteBackground({ videoOpacity = 0.6 }: { videoOpacity?: number }) {
   return (
     <div className="pointer-events-none absolute inset-0 overflow-hidden" aria-hidden>
-      <HlsVideo
-        src={SITE_VIDEO_URL}
+      <video
         className="absolute inset-0 h-full w-full object-cover"
         style={{ opacity: videoOpacity }}
+        src={SITE_VIDEO_URL}
+        autoPlay
+        muted
+        loop
+        playsInline
+        preload="auto"
+        disablePictureInPicture
       />
 
+      {/* Darkened toward the left, where the content sits, so text stays
+          readable over the brighter frames of the loop. */}
       <div
         className="absolute inset-0"
-        style={{ background: "linear-gradient(90deg, #070b0a 0%, rgba(7,11,10,0.35) 45%, transparent 75%)" }}
+        style={{ background: "linear-gradient(90deg, #0b0c10 0%, rgba(11,12,16,0.55) 45%, rgba(11,12,16,0.2) 100%)" }}
       />
       <div
         className="absolute inset-0"
-        style={{ background: "linear-gradient(to top, #070b0a 0%, transparent 45%)" }}
+        style={{ background: "linear-gradient(to top, #0b0c10 0%, transparent 45%)" }}
       />
-
-      <div className="absolute inset-0 hidden md:block">
-        <div className="absolute inset-y-0 left-1/4 w-px bg-white/10" />
-        <div className="absolute inset-y-0 left-1/2 w-px bg-white/10" />
-        <div className="absolute inset-y-0 left-3/4 w-px bg-white/10" />
-      </div>
 
       <svg
-        className="absolute left-1/2 top-0 h-[440px] w-[960px] -translate-x-1/2 -translate-y-1/4 opacity-80"
+        className="absolute left-1/2 top-0 h-[440px] w-[960px] -translate-x-1/2 -translate-y-1/4 opacity-70"
         viewBox="0 0 960 440"
         fill="none"
       >
@@ -42,9 +46,9 @@ export function SiteBackground({ videoOpacity = 0.6 }: { videoOpacity?: number }
             <feGaussianBlur stdDeviation="25" />
           </filter>
           <radialGradient id="site-glow-grad" cx="50%" cy="50%" r="50%">
-            <stop offset="0%" stopColor="#8ff7d3" stopOpacity="0.55" />
-            <stop offset="55%" stopColor="#1f8f6b" stopOpacity="0.3" />
-            <stop offset="100%" stopColor="#070b0a" stopOpacity="0" />
+            <stop offset="0%" stopColor="#a996ff" stopOpacity="0.5" />
+            <stop offset="55%" stopColor="#5A36F0" stopOpacity="0.28" />
+            <stop offset="100%" stopColor="#0b0c10" stopOpacity="0" />
           </radialGradient>
         </defs>
         <ellipse cx="480" cy="160" rx="400" ry="150" fill="url(#site-glow-grad)" filter="url(#site-glow-blur)" />

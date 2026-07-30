@@ -33,7 +33,7 @@ export default async function ProjectsPage() {
                 <span>{formatDeadline(project.deadline)}</span>
                 <span>·</span>
                 {project.githubRepoUrl ? (
-                  <span className="flex items-center gap-1 text-[#5ed29c]">
+                  <span className="flex items-center gap-1 text-[#8b74ff]">
                     <Github size={12} /> GitHub linked
                   </span>
                 ) : (
