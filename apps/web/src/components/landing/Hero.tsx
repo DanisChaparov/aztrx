@@ -1,158 +1,180 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Link from "next/link";
-import { AnimatePresence, motion } from "framer-motion";
-import { ArrowRight, Menu, X } from "lucide-react";
-import { SiteBackground } from "@/components/SiteBackground";
-import { WaterButton } from "@/components/WaterButton";
+import { Menu, X } from "lucide-react";
+import { Logo } from "@/components/Logo";
+import { AnimatedText } from "@/components/landing/AnimatedText";
+import { DashboardPreview } from "@/components/landing/DashboardPreview";
 
 const NAV_LINKS = [
-  { label: "Features", href: "#features" },
+  { label: "Product", href: "#features" },
   { label: "How it works", href: "#how-it-works" },
+  { label: "Verification", href: "#features" },
+  { label: "Impact", href: "#features" },
 ];
+
+const HERO_VIDEO_URL =
+  "https://cdn.sceneai.art/Hero%20Section%20Video/973fa3f6-7715-4e73-9cfd-100ee86285b5.mp4";
+
+const HEADLINE_LINE_ONE = "Prove your focus is real,";
+const HEADLINE_LINE_TWO = "fund the code you build on.";
+const SUBHEAD =
+  "Upstream checks every session against your real GitHub commits, stays in sync across web, browser and desktop, and turns honest work into funding for the open source you depend on.";
+
+const HEADLINE_ONE_WORDS = HEADLINE_LINE_ONE.split(" ").length;
 
 export function Hero() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const year = new Date().getFullYear();
+  const [scrolled, setScrolled] = useState(false);
+
+  useEffect(() => {
+    const onScroll = () => setScrolled(window.scrollY > 12);
+    onScroll();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
+  }, []);
 
   return (
-    <section id="top" className="relative min-h-screen w-full overflow-hidden bg-[#070b0a]">
-      <SiteBackground />
+    <>
+      {/* Fixed behind the entire page. Sections below the hero carry their own
+          solid background, so the video only shows through up top. */}
+      <video
+        className="fixed inset-0 z-0 h-full w-full object-cover"
+        src={HERO_VIDEO_URL}
+        autoPlay
+        muted
+        loop
+        playsInline
+        preload="auto"
+        disablePictureInPicture
+        aria-hidden
+      />
 
-      <nav className="relative z-20 flex items-center justify-between px-6 py-5 md:px-[120px] md:py-6">
-        <Link href="#top" className="flex flex-col leading-none">
-          <span className="font-jakarta text-xl font-extrabold tracking-tight text-white">Upstream</span>
-          <span className="mt-1 hidden font-jakarta text-[10px] font-semibold uppercase tracking-[0.22em] text-white/40 md:block">
-            Verified Focus
-          </span>
-        </Link>
+      <header
+        className={`fixed inset-x-0 top-0 z-40 animate-fade-in-down transition-colors duration-300 ${
+          scrolled ? "border-b border-white/5 bg-[#0e0f14]/90 backdrop-blur-md" : ""
+        }`}
+      >
+        <div className="mx-auto flex max-w-[1400px] items-center justify-between px-6 py-4 md:py-5">
+          <Link href="#top" className="flex items-center gap-2.5">
+            <Logo size={26} />
+            <span className="font-inter text-[20px] font-bold tracking-tight text-white">Upstream</span>
+          </Link>
 
-        <div className="hidden items-center gap-8 md:flex">
-          {NAV_LINKS.map((link) => (
-            <a
-              key={link.label}
-              href={link.href}
-              className="font-inter text-[16px] uppercase tracking-wide text-white/80 transition-colors hover:text-[#5ed29c]"
-            >
-              {link.label}
-            </a>
-          ))}
-        </div>
+          <nav className="hidden items-center gap-8 md:flex">
+            {NAV_LINKS.map((link) => (
+              <a
+                key={link.label}
+                href={link.href}
+                className="font-inter text-[14px] font-medium text-[#A1A1AA] transition-colors hover:text-white"
+              >
+                {link.label}
+              </a>
+            ))}
+          </nav>
 
-        <div className="hidden items-center gap-3 md:flex">
-          <WaterButton href="/login" variant="glass" className="px-5 py-2.5 text-[12px]">
-            Sign In
-          </WaterButton>
-          <WaterButton href="/login" variant="primary" className="px-5 py-2.5 text-[12px]">
-            Get Started
-            <ArrowRight size={14} />
-          </WaterButton>
-        </div>
-
-        <button type="button" onClick={() => setMobileMenuOpen(true)} className="md:hidden" aria-label="Open menu">
-          <Menu size={24} className="text-white" />
-        </button>
-      </nav>
-
-      <AnimatePresence>
-        {mobileMenuOpen && (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            className="fixed inset-0 z-30 flex flex-col bg-[#070b0a] px-6 py-5 md:hidden"
+          <Link
+            href="/login"
+            className="hidden rounded-lg border border-white/10 bg-[#1c1d22] px-5 py-2 font-inter text-[14px] text-white transition-colors hover:bg-[#26272e] md:block"
           >
-            <div className="flex items-center justify-between">
-              <span className="font-jakarta text-xl font-extrabold text-white">Upstream</span>
-              <button type="button" onClick={() => setMobileMenuOpen(false)} aria-label="Close menu">
-                <X size={24} className="text-white" />
-              </button>
-            </div>
-            <div className="mt-12 flex flex-col items-center gap-8">
-              {NAV_LINKS.map((link) => (
-                <a
-                  key={link.label}
-                  href={link.href}
-                  onClick={() => setMobileMenuOpen(false)}
-                  className="font-inter text-xl uppercase tracking-wide text-white"
-                >
-                  {link.label}
-                </a>
-              ))}
-              <WaterButton href="/login" variant="glass" className="mt-4 w-full">
-                Sign In
-              </WaterButton>
-              <WaterButton href="/login" variant="primary" className="w-full">
-                Get Started
-                <ArrowRight size={16} />
-              </WaterButton>
-            </div>
-          </motion.div>
-        )}
-      </AnimatePresence>
+            Log in
+          </Link>
 
-      <div className="relative z-10 mt-12 flex flex-col items-center px-6 text-center md:mt-16">
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6, ease: "easeOut" }}
-          className="liquid-glass flex h-[200px] w-[200px] -translate-y-[50px] flex-col justify-between p-4"
-        >
-          <span className="font-jakarta text-[14px] font-medium text-white/70">[ {year} ]</span>
-          <div>
-            <p className="font-inter text-[18px] leading-snug text-white">
-              Verified by <em className="font-instrument-serif italic text-[#5ed29c]">real</em> commits
-            </p>
-            <p className="mt-2 font-inter text-[11px] text-white/50">
-              Every session checked against live GitHub activity — not a locked screen.
-            </p>
+          <button
+            type="button"
+            onClick={() => setMobileMenuOpen(true)}
+            className="text-white md:hidden"
+            aria-label="Open menu"
+          >
+            <Menu size={24} />
+          </button>
+        </div>
+      </header>
+
+      {mobileMenuOpen && (
+        <div className="fixed inset-0 z-50 flex flex-col bg-[#0b0c10] px-6 py-4 md:hidden">
+          <div className="flex items-center justify-between">
+            <span className="flex items-center gap-2.5">
+              <Logo size={26} />
+              <span className="font-inter text-[20px] font-bold text-white">Upstream</span>
+            </span>
+            <button type="button" onClick={() => setMobileMenuOpen(false)} aria-label="Close menu">
+              <X size={24} className="text-white" />
+            </button>
           </div>
-        </motion.div>
+          <div className="mt-14 flex flex-col gap-7">
+            {NAV_LINKS.map((link) => (
+              <a
+                key={link.label}
+                href={link.href}
+                onClick={() => setMobileMenuOpen(false)}
+                className="font-inter text-[18px] font-medium text-[#A1A1AA]"
+              >
+                {link.label}
+              </a>
+            ))}
+            <Link
+              href="/login"
+              className="mt-2 rounded-lg border border-white/10 bg-[#1c1d22] px-5 py-3 text-center font-inter text-[15px] text-white"
+            >
+              Log in
+            </Link>
+          </div>
+        </div>
+      )}
 
-        <motion.p
-          initial={{ opacity: 0, y: 12 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6, ease: "easeOut", delay: 0.1 }}
-          className="-mt-2 font-jakarta text-[11px] font-bold uppercase tracking-[0.25em] text-[#5ed29c]"
-        >
-          Verified Focus, Real Impact
-        </motion.p>
+      {/* w-full matters: `mx-auto` on a column-flex child opts it out of
+          stretching, so without it the section sizes to its widest child (the
+          dashboard preview) and drags the whole page into a sideways scroll. */}
+      <section
+        id="top"
+        className="relative z-10 mx-auto w-full max-w-[1400px] px-6 pt-[140px] lg:pt-[180px]"
+      >
+        {/* No max-width: the two lines are set explicitly by the <br>, and a
+            character cap would re-wrap them into four ragged ones. */}
+        <h1 className="font-inter text-[2.5rem] font-extrabold leading-[1.1] tracking-tight text-white sm:text-[3.5rem] lg:text-[4.5rem]">
+          <AnimatedText text={HEADLINE_LINE_ONE} startDelay={0.35} />
+          <br />
+          <AnimatedText text={HEADLINE_LINE_TWO} startDelay={0.35} startIndex={HEADLINE_ONE_WORDS} />
+        </h1>
 
-        <motion.h1
-          initial={{ opacity: 0, y: 16 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6, ease: "easeOut", delay: 0.2 }}
-          className="mt-4 max-w-4xl font-inter font-extrabold uppercase leading-[1.05] tracking-tight text-white text-[40px] sm:text-[56px] md:text-[72px]"
-        >
-          Prove your focus is real<span className="text-[#5ed29c]">.</span>
-        </motion.h1>
+        <AnimatedText
+          text={SUBHEAD}
+          startDelay={1.25}
+          step={0.025}
+          className="mt-7 block max-w-[650px] font-inter text-[17px] leading-relaxed text-[#A1A1AA] sm:text-[20px]"
+        />
 
-        <motion.p
-          initial={{ opacity: 0, y: 16 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6, ease: "easeOut", delay: 0.3 }}
-          className="mt-6 max-w-[512px] font-inter text-[14px] text-white/70"
+        <div
+          className="animate-fade-in-up mt-10 flex flex-col gap-4 sm:flex-row"
+          style={{ animationDelay: "2.2s" }}
         >
-          Master deep, verifiable focus. Track real sessions across web, browser, and desktop, build your streak,
-          and fund the open-source dependencies your code actually relies on.
-        </motion.p>
+          <Link
+            href="/login"
+            className="rounded-xl bg-[#6744FF] px-8 py-3.5 text-center font-inter text-[16px] font-medium text-white transition-colors hover:bg-[#5a39f0]"
+          >
+            Get started
+          </Link>
+          <a
+            href="#how-it-works"
+            className="rounded-xl border border-white/10 bg-[#1c1d22] px-8 py-3.5 text-center font-inter text-[16px] font-medium text-white transition-colors hover:bg-[#26272e]"
+          >
+            How it works
+          </a>
+        </div>
 
-        <motion.div
-          initial={{ opacity: 0, y: 16 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6, ease: "easeOut", delay: 0.4 }}
-          className="mt-8 flex flex-col gap-4 sm:flex-row"
+        <div
+          className="animate-fade-in-scale mx-auto mt-[100px] w-full max-w-[1200px] overflow-hidden rounded-t-[24px] border border-white/10 bg-[#0e0f14]"
+          style={{ animationDelay: "2.8s" }}
         >
-          <WaterButton href="/login" variant="primary">
-            Get Started
-            <ArrowRight size={16} />
-          </WaterButton>
-          <WaterButton href="#how-it-works" variant="glass">
-            See How It Works
-          </WaterButton>
-        </motion.div>
-      </div>
-    </section>
+          {/* The preview is wider than a phone, so let it scroll sideways in
+              place rather than squashing the layout it is meant to show off. */}
+          <div className="overflow-x-auto">
+            <DashboardPreview />
+          </div>
+        </div>
+      </section>
+    </>
   );
 }

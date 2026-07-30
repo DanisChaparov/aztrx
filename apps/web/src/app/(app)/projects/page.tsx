@@ -1,5 +1,6 @@
 import { Github } from "lucide-react";
 import { listProjects } from "@focus-forge/api-client";
+import { GrantPrivateRepoAccessButton } from "@/components/GrantPrivateRepoAccessButton";
 import { NewProjectForm } from "@/components/NewProjectForm";
 import { getServerSupabaseClient } from "@/lib/supabase/server";
 
@@ -33,7 +34,7 @@ export default async function ProjectsPage() {
                 <span>{formatDeadline(project.deadline)}</span>
                 <span>·</span>
                 {project.githubRepoUrl ? (
-                  <span className="flex items-center gap-1 text-[#5ed29c]">
+                  <span className="flex items-center gap-1 text-[#8b74ff]">
                     <Github size={12} /> GitHub linked
                   </span>
                 ) : (
@@ -49,6 +50,8 @@ export default async function ProjectsPage() {
         <h2 className="mb-3 font-manrope text-sm font-medium text-neutral-400">New project</h2>
         <NewProjectForm />
       </div>
+
+      <GrantPrivateRepoAccessButton />
     </div>
   );
 }

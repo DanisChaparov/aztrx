@@ -5,10 +5,10 @@ import type { HeatmapDay } from "@focus-forge/core";
 
 function intensityClass(day: HeatmapDay): string {
   if (day.verifiedCount === 0) return "bg-white/5";
-  if (day.verifiedMinutes < 30) return "bg-[#173a2c]";
-  if (day.verifiedMinutes < 60) return "bg-[#1f6b4c]";
-  if (day.verifiedMinutes < 120) return "bg-[#2fa876]";
-  return "bg-[#5ed29c]";
+  if (day.verifiedMinutes < 30) return "bg-[#241c52]";
+  if (day.verifiedMinutes < 60) return "bg-[#3a2a9c]";
+  if (day.verifiedMinutes < 120) return "bg-[#5236d6]";
+  return "bg-[#6744FF]";
 }
 
 export function Heatmap({ days }: { days: HeatmapDay[] }) {

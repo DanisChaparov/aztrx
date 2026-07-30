@@ -44,7 +44,7 @@ export function SessionCard({
               animate={{ opacity: [0.4, 1, 0.4] }}
               transition={{ duration: 1.6, repeat: Infinity, ease: "easeInOut" }}
             >
-              <StatusIcon size={16} className="shrink-0 text-[#5ed29c]" />
+              <StatusIcon size={16} className="shrink-0 text-[#8b74ff]" />
             </motion.div>
           ) : (
             <StatusIcon size={16} className="shrink-0 text-neutral-500" />
@@ -62,7 +62,7 @@ export function SessionCard({
             animate={{ opacity: 1, scale: 1 }}
             transition={{ type: "spring", stiffness: 400, damping: 20 }}
             className={`rounded-full px-2.5 py-1 font-manrope text-xs font-medium ${
-              session.verified ? "bg-emerald-500/15 text-emerald-400" : "bg-white/5 text-neutral-400"
+              session.verified ? "bg-[#6744FF]/20 text-[#a996ff]" : "bg-white/5 text-neutral-400"
             }`}
           >
             {session.verified ? "Verified" : "Unverified"}

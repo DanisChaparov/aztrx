@@ -66,6 +66,42 @@ export async function abandonSession(client: SupabaseClient<Database>, sessionId
   if (error) throw error;
 }
 
+/**
+ * Ends a session the moment a real distraction is caught, rather than letting
+ * it run out and reporting the bad news at the end.
+ *
+ * The desktop monitor only calls this after the same distraction has been on
+ * screen across consecutive polls, so this is never a stray alt-tab — by the
+ * time it fires, the video has been up for ten seconds or more.
+ */
+export async function breakSession(client: SupabaseClient<Database>, sessionId: string): Promise<void> {
+  const { error } = await client
+    .from("focus_sessions")
+    .update({ status: "broken", ended_at: new Date().toISOString(), verified: false })
+    .eq("id", sessionId)
+    // Only an in-flight session can be broken — never reopen a finished one.
+    .eq("status", "active");
+  if (error) throw error;
+}
+
+/** Distractions recorded against a session, newest first. */
+export async function listDistractions(
+  client: SupabaseClient<Database>,
+  sessionId: string
+): Promise<{ domainOrApp: string; source: string; occurredAt: string }[]> {
+  const { data, error } = await client
+    .from("distraction_events")
+    .select("domain_or_app, source, occurred_at")
+    .eq("session_id", sessionId)
+    .order("occurred_at", { ascending: false });
+  if (error) throw error;
+  return (data ?? []).map((row) => ({
+    domainOrApp: row.domain_or_app,
+    source: row.source,
+    occurredAt: row.occurred_at,
+  }));
+}
+
 export async function logDistraction(
   client: SupabaseClient<Database>,
   input: { sessionId: string; source: "extension" | "desktop"; domainOrApp: string }

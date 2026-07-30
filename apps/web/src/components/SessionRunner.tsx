@@ -2,8 +2,10 @@
 
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
+import { motion } from "framer-motion";
 import {
   abandonSession,
+  listDistractions,
   startSession,
   verifySession,
   type VerifySessionResult,
@@ -11,11 +13,16 @@ import {
 import type { FocusSession, Project } from "@focus-forge/core";
 import { CommitList, Confetti, Timer } from "@focus-forge/ui";
 import { getBrowserSupabaseClient } from "@/lib/supabase/browser";
+import { Select } from "@/components/Select";
 import { WaterButton } from "@/components/WaterButton";
 import { notifySessionEnd, playChime } from "@/lib/chime";
 import { LiveActivityFeed } from "@/components/LiveActivityFeed";
 
-const DURATION_PRESETS = [25, 50, 90];
+const DURATION_PRESETS = [
+  { minutes: 25, label: "a pomodoro" },
+  { minutes: 50, label: "a deep block" },
+  { minutes: 90, label: "a full cycle" },
+];
 
 export function SessionRunner({
   projects,
@@ -27,7 +34,7 @@ export function SessionRunner({
   const router = useRouter();
   const [session, setSession] = useState(initialActiveSession);
   const [projectId, setProjectId] = useState<string>(projects[0]?.id ?? "");
-  const [duration, setDuration] = useState<number>(DURATION_PRESETS[0]);
+  const [duration, setDuration] = useState<number>(DURATION_PRESETS[0].minutes);
   const [customDuration, setCustomDuration] = useState("");
   // Starts `null` (not Date.now()) so the server-rendered HTML and the
   // client's first paint match exactly — computing "now" during render would
@@ -37,6 +44,7 @@ export function SessionRunner({
   const [now, setNow] = useState<number | null>(null);
   const [busy, setBusy] = useState(false);
   const [result, setResult] = useState<VerifySessionResult | null>(null);
+  const [distractions, setDistractions] = useState<{ domainOrApp: string; source: string }[]>([]);
   const [completedDurationMin, setCompletedDurationMin] = useState(0);
   const [error, setError] = useState<string | null>(null);
   const timeUpAlertedRef = useRef(false);
@@ -104,6 +112,8 @@ export function SessionRunner({
       const supabase = getBrowserSupabaseClient();
       const verifyResult = await verifySession(supabase, session.id);
       setResult(verifyResult);
+      // "1 distraction event" tells you nothing you can act on. Name them.
+      setDistractions(await listDistractions(supabase, session.id).catch(() => []));
       setCompletedDurationMin(session.plannedDurationMin);
       setSession(null);
       router.refresh();
@@ -148,16 +158,31 @@ export function SessionRunner({
       <div className="glass-panel relative flex flex-col items-center gap-4 overflow-hidden p-8 text-center">
         {result.verified && <Confetti />}
         <div
-          className={`font-instrument-serif text-3xl ${result.verified ? "text-emerald-400" : "text-neutral-300"}`}
+          className={`font-instrument-serif text-3xl ${result.verified ? "text-[#a996ff]" : "text-neutral-300"}`}
         >
           {result.verified ? "Verified ✓" : "Completed, unverified"}
         </div>
         {result.verified && (
-          <div className="font-manrope text-sm font-medium text-[#5ed29c]">+{completedDurationMin} XP</div>
+          <div className="font-manrope text-sm font-medium text-[#8b74ff]">+{completedDurationMin} XP</div>
+        )}
+        {distractions.length > 0 && (
+          <div className="w-full max-w-sm rounded-xl border border-amber-400/25 bg-amber-400/[0.06] p-4 text-left">
+            <p className="font-manrope text-xs font-medium text-amber-400">
+              {distractions.length === 1 ? "What broke it" : "What broke it"}
+            </p>
+            <ul className="mt-2 flex flex-col gap-1">
+              {distractions.map((distraction, i) => (
+                <li key={`${distraction.domainOrApp}-${i}`} className="font-inter text-sm text-neutral-300">
+                  {distraction.domainOrApp}
+                  <span className="ml-1.5 text-xs text-neutral-500">
+                    {distraction.source === "extension" ? "blocked in browser" : "open on your desktop"}
+                  </span>
+                </li>
+              ))}
+            </ul>
+          </div>
         )}
         <p className="max-w-sm font-inter text-sm text-neutral-400">
-          {result.distractionEventCount > 0 &&
-            `${result.distractionEventCount} distraction event(s) logged. `}
           {result.githubActivityDetected === false &&
             result.localActivityDetected === true &&
             "No GitHub commits yet, but real local commits were detected during this session — verified from your local activity. "}
@@ -192,7 +217,7 @@ export function SessionRunner({
             <button
               onClick={handleComplete}
               disabled={busy}
-              className="rounded-[10px] bg-emerald-500 px-5 py-2.5 font-cabin text-sm font-medium text-black transition-colors hover:bg-emerald-400 disabled:cursor-wait disabled:opacity-50"
+              className="rounded-[10px] bg-[#6744FF] px-5 py-2.5 font-cabin text-sm font-medium text-white transition-colors hover:bg-[#5a39f0] disabled:cursor-wait disabled:opacity-50"
             >
               {busy ? "Verifying…" : "I'm done"}
             </button>
@@ -216,60 +241,89 @@ export function SessionRunner({
     <div className="glass-panel flex flex-col gap-5 p-8">
       <div className="flex flex-col gap-1.5">
         <label className="font-manrope text-xs text-neutral-400">Project</label>
-        <select
+        <Select
           value={projectId}
-          onChange={(e) => setProjectId(e.target.value)}
-          className="rounded-[10px] border border-white/10 bg-white/[0.03] px-3 py-2 font-inter text-sm text-white outline-none transition-colors focus:border-[#5ed29c]"
-        >
-          <option value="">No project</option>
-          {projects.map((project) => (
-            <option key={project.id} value={project.id}>
-              {project.name}
-            </option>
-          ))}
-        </select>
+          onChange={setProjectId}
+          placeholder="No project"
+          options={[
+            { value: "", label: "No project" },
+            ...projects.map((project) => ({ value: project.id, label: project.name })),
+          ]}
+        />
       </div>
-      <div className="flex flex-col gap-1.5">
-        <label className="font-manrope text-xs text-neutral-400">Duration</label>
-        <div className="flex flex-wrap items-center gap-2">
-          {DURATION_PRESETS.map((preset) => (
-            <button
-              key={preset}
-              onClick={() => {
-                setDuration(preset);
-                setCustomDuration("");
-              }}
-              className={`rounded-full px-4 py-1.5 font-cabin text-sm transition-colors ${
-                duration === preset && customDuration === ""
-                  ? "bg-[#5ed29c] text-[#070b0a]"
-                  : "border border-white/10 text-neutral-300 hover:border-white/30"
-              }`}
-            >
-              {preset} min
-            </button>
-          ))}
-          <div
-            className={`flex items-center gap-1.5 rounded-full border px-3 py-1.5 transition-colors ${
-              customDuration !== "" ? "border-[#5ed29c]" : "border-white/10"
-            }`}
-          >
-            <input
-              type="number"
-              min={1}
-              max={480}
-              value={customDuration}
-              onChange={(e) => {
-                const value = e.target.value;
-                setCustomDuration(value);
-                const parsed = parseInt(value, 10);
-                if (parsed > 0) setDuration(parsed);
-              }}
-              placeholder="Custom"
-              className="w-14 bg-transparent font-cabin text-sm text-white outline-none placeholder:text-neutral-500"
-            />
-            <span className="font-cabin text-sm text-neutral-400">min</span>
-          </div>
+      <div className="flex flex-col gap-3">
+        <label className="font-manrope text-xs text-neutral-400">How long?</label>
+        <div className="grid grid-cols-3 gap-3">
+          {DURATION_PRESETS.map((preset) => {
+            const isSelected = duration === preset.minutes && customDuration === "";
+            return (
+              <motion.button
+                key={preset.minutes}
+                type="button"
+                onClick={() => {
+                  setDuration(preset.minutes);
+                  setCustomDuration("");
+                }}
+                whileHover={{ y: -3 }}
+                whileTap={{ scale: 0.97 }}
+                transition={{ type: "spring", stiffness: 400, damping: 25 }}
+                className={`relative flex flex-col items-center gap-1 overflow-hidden rounded-2xl border px-3 py-5 transition-colors ${
+                  isSelected
+                    ? "border-[#6744FF] bg-[#6744FF]/10"
+                    : "border-white/10 bg-white/[0.02] hover:border-white/25"
+                }`}
+              >
+                {isSelected && (
+                  <motion.div
+                    layoutId="duration-glow"
+                    className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_50%_120%,rgba(103,68,255,0.35),transparent_70%)]"
+                    transition={{ type: "spring", stiffness: 300, damping: 30 }}
+                  />
+                )}
+                <span
+                  className={`relative font-manrope text-3xl font-semibold ${
+                    isSelected ? "text-white" : "text-neutral-300"
+                  }`}
+                >
+                  {preset.minutes}
+                </span>
+                <span className="relative font-inter text-[11px] uppercase tracking-wider text-neutral-500">
+                  min
+                </span>
+                <span
+                  className={`relative font-inter text-[11px] ${
+                    isSelected ? "text-[#a996ff]" : "text-neutral-500"
+                  }`}
+                >
+                  {preset.label}
+                </span>
+              </motion.button>
+            );
+          })}
         </div>
+        <label
+          className={`flex cursor-text items-center gap-3 rounded-xl border px-4 py-3 transition-colors ${
+            customDuration !== "" ? "border-[#6744FF] bg-[#6744FF]/[0.06]" : "border-white/10 bg-white/[0.02]"
+          }`}
+        >
+          <span className="font-inter text-sm text-neutral-500">Something else</span>
+          <input
+            // `inputMode` rather than type="number": the numeric type renders
+            // native spinner arrows that can't be themed and look broken here.
+            type="text"
+            inputMode="numeric"
+            value={customDuration}
+            onChange={(e) => {
+              const digitsOnly = e.target.value.replace(/\D/g, "").slice(0, 3);
+              setCustomDuration(digitsOnly);
+              const parsed = parseInt(digitsOnly, 10);
+              if (parsed > 0 && parsed <= 480) setDuration(parsed);
+            }}
+            placeholder="45"
+            className="w-14 border-b border-white/15 bg-transparent pb-0.5 text-center font-manrope text-lg font-semibold text-white outline-none transition-colors placeholder:font-normal placeholder:text-neutral-600 focus:border-[#6744FF]"
+          />
+          <span className="font-inter text-sm text-neutral-500">minutes</span>
+        </label>
       </div>
       {error && <p className="font-inter text-xs text-red-400">{error}</p>}
       <WaterButton onClick={handleStart} disabled={busy} variant="primary" className="self-start">

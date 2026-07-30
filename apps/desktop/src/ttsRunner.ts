@@ -4,9 +4,10 @@ import type { KokoroTTS as KokoroTTSType } from "kokoro-js";
 
 const POLL_INTERVAL_MS = 1000;
 const MODEL_ID = "onnx-community/Kokoro-82M-ONNX";
-// af_heart is one of the highest-rated voices in the Kokoro pack (natural,
-// warm American female) — af_sky sounded noticeably more robotic.
-const VOICE = "af_heart";
+// Calm British male, the register people mean when they say "Jarvis". The
+// other three in the pack are bm_lewis, bm_daniel and bm_fable — swap the
+// string to change voice, no other code depends on it.
+const VOICE = "bm_george";
 // A one-line status update ("streak's at 2 days") read at the same pace as a
 // full explanation drags — short replies get a slightly quicker, punchier
 // delivery instead of every reply sounding identical regardless of length.

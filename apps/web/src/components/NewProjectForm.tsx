@@ -47,7 +47,7 @@ export function NewProjectForm() {
   }
 
   const inputClass =
-    "rounded-[10px] border border-white/10 bg-white/[0.03] px-3 py-2 font-inter text-sm text-white outline-none transition-colors focus:border-[#5ed29c]";
+    "rounded-[10px] border border-white/10 bg-white/[0.03] px-3 py-2 font-inter text-sm text-white outline-none transition-colors focus:border-[#6744FF]";
 
   return (
     <form onSubmit={handleSubmit} className="glass-panel flex flex-col gap-4 p-5">
@@ -75,9 +75,12 @@ export function NewProjectForm() {
         />
       </div>
       <div className="flex flex-col gap-1.5">
-        <label className="font-manrope text-xs text-neutral-400">
-          Local folder (optional, needed for the assistant to run dev commands here)
-        </label>
+        <label className="font-manrope text-xs text-neutral-400">Local folder (optional)</label>
+        <p className="-mt-0.5 font-inter text-xs leading-relaxed text-neutral-500">
+          Lets the desktop app run <code className="text-neutral-400">git log</code> here to verify a session
+          from commits you haven&apos;t pushed yet. It reads commit timestamps only — never your code, and it
+          never writes.
+        </p>
         <input
           value={localPath}
           onChange={(e) => setLocalPath(e.target.value)}

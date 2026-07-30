@@ -22,11 +22,11 @@ export function CommitList({ commits }: { commits: CommitListItem[] }) {
             rel="noreferrer"
             className="glass-panel flex items-center gap-2 px-3 py-2 transition-colors hover:bg-white/[0.06]"
           >
-            <GitCommitHorizontal size={13} className="shrink-0 text-[#5ed29c]" />
+            <GitCommitHorizontal size={13} className="shrink-0 text-[#8b74ff]" />
             <span className="min-w-0 flex-1 truncate font-inter text-xs text-neutral-300">{commit.message}</span>
             {(commit.additions !== null || commit.deletions !== null) && (
               <span className="flex shrink-0 items-center gap-1.5 font-inter text-[11px] tabular-nums">
-                {commit.additions !== null && <span className="text-[#5ed29c]">+{commit.additions}</span>}
+                {commit.additions !== null && <span className="text-[#8b74ff]">+{commit.additions}</span>}
                 {commit.deletions !== null && <span className="text-red-400">-{commit.deletions}</span>}
               </span>
             )}

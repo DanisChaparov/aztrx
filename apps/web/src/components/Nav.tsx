@@ -4,6 +4,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { motion } from "framer-motion";
 import { LayoutDashboard, FolderKanban, Timer } from "lucide-react";
+import { Logo } from "./Logo";
 import { SignOutButton } from "./SignOutButton";
 
 const LINKS = [
@@ -18,11 +19,9 @@ export function Nav() {
   return (
     <div className="sticky top-0 z-30 px-4 pt-4 sm:px-6">
       <nav className="liquid-glass mx-auto flex max-w-4xl items-center justify-between px-4 py-2.5">
-        <Link href="/dashboard" className="flex flex-col leading-none">
+        <Link href="/dashboard" className="flex items-center gap-2">
+          <Logo size={20} />
           <span className="font-jakarta text-[15px] font-extrabold tracking-tight text-white">Upstream</span>
-          <span className="hidden font-jakarta text-[9px] font-semibold uppercase tracking-[0.2em] text-white/40 md:block">
-            Verified Focus
-          </span>
         </Link>
 
         <div className="flex items-center gap-1">
@@ -34,7 +33,7 @@ export function Nav() {
                 {isActive && (
                   <motion.div
                     layoutId="nav-active"
-                    className="absolute inset-0 rounded-full bg-[#5ed29c]/15"
+                    className="absolute inset-0 rounded-full bg-[#6744FF]/15"
                     transition={{ type: "spring", stiffness: 350, damping: 30 }}
                   />
                 )}
