@@ -1,5 +1,5 @@
 import { Notification } from "electron";
-import { logDistraction, type Database } from "@focus-forge/api-client";
+import { breakSession, logDistraction, type Database } from "@focus-forge/api-client";
 import { matchDistraction, matchTrackedTool, type DistractionMatch } from "@focus-forge/core";
 import type { SupabaseClient } from "@supabase/supabase-js";
 import { listOpenWindows } from "./openWindows";
@@ -83,11 +83,22 @@ export class DesktopActivityMonitor {
 
     this.loggedForCurrentEpisode = true;
     await logDistraction(this.supabase, { sessionId, source: "desktop", domainOrApp: distraction.label });
+
+    // End it here rather than letting the timer run out and delivering the bad
+    // news at the end. A session you've already lost shouldn't keep counting
+    // down as if it were still worth something.
+    await breakSession(this.supabase, sessionId);
+    this.stop();
+
     new Notification({
-      title: "Still in a focus session",
-      body: `${distraction.label} is on your blocklist — this session won't verify.`,
+      title: "Session broken",
+      body: `${distraction.label} was open — this session has ended and won't count.`,
     }).show();
+    this.onBroken?.(distraction.label);
   }
+
+  /** Notified with the distraction's name so the UI can say what happened. */
+  onBroken: ((label: string) => void) | null = null;
 
   /**
    * Looks at every visible window, not just the focused one.

@@ -4,6 +4,7 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import {
   abandonSession,
+  listDistractions,
   startSession,
   verifySession,
   type VerifySessionResult,
@@ -37,6 +38,7 @@ export function SessionRunner({
   const [now, setNow] = useState<number | null>(null);
   const [busy, setBusy] = useState(false);
   const [result, setResult] = useState<VerifySessionResult | null>(null);
+  const [distractions, setDistractions] = useState<{ domainOrApp: string; source: string }[]>([]);
   const [completedDurationMin, setCompletedDurationMin] = useState(0);
   const [error, setError] = useState<string | null>(null);
   const timeUpAlertedRef = useRef(false);
@@ -104,6 +106,8 @@ export function SessionRunner({
       const supabase = getBrowserSupabaseClient();
       const verifyResult = await verifySession(supabase, session.id);
       setResult(verifyResult);
+      // "1 distraction event" tells you nothing you can act on. Name them.
+      setDistractions(await listDistractions(supabase, session.id).catch(() => []));
       setCompletedDurationMin(session.plannedDurationMin);
       setSession(null);
       router.refresh();
@@ -155,9 +159,24 @@ export function SessionRunner({
         {result.verified && (
           <div className="font-manrope text-sm font-medium text-[#8b74ff]">+{completedDurationMin} XP</div>
         )}
+        {distractions.length > 0 && (
+          <div className="w-full max-w-sm rounded-xl border border-amber-400/25 bg-amber-400/[0.06] p-4 text-left">
+            <p className="font-manrope text-xs font-medium text-amber-400">
+              {distractions.length === 1 ? "What broke it" : "What broke it"}
+            </p>
+            <ul className="mt-2 flex flex-col gap-1">
+              {distractions.map((distraction, i) => (
+                <li key={`${distraction.domainOrApp}-${i}`} className="font-inter text-sm text-neutral-300">
+                  {distraction.domainOrApp}
+                  <span className="ml-1.5 text-xs text-neutral-500">
+                    {distraction.source === "extension" ? "blocked in browser" : "open on your desktop"}
+                  </span>
+                </li>
+              ))}
+            </ul>
+          </div>
+        )}
         <p className="max-w-sm font-inter text-sm text-neutral-400">
-          {result.distractionEventCount > 0 &&
-            `${result.distractionEventCount} distraction event(s) logged. `}
           {result.githubActivityDetected === false &&
             result.localActivityDetected === true &&
             "No GitHub commits yet, but real local commits were detected during this session — verified from your local activity. "}
