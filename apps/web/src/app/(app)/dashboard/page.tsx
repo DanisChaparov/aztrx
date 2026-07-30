@@ -23,6 +23,7 @@ import {
   StreakFlame,
   ToolUsageList,
 } from "@focus-forge/ui";
+import { DeveloperTwin } from "@/components/DeveloperTwin";
 import { EnableNotificationsButton } from "@/components/EnableNotificationsButton";
 import { LiveActivityFeed } from "@/components/LiveActivityFeed";
 import { WaterButton } from "@/components/WaterButton";
@@ -87,6 +88,12 @@ export default async function DashboardPage() {
         <LevelBadge levelInfo={levelInfo} />
         <EnableNotificationsButton />
       </div>
+
+      {/* First real content on the page: unlike everything below it, this has
+          something to say before the user has run a single session. */}
+      <RevealSection>
+        <DeveloperTwin />
+      </RevealSection>
 
       {linkedProject && (
         <RevealSection>

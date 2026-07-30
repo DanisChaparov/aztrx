@@ -7,3 +7,4 @@ export * from "./achievements";
 export * from "./heatmap";
 export * from "./tools";
 export * from "./blocklist";
+export * from "./developerTwin";
