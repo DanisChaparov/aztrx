@@ -36,6 +36,8 @@ const supabase = createDesktopSupabaseClient();
 const activityMonitor = new DesktopActivityMonitor(supabase);
 let mainWindow: BrowserWindow | null = null;
 let monitoringSessionId: string | null = null;
+/** Distinguishes a real quit from the close button, which only hides. */
+let isQuitting = false;
 
 function syncActivityMonitor(sessionId: string | null): void {
   if (sessionId === monitoringSessionId) return;
@@ -98,6 +100,11 @@ function createWindow(): void {
     frame: false,
     alwaysOnTop: true,
     skipTaskbar: false,
+    // Start hidden. Nearly all of this app's work is background — watching
+    // windows, running the assistant, announcing the end of a session — and
+    // stealing the screen on every launch to show a widget nobody asked for is
+    // the fastest way to get uninstalled. It appears when it's opened.
+    show: false,
     webPreferences: {
       preload: join(__dirname, "preload.js"),
       contextIsolation: true,
@@ -106,6 +113,13 @@ function createWindow(): void {
   });
   mainWindow.loadFile(join(__dirname, "..", "public", "index.html"));
   mainWindow.webContents.on("did-finish-load", pushState);
+  // Closing the widget hides it rather than tearing it down, so reopening is
+  // instant and the background runners are unaffected either way.
+  mainWindow.on("close", (event) => {
+    if (isQuitting) return;
+    event.preventDefault();
+    mainWindow?.hide();
+  });
 }
 
 app.whenReady().then(() => {
@@ -128,6 +142,10 @@ app.whenReady().then(() => {
   app.on("activate", () => {
     if (BrowserWindow.getAllWindows().length === 0) createWindow();
   });
+});
+
+app.on("before-quit", () => {
+  isQuitting = true;
 });
 
 app.on("window-all-closed", () => {

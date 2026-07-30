@@ -13,6 +13,7 @@ import {
 import type { FocusSession, Project } from "@focus-forge/core";
 import { CommitList, Confetti, Timer } from "@focus-forge/ui";
 import { getBrowserSupabaseClient } from "@/lib/supabase/browser";
+import { Select } from "@/components/Select";
 import { WaterButton } from "@/components/WaterButton";
 import { notifySessionEnd, playChime } from "@/lib/chime";
 import { LiveActivityFeed } from "@/components/LiveActivityFeed";
@@ -240,18 +241,15 @@ export function SessionRunner({
     <div className="glass-panel flex flex-col gap-5 p-8">
       <div className="flex flex-col gap-1.5">
         <label className="font-manrope text-xs text-neutral-400">Project</label>
-        <select
+        <Select
           value={projectId}
-          onChange={(e) => setProjectId(e.target.value)}
-          className="rounded-[10px] border border-white/10 bg-white/[0.03] px-3 py-2 font-inter text-sm text-white outline-none transition-colors focus:border-[#6744FF]"
-        >
-          <option value="">No project</option>
-          {projects.map((project) => (
-            <option key={project.id} value={project.id}>
-              {project.name}
-            </option>
-          ))}
-        </select>
+          onChange={setProjectId}
+          placeholder="No project"
+          options={[
+            { value: "", label: "No project" },
+            ...projects.map((project) => ({ value: project.id, label: project.name })),
+          ]}
+        />
       </div>
       <div className="flex flex-col gap-3">
         <label className="font-manrope text-xs text-neutral-400">How long?</label>
@@ -303,28 +301,29 @@ export function SessionRunner({
             );
           })}
         </div>
-        <div
-          className={`flex items-center gap-2 rounded-xl border px-4 py-2.5 transition-colors ${
+        <label
+          className={`flex cursor-text items-center gap-3 rounded-xl border px-4 py-3 transition-colors ${
             customDuration !== "" ? "border-[#6744FF] bg-[#6744FF]/[0.06]" : "border-white/10 bg-white/[0.02]"
           }`}
         >
-          <span className="font-inter text-sm text-neutral-500">or</span>
+          <span className="font-inter text-sm text-neutral-500">Something else</span>
           <input
-            type="number"
-            min={1}
-            max={480}
+            // `inputMode` rather than type="number": the numeric type renders
+            // native spinner arrows that can't be themed and look broken here.
+            type="text"
+            inputMode="numeric"
             value={customDuration}
             onChange={(e) => {
-              const value = e.target.value;
-              setCustomDuration(value);
-              const parsed = parseInt(value, 10);
-              if (parsed > 0) setDuration(parsed);
+              const digitsOnly = e.target.value.replace(/\D/g, "").slice(0, 3);
+              setCustomDuration(digitsOnly);
+              const parsed = parseInt(digitsOnly, 10);
+              if (parsed > 0 && parsed <= 480) setDuration(parsed);
             }}
-            placeholder="your own"
-            className="w-24 bg-transparent font-manrope text-sm text-white outline-none placeholder:font-inter placeholder:text-neutral-500"
+            placeholder="45"
+            className="w-14 border-b border-white/15 bg-transparent pb-0.5 text-center font-manrope text-lg font-semibold text-white outline-none transition-colors placeholder:font-normal placeholder:text-neutral-600 focus:border-[#6744FF]"
           />
           <span className="font-inter text-sm text-neutral-500">minutes</span>
-        </div>
+        </label>
       </div>
       {error && <p className="font-inter text-xs text-red-400">{error}</p>}
       <WaterButton onClick={handleStart} disabled={busy} variant="primary" className="self-start">
