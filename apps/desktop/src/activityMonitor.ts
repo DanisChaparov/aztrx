@@ -1,8 +1,7 @@
 import { Notification } from "electron";
 import { logDistraction, type Database } from "@focus-forge/api-client";
-import { matchTrackedTool } from "@focus-forge/core";
+import { matchDistraction, matchTrackedTool } from "@focus-forge/core";
 import type { SupabaseClient } from "@supabase/supabase-js";
-import { DEFAULT_APP_BLOCKLIST, matchesAppBlocklist } from "./blocklist";
 
 const POLL_INTERVAL_MS = 5000;
 // Require the same blocked app in focus for two consecutive polls before
@@ -53,9 +52,12 @@ export class DesktopActivityMonitor {
       this.appSeconds.set(tracked.name, (this.appSeconds.get(tracked.name) ?? 0) + POLL_INTERVAL_MS / 1000);
     }
 
-    const isBlocked = matchesAppBlocklist(appName, DEFAULT_APP_BLOCKLIST);
+    // Passing the window title lets a YouTube or Twitch tab count even when the
+    // browser extension isn't installed — the process name alone is just
+    // "chrome", which tells us nothing about what's on screen.
+    const distraction = matchDistraction(appName, window?.title);
 
-    if (!isBlocked) {
+    if (!distraction) {
       this.consecutiveBlockedPolls = 0;
       this.loggedForCurrentEpisode = false;
       return;
@@ -65,10 +67,10 @@ export class DesktopActivityMonitor {
     if (this.consecutiveBlockedPolls < CONSECUTIVE_POLLS_BEFORE_FLAG || this.loggedForCurrentEpisode) return;
 
     this.loggedForCurrentEpisode = true;
-    await logDistraction(this.supabase, { sessionId, source: "desktop", domainOrApp: appName });
+    await logDistraction(this.supabase, { sessionId, source: "desktop", domainOrApp: distraction.label });
     new Notification({
       title: "Still in a focus session",
-      body: `${appName} is on your blocklist — get back to it.`,
+      body: `${distraction.label} is on your blocklist — this session won't verify.`,
     }).show();
   }
 }
