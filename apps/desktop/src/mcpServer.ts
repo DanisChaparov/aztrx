@@ -455,6 +455,26 @@ server.tool(
   }
 );
 
+server.tool(
+  "type_text",
+  "Types text into whatever window currently has focus on the user's computer, simulating real keystrokes. " +
+    "Requires the user to explicitly confirm the exact text and target window on the desktop widget before " +
+    "anything is typed — nothing happens until they approve it. Only call this when the user clearly and " +
+    "explicitly asks you to type/write something into a specific app or the currently open window, never " +
+    "speculatively. There is no way to click or move the mouse yet — only typing into whatever's already " +
+    "focused is supported.",
+  { text: z.string() },
+  async ({ text: textToType }) => {
+    const userId = await currentUserId();
+    const command = await queueAssistantCommand(supabase, {
+      userId,
+      type: "type_text",
+      payload: { text: textToType },
+    });
+    return text(await waitForCommandResult(command.id, 15000));
+  }
+);
+
 // Top-level await isn't valid in a CJS bundle (this esbuilds to CJS to match
 // the rest of the desktop app) — an async IIFE gets the same effect.
 (async () => {

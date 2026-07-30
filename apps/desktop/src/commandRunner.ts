@@ -144,6 +144,35 @@ async function confirmShellCommand(command: string, projectLabel: string | null)
   return result.response === 0;
 }
 
+/** Same per-action confirmation guardrail as run_shell — a click could land
+ *  anywhere, so typing is scoped to "whatever's currently focused" (something
+ *  the user themselves put in focus) and always shown before it happens. */
+async function confirmTypeText(textToType: string, windowTitle: string | null): Promise<boolean> {
+  const win = BrowserWindow.getAllWindows()[0] ?? null;
+  const result = await dialog.showMessageBox(win as unknown as BrowserWindow, {
+    type: "warning",
+    buttons: ["Type it", "Reject"],
+    defaultId: 1,
+    cancelId: 1,
+    title: "Upstream assistant wants to type on your keyboard",
+    message: `Type this into ${windowTitle ? `"${windowTitle}"` : "whatever window is currently focused"}?`,
+    detail: textToType,
+  });
+  return result.response === 0;
+}
+
+// SendKeys treats + ^ % ~ ( ) { } [ ] as special — each must be individually
+// wrapped in braces to be typed literally instead of interpreted.
+function escapeForSendKeys(input: string): string {
+  return input.replace(/[+^%~(){}[\]]/g, (c) => `{${c}}`);
+}
+
+// The escaped text above is embedded in a PowerShell single-quoted string
+// literal — those only need an embedded ' doubled, nothing else.
+function toPowerShellSingleQuotedLiteral(input: string): string {
+  return input.replace(/'/g, "''");
+}
+
 export function startCommandRunner(supabase: SupabaseClient<Database>): () => void {
   let stopped = false;
   // A run_shell command sits at "pending" status for as long as its
@@ -245,6 +274,42 @@ async function handleCommand(
       await updateCommandStatus(supabase, command.id, {
         status: ok ? "completed" : "failed",
         result: `$ ${shellCommand}\n${output}`,
+      });
+      return;
+    }
+
+    if (command.type === "type_text") {
+      const textToType = command.payload.text as string;
+      // Pure-ESM package — dynamic import() from this CJS-bundled process,
+      // same reason as apps/desktop/src/activityMonitor.ts.
+      const { activeWindow } = await import("active-win");
+      const focused = await activeWindow();
+      const windowTitle = focused?.title ?? null;
+
+      const approved = await confirmTypeText(textToType, windowTitle);
+      if (!approved) {
+        await updateCommandStatus(supabase, command.id, { status: "rejected" });
+        return;
+      }
+
+      if (process.platform !== "win32") {
+        await updateCommandStatus(supabase, command.id, {
+          status: "failed",
+          result: "Typing simulation is only implemented on Windows right now.",
+        });
+        return;
+      }
+
+      const literal = toPowerShellSingleQuotedLiteral(escapeForSendKeys(textToType));
+      const script =
+        "Add-Type -AssemblyName System.Windows.Forms\r\n" +
+        "Start-Sleep -Milliseconds 300\r\n" +
+        `[System.Windows.Forms.SendKeys]::SendWait('${literal}')\r\n`;
+
+      const { ok, output } = await runExec(script, undefined);
+      await updateCommandStatus(supabase, command.id, {
+        status: ok ? "completed" : "failed",
+        result: ok ? `Typed into ${windowTitle ?? "the focused window"}.` : output,
       });
       return;
     }

@@ -72,7 +72,7 @@ export type SessionAppUsageRow = {
   created_at: string;
 };
 
-export type AssistantCommandType = "launch_app" | "run_dev_command" | "run_shell";
+export type AssistantCommandType = "launch_app" | "run_dev_command" | "run_shell" | "type_text";
 export type AssistantCommandStatus = "pending" | "approved" | "rejected" | "completed" | "failed";
 
 export type AssistantCommandRow = {
