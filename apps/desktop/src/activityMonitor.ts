@@ -2,10 +2,11 @@ import { Notification } from "electron";
 import { logDistraction, type Database } from "@focus-forge/api-client";
 import { matchDistraction, matchTrackedTool } from "@focus-forge/core";
 import type { SupabaseClient } from "@supabase/supabase-js";
+import { listOpenWindows } from "./openWindows";
 
 const POLL_INTERVAL_MS = 5000;
-// Require the same blocked app in focus for two consecutive polls before
-// logging anything — avoids penalizing a quick alt-tab glance.
+// Require the same distraction open for two consecutive polls before logging
+// anything — avoids penalizing a quick alt-tab glance.
 const CONSECUTIVE_POLLS_BEFORE_FLAG = 2;
 
 export class DesktopActivityMonitor {
@@ -42,20 +43,22 @@ export class DesktopActivityMonitor {
   private async poll(sessionId: string): Promise<void> {
     // Pure-ESM package — dynamic import() is the correct way to load it from
     // this CommonJS-bundled main process (see build.mjs comment).
+    // Pure-ESM package — dynamic import() is the correct way to load it from
+    // this CommonJS-bundled main process (see build.mjs comment).
     const { activeWindow } = await import("active-win");
-    const window = await activeWindow();
-    const appName = window?.owner?.name;
-    if (!appName) return;
+    const focused = await activeWindow();
+    const focusedApp = focused?.owner?.name;
 
-    const tracked = matchTrackedTool(appName, undefined, window?.title);
-    if (tracked) {
-      this.appSeconds.set(tracked.name, (this.appSeconds.get(tracked.name) ?? 0) + POLL_INTERVAL_MS / 1000);
+    // Tool time is deliberately still focus-only: having an editor open in the
+    // background isn't working in it.
+    if (focusedApp) {
+      const tracked = matchTrackedTool(focusedApp, undefined, focused?.title);
+      if (tracked) {
+        this.appSeconds.set(tracked.name, (this.appSeconds.get(tracked.name) ?? 0) + POLL_INTERVAL_MS / 1000);
+      }
     }
 
-    // Passing the window title lets a YouTube or Twitch tab count even when the
-    // browser extension isn't installed — the process name alone is just
-    // "chrome", which tells us nothing about what's on screen.
-    const distraction = matchDistraction(appName, window?.title);
+    const distraction = await this.findDistraction(focusedApp, focused?.title);
 
     if (!distraction) {
       this.consecutiveBlockedPolls = 0;
@@ -72,5 +75,32 @@ export class DesktopActivityMonitor {
       title: "Still in a focus session",
       body: `${distraction.label} is on your blocklist — this session won't verify.`,
     }).show();
+  }
+
+  /**
+   * Looks at every visible window, not just the focused one.
+   *
+   * Watching a video in a second window while an editor holds focus was the
+   * obvious way to beat a focus-only check, and beating the check is the one
+   * thing a verification product cannot allow. Anything with a window open on
+   * screen counts; anything minimized to the tray does not, so a launcher that
+   * merely starts with Windows is ignored.
+   *
+   * The gap this still leaves: a background *tab* inside a focused window.
+   * Windows only exposes the active tab's title, so no desktop app can see
+   * those — that is what the browser extension is for.
+   */
+  private async findDistraction(focusedApp: string | undefined, focusedTitle: string | undefined) {
+    if (focusedApp) {
+      const focusedMatch = matchDistraction(focusedApp, focusedTitle);
+      if (focusedMatch) return focusedMatch;
+    }
+
+    for (const openWindow of await listOpenWindows()) {
+      const match = matchDistraction(openWindow.processName, openWindow.title);
+      if (match) return match;
+    }
+
+    return null;
   }
 }

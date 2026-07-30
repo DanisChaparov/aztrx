@@ -11,15 +11,30 @@
 
 /** Native programs, matched against the OS process name. */
 export const DEFAULT_APP_BLOCKLIST = [
-  "Discord",
+  // Game launchers. The games themselves can't be enumerated — there are
+  // hundreds of thousands of executables — but you have to go through one of
+  // these to reach almost any of them, and the launcher stays open while you
+  // play, so catching the launcher catches the session.
   "Steam",
   "EpicGamesLauncher",
   "Battle.net",
+  "RiotClientUX",
+  "LeagueClient",
+  "GalaxyClient",
+  "UbisoftConnect",
+  "EADesktop",
+  "RobloxPlayer",
+  "Minecraft",
+  // Chat and social
+  "Discord",
+  "Telegram",
+  "WhatsApp",
+  // Media. Deliberately no Spotify: music while coding is normal, and one bad
+  // flag costs more trust than a missed one gains.
   "Netflix",
   "Twitch",
   "TikTok",
-  "Telegram",
-  "WhatsApp",
+  "Instagram",
 ];
 
 /** Sites, matched against the browser tab's hostname (extension) or the
