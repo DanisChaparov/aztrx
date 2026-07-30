@@ -1,5 +1,6 @@
 import { Github } from "lucide-react";
 import { listProjects } from "@focus-forge/api-client";
+import { GrantPrivateRepoAccessButton } from "@/components/GrantPrivateRepoAccessButton";
 import { NewProjectForm } from "@/components/NewProjectForm";
 import { getServerSupabaseClient } from "@/lib/supabase/server";
 
@@ -49,6 +50,8 @@ export default async function ProjectsPage() {
         <h2 className="mb-3 font-manrope text-sm font-medium text-neutral-400">New project</h2>
         <NewProjectForm />
       </div>
+
+      <GrantPrivateRepoAccessButton />
     </div>
   );
 }

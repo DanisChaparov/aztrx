@@ -11,8 +11,11 @@ export function GithubSignInButton({ desktop = false }: { desktop?: boolean }) {
       provider: "github",
       options: {
         redirectTo: `${window.location.origin}/auth/callback${desktop ? "?desktop=1" : ""}`,
-        // repo (private+public commit reads) + read:user (username for the commit-author check)
-        scopes: "repo read:user",
+        // read:user only. Commits on public repos are readable with any
+        // authenticated token, so signing in needs no repository access at all —
+        // the `repo` scope is requested separately, and only by someone who
+        // actually links a private repo (see GrantPrivateRepoAccessButton).
+        scopes: "read:user",
       },
     });
   }

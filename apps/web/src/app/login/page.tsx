@@ -24,7 +24,7 @@ export default async function LoginPage({
           <p className="font-inter text-sm text-[#A1A1AA]">
             {isDesktop
               ? "Signing in here connects your Upstream desktop widget."
-              : "We use GitHub to verify your commits landed during a focus session and to read your dependencies."}
+              : "We use GitHub to check that your commits landed during a focus session. Signing in grants read access to your profile only — no repository access, and nothing is ever written to your account."}
           </p>
         </div>
         <GithubSignInButton desktop={isDesktop} />
