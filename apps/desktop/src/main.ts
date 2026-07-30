@@ -12,7 +12,6 @@ import {
 import { calculateStreak } from "@focus-forge/core";
 import { DesktopActivityMonitor } from "./activityMonitor";
 import { startChatRunner } from "./chatRunner";
-import { startCommandRunner } from "./commandRunner";
 import { startIdleNudge } from "./idleNudge";
 import { detectLocalActivity } from "./localVerification";
 import { startTtsRunner, warmTtsModel } from "./ttsRunner";
@@ -119,7 +118,6 @@ app.whenReady().then(() => {
 
   createWindow();
   setInterval(pushState, 30_000);
-  startCommandRunner(supabase);
   startChatRunner(supabase);
   startTtsRunner(supabase);
   startIdleNudge(supabase);

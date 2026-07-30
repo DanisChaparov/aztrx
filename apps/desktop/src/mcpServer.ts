@@ -13,13 +13,11 @@ import { z } from "zod";
 import {
   abandonSession,
   getActiveSession,
-  getCommandById,
   getImpactLedgerSummary,
   getRecentCommits,
   getToolUsageSummary,
   listProjects,
   listSessions,
-  queueAssistantCommand,
   startSession,
   updateProject,
   verifySession,
@@ -28,10 +26,8 @@ import {
 import {
   calculateStreak,
   calculateXp,
-  DEV_COMMAND_ALLOWLIST,
   getLevelInfo,
   isAiAssistedTool,
-  LAUNCHABLE_APPS,
   matchTrackedTool,
   TRACKED_TOOL_PROCESS_NAMES,
 } from "@focus-forge/core";
@@ -140,26 +136,6 @@ async function currentUserId(): Promise<string> {
   if (!user) throw new Error("Not signed in to Upstream — open the desktop widget and sign in first.");
   return user.id;
 }
-
-async function waitForCommandResult(commandId: string, timeoutMs: number): Promise<string> {
-  const deadline = Date.now() + timeoutMs;
-  while (Date.now() < deadline) {
-    const command = await getCommandById(supabase, commandId);
-    if (command && command.status !== "pending") {
-      if (command.status === "completed") return command.result ?? "Done.";
-      if (command.status === "failed") return `Failed: ${command.result ?? "unknown error"}`;
-      if (command.status === "rejected") return "Rejected locally — nothing ran.";
-    }
-    await new Promise((resolve) => setTimeout(resolve, 1000));
-  }
-  return "Queued, but it hasn't finished yet — check your desktop widget.";
-}
-
-function text(value: string) {
-  return { content: [{ type: "text" as const, text: value }] };
-}
-
-const server = new McpServer({ name: "upstream", version: "1.0.0" });
 
 server.tool(
   "get_active_session",
@@ -392,86 +368,6 @@ server.tool(
         }))
       )
     );
-  }
-);
-
-server.tool(
-  "launch_app",
-  "Launch a named app on the user's computer.",
-  { appName: z.enum(LAUNCHABLE_APPS) },
-  async ({ appName }) => {
-    const userId = await currentUserId();
-    const command = await queueAssistantCommand(supabase, { userId, type: "launch_app", payload: { appName } });
-    return text(await waitForCommandResult(command.id, 8000));
-  }
-);
-
-server.tool(
-  "run_dev_command",
-  `Run one of a fixed set of safe dev commands (${DEV_COMMAND_ALLOWLIST.map((c) => c.label).join(", ")}) in a project's local folder.`,
-  {
-    commandId: z.enum(DEV_COMMAND_ALLOWLIST.map((c) => c.id) as [string, ...string[]]),
-    projectName: z.string(),
-  },
-  async ({ commandId, projectName }) => {
-    const userId = await currentUserId();
-    const projects = await listProjects(supabase);
-    const match = projects.find((p) => p.name.toLowerCase() === projectName.toLowerCase());
-    if (!match) return text(`No project named "${projectName}" found.`);
-    if (!match.localPath) return text(`"${match.name}" has no local folder configured.`);
-    const command = await queueAssistantCommand(supabase, {
-      userId,
-      type: "run_dev_command",
-      payload: { commandId, projectId: match.id },
-    });
-    return text(await waitForCommandResult(command.id, 15000));
-  }
-);
-
-server.tool(
-  "run_shell_command",
-  "Run an arbitrary shell command (PowerShell) on the user's computer. Requires the user to explicitly confirm " +
-    "the exact command locally before anything runs. IMPORTANT for file/folder locations: never guess or " +
-    "translate a folder name into a path (e.g. don't assume a Russian word for 'screenshots' maps to a literal " +
-    "folder called that) — Windows' real special folders often don't match what a name literally translates " +
-    "to. If the target folder is a well-known one (Desktop, Documents, Pictures, Downloads, the Pictures\\" +
-    "Screenshots folder Windows creates automatically), resolve or verify the REAL path first (e.g. `Test-Path " +
-    "\"$env:USERPROFILE\\Pictures\\Screenshots\"`) as part of the same command, or ask the user to confirm the " +
-    "exact path if you're not sure — don't silently guess and create something in the wrong place.",
-  { command: z.string(), projectName: z.string().optional() },
-  async ({ command: shellCommand, projectName }) => {
-    const userId = await currentUserId();
-    let projectId: string | null = null;
-    if (projectName) {
-      const projects = await listProjects(supabase);
-      projectId = projects.find((p) => p.name.toLowerCase() === projectName.toLowerCase())?.id ?? null;
-    }
-    await queueAssistantCommand(supabase, {
-      userId,
-      type: "run_shell",
-      payload: { command: shellCommand, projectId },
-    });
-    return text(`Sent "${shellCommand}" for local confirmation — nothing runs until approved on the desktop widget.`);
-  }
-);
-
-server.tool(
-  "type_text",
-  "Types text into whatever window currently has focus on the user's computer, simulating real keystrokes. " +
-    "Requires the user to explicitly confirm the exact text and target window on the desktop widget before " +
-    "anything is typed — nothing happens until they approve it. Only call this when the user clearly and " +
-    "explicitly asks you to type/write something into a specific app or the currently open window, never " +
-    "speculatively. There is no way to click or move the mouse yet — only typing into whatever's already " +
-    "focused is supported.",
-  { text: z.string() },
-  async ({ text: textToType }) => {
-    const userId = await currentUserId();
-    const command = await queueAssistantCommand(supabase, {
-      userId,
-      type: "type_text",
-      payload: { text: textToType },
-    });
-    return text(await waitForCommandResult(command.id, 15000));
   }
 );
 

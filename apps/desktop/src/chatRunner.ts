@@ -32,10 +32,6 @@ const TOOL_NAMES = [
   "get_session_history",
   "get_recent_commits",
   "get_tool_usage",
-  "launch_app",
-  "run_dev_command",
-  "run_shell_command",
-  "type_text",
 ];
 const ALLOWED_TOOLS = TOOL_NAMES.map((name) => `mcp__upstream__${name}`).join(",");
 
@@ -58,11 +54,10 @@ const SYSTEM_PROMPT =
   "every tool needed to answer every part before writing your final reply. Before calling start_focus_session, " +
   "check get_active_session first so you don't try to start one that's already running. Only call " +
   "start_focus_session, end_focus_session, or abandon_focus_session when the user " +
-  "clearly asks for that specific action. launch_app, run_dev_command, run_shell_command, and type_text all " +
-  "act on the user's real computer via their desktop widget — only call them when the user clearly and " +
-  "explicitly asks for that specific action, never speculatively. There is no way to click or move the mouse " +
-  "yet, only to type into whatever window is already focused — if the user asks for clicking, tell them " +
-  "honestly that's not supported yet instead of pretending to do it.";
+  "clearly asks for that specific action. You can read what's happening on the computer and start or stop " +
+  "focus sessions, but you cannot act on the machine itself — you can't open apps, run commands, type, or " +
+  "click. If the user asks for any of that, say plainly that Upstream doesn't do it, rather than pretending " +
+  "or promising it later.";
 
 function ensureMcpConfig(): string {
   const configPath = join(app.getPath("userData"), "mcp-config.json");
