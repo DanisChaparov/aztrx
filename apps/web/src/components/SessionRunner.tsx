@@ -2,6 +2,7 @@
 
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
+import { motion } from "framer-motion";
 import {
   abandonSession,
   listDistractions,
@@ -16,7 +17,11 @@ import { WaterButton } from "@/components/WaterButton";
 import { notifySessionEnd, playChime } from "@/lib/chime";
 import { LiveActivityFeed } from "@/components/LiveActivityFeed";
 
-const DURATION_PRESETS = [25, 50, 90];
+const DURATION_PRESETS = [
+  { minutes: 25, label: "a pomodoro" },
+  { minutes: 50, label: "a deep block" },
+  { minutes: 90, label: "a full cycle" },
+];
 
 export function SessionRunner({
   projects,
@@ -28,7 +33,7 @@ export function SessionRunner({
   const router = useRouter();
   const [session, setSession] = useState(initialActiveSession);
   const [projectId, setProjectId] = useState<string>(projects[0]?.id ?? "");
-  const [duration, setDuration] = useState<number>(DURATION_PRESETS[0]);
+  const [duration, setDuration] = useState<number>(DURATION_PRESETS[0].minutes);
   const [customDuration, setCustomDuration] = useState("");
   // Starts `null` (not Date.now()) so the server-rendered HTML and the
   // client's first paint match exactly — computing "now" during render would
@@ -248,46 +253,77 @@ export function SessionRunner({
           ))}
         </select>
       </div>
-      <div className="flex flex-col gap-1.5">
-        <label className="font-manrope text-xs text-neutral-400">Duration</label>
-        <div className="flex flex-wrap items-center gap-2">
-          {DURATION_PRESETS.map((preset) => (
-            <button
-              key={preset}
-              onClick={() => {
-                setDuration(preset);
-                setCustomDuration("");
-              }}
-              className={`rounded-full px-4 py-1.5 font-cabin text-sm transition-colors ${
-                duration === preset && customDuration === ""
-                  ? "bg-[#6744FF] text-white"
-                  : "border border-white/10 text-neutral-300 hover:border-white/30"
-              }`}
-            >
-              {preset} min
-            </button>
-          ))}
-          <div
-            className={`flex items-center gap-1.5 rounded-full border px-3 py-1.5 transition-colors ${
-              customDuration !== "" ? "border-[#6744FF]" : "border-white/10"
-            }`}
-          >
-            <input
-              type="number"
-              min={1}
-              max={480}
-              value={customDuration}
-              onChange={(e) => {
-                const value = e.target.value;
-                setCustomDuration(value);
-                const parsed = parseInt(value, 10);
-                if (parsed > 0) setDuration(parsed);
-              }}
-              placeholder="Custom"
-              className="w-14 bg-transparent font-cabin text-sm text-white outline-none placeholder:text-neutral-500"
-            />
-            <span className="font-cabin text-sm text-neutral-400">min</span>
-          </div>
+      <div className="flex flex-col gap-3">
+        <label className="font-manrope text-xs text-neutral-400">How long?</label>
+        <div className="grid grid-cols-3 gap-3">
+          {DURATION_PRESETS.map((preset) => {
+            const isSelected = duration === preset.minutes && customDuration === "";
+            return (
+              <motion.button
+                key={preset.minutes}
+                type="button"
+                onClick={() => {
+                  setDuration(preset.minutes);
+                  setCustomDuration("");
+                }}
+                whileHover={{ y: -3 }}
+                whileTap={{ scale: 0.97 }}
+                transition={{ type: "spring", stiffness: 400, damping: 25 }}
+                className={`relative flex flex-col items-center gap-1 overflow-hidden rounded-2xl border px-3 py-5 transition-colors ${
+                  isSelected
+                    ? "border-[#6744FF] bg-[#6744FF]/10"
+                    : "border-white/10 bg-white/[0.02] hover:border-white/25"
+                }`}
+              >
+                {isSelected && (
+                  <motion.div
+                    layoutId="duration-glow"
+                    className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_50%_120%,rgba(103,68,255,0.35),transparent_70%)]"
+                    transition={{ type: "spring", stiffness: 300, damping: 30 }}
+                  />
+                )}
+                <span
+                  className={`relative font-manrope text-3xl font-semibold ${
+                    isSelected ? "text-white" : "text-neutral-300"
+                  }`}
+                >
+                  {preset.minutes}
+                </span>
+                <span className="relative font-inter text-[11px] uppercase tracking-wider text-neutral-500">
+                  min
+                </span>
+                <span
+                  className={`relative font-inter text-[11px] ${
+                    isSelected ? "text-[#a996ff]" : "text-neutral-500"
+                  }`}
+                >
+                  {preset.label}
+                </span>
+              </motion.button>
+            );
+          })}
+        </div>
+        <div
+          className={`flex items-center gap-2 rounded-xl border px-4 py-2.5 transition-colors ${
+            customDuration !== "" ? "border-[#6744FF] bg-[#6744FF]/[0.06]" : "border-white/10 bg-white/[0.02]"
+          }`}
+        >
+          <span className="font-inter text-sm text-neutral-500">or</span>
+          <input
+            type="number"
+            min={1}
+            max={480}
+            value={customDuration}
+            onChange={(e) => {
+              const value = e.target.value;
+              setCustomDuration(value);
+              const parsed = parseInt(value, 10);
+              if (parsed > 0) setDuration(parsed);
+            }}
+            placeholder="your own"
+            className="w-24 bg-transparent font-manrope text-sm text-white outline-none placeholder:font-inter placeholder:text-neutral-500"
+          />
+          <span className="font-inter text-sm text-neutral-500">minutes</span>
         </div>
       </div>
       {error && <p className="font-inter text-xs text-red-400">{error}</p>}
