@@ -1,4 +1,16 @@
+// cross-spawn, not node:child_process directly — same reasoning as
+// chatRunner.ts's claude CLI invocation: routing an arbitrary (often
+// AI-generated) command string through cmd.exe's shell re-parsing is fragile
+// once it contains nested quotes or shell-meaningful characters (a stray `<`
+// in HTML content read as a redirect operator broke a real run_shell command
+// tonight). Commands are written to a temp .ps1 file and executed by path —
+// PowerShell reads the file's raw text directly, no shell string re-parsing
+// in between.
+import spawn from "cross-spawn";
 import { exec } from "node:child_process";
+import { mkdtempSync, rmSync, writeFileSync } from "node:fs";
+import { tmpdir } from "node:os";
+import { join } from "node:path";
 import { BrowserWindow, dialog, shell } from "electron";
 import {
   getPendingCommands,
@@ -35,10 +47,62 @@ const DEV_COMMAND_MAP: Record<string, string> = {
 };
 
 function runExec(command: string, cwd: string | undefined): Promise<{ ok: boolean; output: string }> {
+  // The script-file approach below is Windows/PowerShell-specific — other
+  // platforms don't have the exact cmd.exe re-quoting fragility that broke a
+  // real command tonight, so they keep the simpler original behavior.
+  if (process.platform !== "win32") {
+    return new Promise((resolve) => {
+      exec(command, { cwd, timeout: EXEC_TIMEOUT_MS }, (err, stdout, stderr) => {
+        const output = `${stdout ?? ""}${stderr ?? ""}`.trim().slice(0, MAX_OUTPUT_CHARS);
+        resolve({ ok: !err, output: output || (err ? err.message : "(no output)") });
+      });
+    });
+  }
+
   return new Promise((resolve) => {
-    exec(command, { cwd, timeout: EXEC_TIMEOUT_MS }, (err, stdout, stderr) => {
-      const output = `${stdout ?? ""}${stderr ?? ""}`.trim().slice(0, MAX_OUTPUT_CHARS);
-      resolve({ ok: !err, output: output || (err ? err.message : "(no output)") });
+    let scriptDir: string;
+    let scriptPath: string;
+    try {
+      scriptDir = mkdtempSync(join(tmpdir(), "upstream-cmd-"));
+      scriptPath = join(scriptDir, "run.ps1");
+      writeFileSync(scriptPath, command, "utf-8");
+    } catch (err) {
+      resolve({ ok: false, output: `Failed to prepare command: ${(err as Error).message}` });
+      return;
+    }
+
+    const cleanup = () => {
+      try {
+        rmSync(scriptDir, { recursive: true, force: true });
+      } catch {
+        // best effort — a leftover temp file isn't worth failing the command over
+      }
+    };
+
+    let child;
+    try {
+      child = spawn("powershell", ["-NoProfile", "-ExecutionPolicy", "Bypass", "-File", scriptPath], {
+        cwd,
+        timeout: EXEC_TIMEOUT_MS,
+      });
+    } catch (err) {
+      cleanup();
+      resolve({ ok: false, output: `Failed to spawn PowerShell: ${(err as Error).message}` });
+      return;
+    }
+
+    let stdout = "";
+    let stderr = "";
+    child.stdout?.on("data", (chunk) => (stdout += chunk));
+    child.stderr?.on("data", (chunk) => (stderr += chunk));
+    child.on("error", (err) => {
+      cleanup();
+      resolve({ ok: false, output: err.message });
+    });
+    child.on("close", (code) => {
+      cleanup();
+      const output = `${stdout}${stderr}`.trim().slice(0, MAX_OUTPUT_CHARS);
+      resolve({ ok: code === 0, output: output || (code !== 0 ? `exited with code ${code}` : "(no output)") });
     });
   });
 }
@@ -55,7 +119,10 @@ async function launchApp(appName: string): Promise<{ ok: boolean; message: strin
   const command = LAUNCH_COMMANDS[appName as LaunchableApp];
   if (!command) return { ok: false, message: `Don't know how to launch "${appName}" yet.` };
 
-  const wrapped = process.platform === "win32" ? `start "" ${command}` : command;
+  // runExec now runs commands as a PowerShell script file on Windows, not a
+  // cmd.exe string — `start ""` was cmd.exe-specific syntax and isn't valid
+  // there; PowerShell's own Start-Process launches it detached instead.
+  const wrapped = process.platform === "win32" ? `Start-Process ${command}` : command;
   const { ok, output } = await runExec(wrapped, undefined);
   return ok
     ? { ok: true, message: `Launched ${appName}.` }
@@ -79,13 +146,24 @@ async function confirmShellCommand(command: string, projectLabel: string | null)
 
 export function startCommandRunner(supabase: SupabaseClient<Database>): () => void {
   let stopped = false;
+  // A run_shell command sits at "pending" status for as long as its
+  // confirmation dialog is open (status only changes once the user answers
+  // it) — without this, every 1s poll tick in the meantime would pick the
+  // same still-pending row back up and pop yet another dialog for it.
+  const inFlight = new Set<string>();
 
   async function poll() {
     if (stopped) return;
     try {
       const pending = await getPendingCommands(supabase);
       for (const command of pending) {
-        await handleCommand(supabase, command);
+        if (inFlight.has(command.id)) continue;
+        inFlight.add(command.id);
+        console.log(`[commandRunner] picked up ${command.id} (${command.type})`);
+        handleCommand(supabase, command)
+          .then(() => console.log(`[commandRunner] ${command.id} done`))
+          .catch((err) => console.error(`[commandRunner] ${command.id} crashed unexpectedly:`, err))
+          .finally(() => inFlight.delete(command.id));
       }
     } catch (err) {
       console.error("Command runner poll failed:", err);

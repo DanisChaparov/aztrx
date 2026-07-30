@@ -59,12 +59,20 @@ export function startTtsRunner(supabase: SupabaseClient<Database>): () => void {
 
   async function handleRequest(id: string, text: string) {
     console.log(`[ttsRunner] generating audio for ${id} (${text.length} chars)...`);
+    const t0 = Date.now();
     try {
       const tts = await loadModel();
+      const t1 = Date.now();
       const audio = await tts.generate(text, { voice: VOICE, speed: speedFor(text) });
+      const t2 = Date.now();
       const audioBase64 = Buffer.from(audio.toWav()).toString("base64");
+      const t3 = Date.now();
+      console.log(`[ttsRunner] ${id} encoded to base64 (${audioBase64.length} chars) in ${t3 - t2}ms, writing to Supabase...`);
       await updateTtsStatus(supabase, id, { status: "completed", audioBase64 });
-      console.log(`[ttsRunner] ${id} completed`);
+      console.log(
+        `[ttsRunner] ${id} completed — model wait: ${t1 - t0}ms, generate: ${t2 - t1}ms, encode: ${t3 - t2}ms, ` +
+          `db write: ${Date.now() - t3}ms, total: ${Date.now() - t0}ms`
+      );
     } catch (err) {
       const message = err instanceof Error ? err.message : String(err);
       console.error(`[ttsRunner] ${id} failed:`, message);
