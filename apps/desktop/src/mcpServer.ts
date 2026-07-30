@@ -137,6 +137,13 @@ async function currentUserId(): Promise<string> {
   return user.id;
 }
 
+/** Wraps a plain string in the content shape every tool has to return. */
+function text(value: string) {
+  return { content: [{ type: "text" as const, text: value }] };
+}
+
+const server = new McpServer({ name: "upstream", version: "1.0.0" });
+
 server.tool(
   "get_active_session",
   "Check whether the user currently has a focus session running right now, and if so, how long it's been " +
