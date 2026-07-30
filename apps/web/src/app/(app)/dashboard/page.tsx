@@ -2,6 +2,7 @@ import {
   getCommitsForSessions,
   getImpactLedgerSummary,
   getPlan,
+  getPublicProfileEnabled,
   getToolUsageSummary,
   listProjects,
   listSessions,
@@ -26,6 +27,7 @@ import {
 } from "@focus-forge/ui";
 import { DeveloperTwin } from "@/components/DeveloperTwin";
 import { PlanBadge } from "@/components/PlanBadge";
+import { ShareProfileToggle } from "@/components/ShareProfileToggle";
 import { EnableNotificationsButton } from "@/components/EnableNotificationsButton";
 import { LiveActivityFeed } from "@/components/LiveActivityFeed";
 import { WaterButton } from "@/components/WaterButton";
@@ -44,13 +46,16 @@ export default async function DashboardPage() {
   // Gamification (streak/XP/achievements/heatmap) needs full history, not just
   // the handful shown in "Recent sessions" below — a low limit here would make
   // the streak and level silently wrong once someone has more than a few sessions.
-  const [allSessions, projects, impactSummary, toolUsage, plan] = await Promise.all([
+  const [allSessions, projects, impactSummary, toolUsage, plan, publicProfileEnabled] = await Promise.all([
     listSessions(supabase, { limit: 1000 }),
     listProjects(supabase),
     getImpactLedgerSummary(supabase),
     getToolUsageSummary(supabase),
     getPlan(supabase),
+    getPublicProfileEnabled(supabase),
   ]);
+  const { data: userData } = await supabase.auth.getUser();
+  const githubUsername = (userData.user?.user_metadata?.user_name as string | undefined) ?? null;
 
   const streak = calculateStreak(allSessions);
   const xp = calculateXp(allSessions);
@@ -97,6 +102,10 @@ export default async function DashboardPage() {
           something to say before the user has run a single session. */}
       <RevealSection>
         <DeveloperTwin />
+      </RevealSection>
+
+      <RevealSection>
+        <ShareProfileToggle githubUsername={githubUsername} initialEnabled={publicProfileEnabled} />
       </RevealSection>
 
       {linkedProject && (

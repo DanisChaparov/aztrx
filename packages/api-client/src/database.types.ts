@@ -120,6 +120,8 @@ export type ProfileRow = {
   /** Mirrors migration 0010. Only the service role can change it. */
   plan: "free" | "pro";
   plan_since: string | null;
+  /** Opt-in flag for the shareable developer twin at /u/<username>. */
+  public_profile: boolean;
   updated_at: string;
 };
 
@@ -273,6 +275,13 @@ export type Database = {
       };
     };
     Views: Record<string, never>;
-    Functions: Record<string, never>;
+    Functions: {
+      // Security-definer lookup used by the public profile page. Exists so that
+      // `profiles` — which holds GitHub tokens — never needs anonymous select.
+      get_public_profile: {
+        Args: { lookup_username: string };
+        Returns: { github_username: string }[];
+      };
+    };
   };
 };
