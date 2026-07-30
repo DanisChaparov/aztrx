@@ -39,8 +39,30 @@ let monitoringSessionId: string | null = null;
 /** Distinguishes a real quit from the close button, which only hides. */
 let isQuitting = false;
 
+/**
+ * Starts or stops window monitoring as the active session changes, and — the
+ * part that matters — flushes the tool time it collected whenever a session
+ * ends.
+ *
+ * Recording used to live only in the desktop widget's own complete/abandon
+ * handlers, so finishing a session in the browser (which is how most people
+ * actually do it) measured the time correctly and then dropped it on the floor
+ * when the poll noticed the session was gone. Doing it here covers every way a
+ * session can end: the widget, the web app, or the monitor breaking it itself.
+ */
 function syncActivityMonitor(sessionId: string | null): void {
   if (sessionId === monitoringSessionId) return;
+
+  const endedSessionId = monitoringSessionId;
+  if (endedSessionId) {
+    const appUsage = activityMonitor.getAppUsageSnapshot();
+    if (Object.keys(appUsage).length > 0) {
+      recordSessionAppUsage(supabase, endedSessionId, appUsage).catch((err) =>
+        console.error("Failed to record app usage:", err)
+      );
+    }
+  }
+
   monitoringSessionId = sessionId;
   if (sessionId) activityMonitor.start(sessionId);
   else activityMonitor.stop();
@@ -132,7 +154,11 @@ app.whenReady().then(() => {
   }
 
   createWindow();
-  setInterval(pushState, 30_000);
+  // 30s was fine when this only refreshed a widget nobody was looking at, but
+  // it's also what notices a session ending elsewhere and flushes its tool
+  // time — half a minute of "Tools used is empty" after finishing reads as
+  // broken.
+  setInterval(pushState, 8_000);
   startChatRunner(supabase);
   startTtsRunner(supabase);
   startIdleNudge(supabase);
@@ -199,14 +225,13 @@ async function checkLocalActivity(sessionId: string): Promise<boolean | null> {
 }
 
 ipcMain.handle("complete-session", async (_event, sessionId: string) => {
-  const appUsage = activityMonitor.getAppUsageSnapshot();
   // Checked before verifySession flips the session to "completed" — the
   // active-session lookup inside checkLocalActivity depends on it still
   // being active.
   const localActivityDetected = await checkLocalActivity(sessionId);
   const result = await verifySession(supabase, sessionId, localActivityDetected);
+  // Flushes the tool time as a side effect; see syncActivityMonitor.
   syncActivityMonitor(null);
-  recordSessionAppUsage(supabase, sessionId, appUsage).catch((err) => console.error("Failed to record app usage:", err));
   new Notification({
     title: result.verified ? "Session verified ✓" : "Session completed",
     body: result.verified ? "Your streak just grew." : "Not verified this time — check the dashboard.",
@@ -215,8 +240,6 @@ ipcMain.handle("complete-session", async (_event, sessionId: string) => {
 });
 
 ipcMain.handle("abandon-session", async (_event, sessionId: string) => {
-  const appUsage = activityMonitor.getAppUsageSnapshot();
   await abandonSession(supabase, sessionId);
   syncActivityMonitor(null);
-  recordSessionAppUsage(supabase, sessionId, appUsage).catch((err) => console.error("Failed to record app usage:", err));
 });
