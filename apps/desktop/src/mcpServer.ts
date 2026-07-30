@@ -430,7 +430,14 @@ server.tool(
 
 server.tool(
   "run_shell_command",
-  "Run an arbitrary shell command on the user's computer. Requires the user to explicitly confirm the exact command locally before anything runs.",
+  "Run an arbitrary shell command (PowerShell) on the user's computer. Requires the user to explicitly confirm " +
+    "the exact command locally before anything runs. IMPORTANT for file/folder locations: never guess or " +
+    "translate a folder name into a path (e.g. don't assume a Russian word for 'screenshots' maps to a literal " +
+    "folder called that) — Windows' real special folders often don't match what a name literally translates " +
+    "to. If the target folder is a well-known one (Desktop, Documents, Pictures, Downloads, the Pictures\\" +
+    "Screenshots folder Windows creates automatically), resolve or verify the REAL path first (e.g. `Test-Path " +
+    "\"$env:USERPROFILE\\Pictures\\Screenshots\"`) as part of the same command, or ask the user to confirm the " +
+    "exact path if you're not sure — don't silently guess and create something in the wrong place.",
   { command: z.string(), projectName: z.string().optional() },
   async ({ command: shellCommand, projectName }) => {
     const userId = await currentUserId();
