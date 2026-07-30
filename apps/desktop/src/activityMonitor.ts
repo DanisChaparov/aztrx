@@ -1,6 +1,6 @@
 import { Notification } from "electron";
 import { logDistraction, type Database } from "@focus-forge/api-client";
-import { matchDistraction, matchTrackedTool } from "@focus-forge/core";
+import { matchDistraction, matchTrackedTool, type DistractionMatch } from "@focus-forge/core";
 import type { SupabaseClient } from "@supabase/supabase-js";
 import { listOpenWindows } from "./openWindows";
 
@@ -8,12 +8,19 @@ const POLL_INTERVAL_MS = 5000;
 // Require the same distraction open for two consecutive polls before logging
 // anything — avoids penalizing a quick alt-tab glance.
 const CONSECUTIVE_POLLS_BEFORE_FLAG = 2;
+// Enumerating every window costs ~670ms of CPU (measured), so it runs on every
+// other poll rather than every one. The focused-window check is cheap and stays
+// at the full rate, so anything you're actually looking at is still caught fast.
+const FULL_SCAN_EVERY_N_POLLS = 2;
+/** Distinguishes "this poll didn't run a full scan" from "nothing was found". */
+const SCAN_SKIPPED = Symbol("scan-skipped");
 
 export class DesktopActivityMonitor {
   private intervalId: ReturnType<typeof setInterval> | null = null;
   private consecutiveBlockedPolls = 0;
   private loggedForCurrentEpisode = false;
   private appSeconds = new Map<string, number>();
+  private pollCount = 0;
 
   constructor(private readonly supabase: SupabaseClient<Database>) {}
 
@@ -22,6 +29,7 @@ export class DesktopActivityMonitor {
     this.consecutiveBlockedPolls = 0;
     this.loggedForCurrentEpisode = false;
     this.appSeconds = new Map();
+    this.pollCount = 0;
 
     this.intervalId = setInterval(() => {
       this.poll(sessionId).catch((err) => console.error("Activity monitor poll failed:", err));
@@ -41,8 +49,7 @@ export class DesktopActivityMonitor {
   }
 
   private async poll(sessionId: string): Promise<void> {
-    // Pure-ESM package — dynamic import() is the correct way to load it from
-    // this CommonJS-bundled main process (see build.mjs comment).
+    this.pollCount += 1;
     // Pure-ESM package — dynamic import() is the correct way to load it from
     // this CommonJS-bundled main process (see build.mjs comment).
     const { activeWindow } = await import("active-win");
@@ -59,6 +66,11 @@ export class DesktopActivityMonitor {
     }
 
     const distraction = await this.findDistraction(focusedApp, focused?.title);
+
+    // "Didn't look" is not the same as "looked and found nothing" — treating a
+    // skipped full scan as all-clear would reset the streak counter every other
+    // poll and it would never reach the flag threshold.
+    if (distraction === SCAN_SKIPPED) return;
 
     if (!distraction) {
       this.consecutiveBlockedPolls = 0;
@@ -90,11 +102,16 @@ export class DesktopActivityMonitor {
    * Windows only exposes the active tab's title, so no desktop app can see
    * those — that is what the browser extension is for.
    */
-  private async findDistraction(focusedApp: string | undefined, focusedTitle: string | undefined) {
+  private async findDistraction(
+    focusedApp: string | undefined,
+    focusedTitle: string | undefined
+  ): Promise<DistractionMatch | null | typeof SCAN_SKIPPED> {
     if (focusedApp) {
       const focusedMatch = matchDistraction(focusedApp, focusedTitle);
       if (focusedMatch) return focusedMatch;
     }
+
+    if (this.pollCount % FULL_SCAN_EVERY_N_POLLS !== 0) return SCAN_SKIPPED;
 
     for (const openWindow of await listOpenWindows()) {
       const match = matchDistraction(openWindow.processName, openWindow.title);
