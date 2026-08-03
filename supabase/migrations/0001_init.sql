@@ -61,12 +61,15 @@ alter table public.distraction_events enable row level security;
 alter table public.dependency_snapshots enable row level security;
 alter table public.impact_ledger enable row level security;
 
+drop policy if exists "projects_owner_all" on public.projects;
 create policy "projects_owner_all" on public.projects
   for all using (auth.uid() = user_id) with check (auth.uid() = user_id);
 
+drop policy if exists "focus_sessions_owner_all" on public.focus_sessions;
 create policy "focus_sessions_owner_all" on public.focus_sessions
   for all using (auth.uid() = user_id) with check (auth.uid() = user_id);
 
+drop policy if exists "distraction_events_owner_all" on public.distraction_events;
 create policy "distraction_events_owner_all" on public.distraction_events
   for all using (
     exists (
@@ -80,6 +83,7 @@ create policy "distraction_events_owner_all" on public.distraction_events
     )
   );
 
+drop policy if exists "dependency_snapshots_owner_all" on public.dependency_snapshots;
 create policy "dependency_snapshots_owner_all" on public.dependency_snapshots
   for all using (
     exists (
@@ -93,5 +97,6 @@ create policy "dependency_snapshots_owner_all" on public.dependency_snapshots
     )
   );
 
+drop policy if exists "impact_ledger_owner_all" on public.impact_ledger;
 create policy "impact_ledger_owner_all" on public.impact_ledger
   for all using (auth.uid() = user_id) with check (auth.uid() = user_id);

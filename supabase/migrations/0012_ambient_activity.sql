@@ -38,5 +38,6 @@ create index if not exists ambient_activity_session_id_idx on public.ambient_act
 
 alter table public.ambient_activity enable row level security;
 
+drop policy if exists ambient_activity_owner_all on public.ambient_activity;
 create policy ambient_activity_owner_all on public.ambient_activity
   for all using (auth.uid() = user_id) with check (auth.uid() = user_id);

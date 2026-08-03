@@ -14,6 +14,7 @@ create index if not exists assistant_chats_user_id_status_idx on public.assistan
 
 alter table public.assistant_chats enable row level security;
 
+drop policy if exists assistant_chats_owner_all on public.assistant_chats;
 create policy assistant_chats_owner_all on public.assistant_chats
   for all
   using (auth.uid() = user_id)
