@@ -9,3 +9,5 @@ export * from "./Confetti";
 export * from "./RevealSection";
 export * from "./ToolUsageList";
 export * from "./CommitList";
+export * from "./DailyScreenTime";
+export * from "./ScreenTimeDetail";

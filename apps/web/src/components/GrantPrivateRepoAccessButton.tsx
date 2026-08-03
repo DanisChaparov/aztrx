@@ -23,7 +23,10 @@ export function GrantPrivateRepoAccessButton() {
     await supabase.auth.signInWithOAuth({
       provider: "github",
       options: {
-        redirectTo: `${window.location.origin}/auth/callback`,
+        // Sends the user back to wherever they came from instead of dropping
+        // them on the dashboard after the OAuth dance. The callback route
+        // reads ?returnTo and redirects there on completion.
+        redirectTo: `${window.location.origin}/auth/callback?returnTo=${encodeURIComponent(window.location.pathname)}`,
         scopes: "read:user repo",
       },
     });

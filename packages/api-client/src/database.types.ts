@@ -13,6 +13,7 @@ export type ProjectRow = {
   deadline: string | null;
   github_repo_url: string | null;
   local_path: string | null;
+  archived: boolean;
   created_at: string;
 };
 
@@ -117,12 +118,44 @@ export type ProfileRow = {
   id: string;
   github_access_token: string | null;
   github_username: string | null;
+  /** User-provided Anthropic API key for free-tier AI features. */
+  anthropic_api_key: string | null;
   /** Mirrors migration 0010. Only the service role can change it. */
   plan: "free" | "pro";
   plan_since: string | null;
   /** Opt-in flag for the shareable developer twin at /u/<username>. */
   public_profile: boolean;
+  /** Free trial end date — set when user starts a trial, null otherwise. */
+  trial_ends_at: string | null;
+  /** Whether the user has already used their trial (prevents second trial). */
+  trial_used: boolean;
+  /** User's preferred display name. */
+  display_name: string | null;
+  /** Phone number for SMS notifications. */
+  phone: string | null;
+  /** Notification preferences. */
+  notify_session_complete: boolean;
+  notify_deadline: boolean;
+  notify_achievement: boolean;
+  notify_streak_risk: boolean;
+  /** Which OAuth provider was used to sign up (github, google, facebook, twitter, email). Added in 0017. */
+  auth_provider: string | null;
+  /** Profile picture URL from the auth provider. Added in 0017. */
+  avatar_url: string | null;
   updated_at: string;
+};
+
+export type AmbientActivityRow = {
+  id: string;
+  user_id: string;
+  app_name: string;
+  window_title: string | null;
+  tracked_tool: string | null;
+  is_ai_assisted: boolean;
+  bucket_hour: string;
+  seconds_focused: number;
+  session_id: string | null;
+  created_at: string;
 };
 
 export type PushSubscriptionRow = {
@@ -272,6 +305,20 @@ export type Database = {
         Insert: Partial<PushSubscriptionRow> & { user_id: string; endpoint: string; p256dh: string; auth: string };
         Update: Partial<PushSubscriptionRow>;
         Relationships: [];
+      };
+      ambient_activity: {
+        Row: AmbientActivityRow;
+        Insert: Partial<AmbientActivityRow> & { user_id: string; app_name: string; bucket_hour: string };
+        Update: Partial<AmbientActivityRow>;
+        Relationships: [
+          {
+            foreignKeyName: "ambient_activity_session_id_fkey";
+            columns: ["session_id"];
+            isOneToOne: false;
+            referencedRelation: "focus_sessions";
+            referencedColumns: ["id"];
+          }
+        ];
       };
     };
     Views: Record<string, never>;

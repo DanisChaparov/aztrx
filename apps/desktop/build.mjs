@@ -50,13 +50,6 @@ await build({
   define,
 });
 
-await build({
-  entryPoints: { renderer: "src/renderer.ts" },
-  bundle: true,
-  outdir: "dist",
-  format: "iife",
-  platform: "browser",
-  target: "chrome110",
-  sourcemap: true,
-  logLevel: "info",
-});
+// The renderer is no longer bundled — the desktop app now loads the full
+// Next.js web app (localhost:3000 in dev, or the deployed URL in production)
+// instead of the old 300×380 widget. The web app handles all UI.

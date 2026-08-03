@@ -14,7 +14,11 @@ export async function getImpactLedgerSummary(
   const { data, error } = await client
     .from("impact_ledger")
     .select("simulated_amount, dependency_snapshots(id, name)");
-  if (error) throw error;
+  if (error) {
+    // Gracefully handle missing tables (migrations not applied yet).
+    if (error.code === "42P01" || error.code === "PGRST205") return [];
+    throw error;
+  }
 
   const totals = new Map<string, ImpactLedgerSummaryRow>();
   for (const row of data ?? []) {

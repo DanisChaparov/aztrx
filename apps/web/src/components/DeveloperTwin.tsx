@@ -29,7 +29,7 @@ function Stat({ value, label }: { value: string; label: string }) {
 }
 
 /**
- * A portrait of how the user actually codes, read out of their GitHub history
+ * A portrait of how the user actually codes, read out of their commit history
  * rather than out of what Upstream has watched. It's here so a brand-new
  * account has something real to look at on day one instead of an empty
  * dashboard waiting weeks for data.
@@ -59,7 +59,7 @@ export function DeveloperTwin() {
     return (
       <div className="flex items-center gap-2.5 rounded-2xl border border-white/10 bg-[#0e0f14] p-6">
         <Loader2 size={16} className="animate-spin text-[#8b74ff]" />
-        <span className="font-inter text-sm text-[#A1A1AA]">Reading your GitHub history…</span>
+        <span className="font-inter text-sm text-[#A1A1AA]">Reading your commit history…</span>
       </div>
     );
   }
@@ -67,7 +67,7 @@ export function DeveloperTwin() {
   if (!data.ready || !data.lifecycle || !data.insights) {
     return (
       <div className="rounded-2xl border border-white/10 bg-[#0e0f14] p-6">
-        <p className="font-inter text-sm text-[#A1A1AA]">{data.reason ?? "Not enough GitHub history yet."}</p>
+        <p className="font-inter text-sm text-[#A1A1AA]">{data.reason ?? "Not enough commit history yet."}</p>
       </div>
     );
   }
@@ -79,7 +79,7 @@ export function DeveloperTwin() {
       <div>
         <h2 className="font-manrope text-lg font-medium text-white">Your developer twin</h2>
         <p className="mt-1 font-inter text-sm text-[#A1A1AA]">
-          Read from your public GitHub history — not from anything you told us.
+          Read from your public commit history — not from anything you told us.
         </p>
       </div>
 

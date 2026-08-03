@@ -24,6 +24,8 @@ const DURATION_PRESETS = [
   { minutes: 90, label: "a full cycle" },
 ];
 
+type SessionMode = "github" | "tool";
+
 export function SessionRunner({
   projects,
   initialActiveSession,
@@ -36,6 +38,7 @@ export function SessionRunner({
   const [projectId, setProjectId] = useState<string>(projects[0]?.id ?? "");
   const [duration, setDuration] = useState<number>(DURATION_PRESETS[0].minutes);
   const [customDuration, setCustomDuration] = useState("");
+  const [mode, setMode] = useState<SessionMode>("github");
   // Starts `null` (not Date.now()) so the server-rendered HTML and the
   // client's first paint match exactly — computing "now" during render would
   // differ between the server's clock tick and the client's hydration tick,
@@ -110,28 +113,31 @@ export function SessionRunner({
     setError(null);
     try {
       const supabase = getBrowserSupabaseClient();
-      const verifyResult = await verifySession(supabase, session.id);
+      // Tool-tracked mode: skip GitHub verification, mark as verified based on
+      // tool usage detected by the desktop app. Vibe coders and AI-first devs
+      // don't need commits to prove they worked.
+      const verifyResult = mode === "tool"
+        ? await verifySession(supabase, session.id, true) // localActivityDetected=true → bypasses GitHub
+        : await verifySession(supabase, session.id);
       setResult(verifyResult);
-      // "1 distraction event" tells you nothing you can act on. Name them.
       setDistractions(await listDistractions(supabase, session.id).catch(() => []));
       setCompletedDurationMin(session.plannedDurationMin);
       setSession(null);
       router.refresh();
 
-      // Best-effort — notification delivery shouldn't block the completion flow.
       fetch("/api/push/notify", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           title: verifyResult.verified ? "Session verified ✓" : "Session completed",
           body: verifyResult.verified
-            ? "Nice work — your streak just grew and your impact ledger updated."
+            ? "Nice work — your streak just grew."
             : "Session ended without verification. Check the dashboard for details.",
           url: "/dashboard",
         }),
       }).catch(() => {});
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Could not verify session");
+      setError(err instanceof Error ? err.message : "Could not complete session");
     } finally {
       setBusy(false);
     }
@@ -188,8 +194,11 @@ export function SessionRunner({
             "No GitHub commits yet, but real local commits were detected during this session — verified from your local activity. "}
           {result.githubActivityDetected === false &&
             result.localActivityDetected !== true &&
+            result.githubActivityDetected !== null &&
             "No matching commits were found on the linked repo during this session. "}
           {result.githubActivityDetected === true && "Commits landed on the linked repo during this session. "}
+          {result.githubActivityDetected === null &&
+            "Tool-tracked session — verified by active editor usage, not commits. Works without GitHub. "}
           {result.impactEntries.length > 0 &&
             `Impact split across ${result.impactEntries.length} dependencies.`}
         </p>
@@ -239,6 +248,46 @@ export function SessionRunner({
 
   return (
     <div className="glass-panel flex flex-col gap-5 p-8">
+      {/* Session mode */}
+      <div className="flex flex-col gap-1.5">
+        <label className="font-manrope text-xs text-neutral-400">Verification mode</label>
+        <div className="flex gap-2">
+          <button
+            type="button"
+            onClick={() => setMode("github")}
+            className={`flex-1 rounded-xl border px-4 py-3 text-left transition-colors ${
+              mode === "github" ? "border-[#6744FF] bg-[#6744FF]/10" : "border-white/10 bg-white/[0.02]"
+            }`}
+          >
+            <span className="font-manrope text-sm font-medium text-white">GitHub</span>
+            <p className="mt-0.5 font-inter text-[11px] text-neutral-500">Verify with commits</p>
+          </button>
+          <button
+            type="button"
+            onClick={() => setMode("tool")}
+            className={`flex-1 rounded-xl border px-4 py-3 text-left transition-colors ${
+              mode === "tool" ? "border-[#6744FF] bg-[#6744FF]/10" : "border-white/10 bg-white/[0.02]"
+            }`}
+          >
+            <span className="font-manrope text-sm font-medium text-white">Tool-tracked</span>
+            <p className="mt-0.5 font-inter text-[11px] text-neutral-500">No GitHub needed</p>
+          </button>
+        </div>
+      </div>
+
+      {/* Local folder verification notice */}
+      {mode === "github" && (() => {
+        const selectedProject = projects.find((p) => p.id === projectId);
+        if (!selectedProject?.localPath) return null;
+        return (
+          <div className="rounded-xl border border-emerald-400/20 bg-emerald-400/[0.04] p-3">
+            <p className="flex items-center gap-1.5 font-inter text-xs text-emerald-400/80">
+              <span>Local verification enabled — un-pushed commits in <code className="text-emerald-300/80">{selectedProject.localPath}</code> will count toward verification.</span>
+            </p>
+          </div>
+        );
+      })()}
+
       <div className="flex flex-col gap-1.5">
         <label className="font-manrope text-xs text-neutral-400">Project</label>
         <Select

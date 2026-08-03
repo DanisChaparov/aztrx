@@ -46,8 +46,9 @@ function formatDuration(seconds: number): string {
   return `${minutes}m`;
 }
 
-export function ToolUsageList({ items }: { items: ToolUsageItem[] }) {
+export function ToolUsageList({ items, compact = false }: { items: ToolUsageItem[]; compact?: boolean }) {
   if (items.length === 0) {
+    if (compact) return null;
     return (
       <p className="font-inter text-sm text-neutral-500">
         No tool activity yet — the desktop widget tracks time in Cursor, Obsidian, Antigravity, and other apps
@@ -59,7 +60,7 @@ export function ToolUsageList({ items }: { items: ToolUsageItem[] }) {
   const maxSeconds = Math.max(...items.map((i) => i.totalSeconds));
 
   return (
-    <div className="glass-panel flex flex-col gap-3 p-4">
+    <div className={compact ? "flex flex-col gap-1.5" : "glass-panel flex flex-col gap-3 p-4"}>
       <ul className="flex flex-col gap-2.5">
         {items.map((item, index) => {
           const Icon = ICONS[item.appName] ?? AppWindow;
@@ -71,8 +72,8 @@ export function ToolUsageList({ items }: { items: ToolUsageItem[] }) {
               animate={{ opacity: 1, x: 0 }}
               transition={{ duration: 0.35, delay: index * 0.05, ease: "easeOut" }}
             >
-              <Icon size={14} className="shrink-0 text-[#8b74ff]" />
-              <span className="flex w-32 shrink-0 items-center gap-1.5 truncate font-inter text-sm text-neutral-300">
+              <Icon size={compact ? 12 : 14} className="shrink-0 text-[#8b74ff]" />
+              <span className={`flex shrink-0 items-center gap-1.5 truncate font-inter text-sm text-neutral-300 ${compact ? "w-28" : "w-32"}`}>
                 {item.appName}
                 {isAiAssistedTool(item.appName) && (
                   <span className="shrink-0 rounded-full bg-[#6744FF]/15 px-1.5 py-0.5 font-jakarta text-[9px] font-bold uppercase tracking-wide text-[#8b74ff]">
@@ -80,14 +81,16 @@ export function ToolUsageList({ items }: { items: ToolUsageItem[] }) {
                   </span>
                 )}
               </span>
-              <div className="h-1.5 flex-1 overflow-hidden rounded-full bg-white/5">
-                <motion.div
-                  className="h-full rounded-full bg-[#6744FF]/60"
-                  initial={{ width: 0 }}
-                  animate={{ width: `${(item.totalSeconds / maxSeconds) * 100}%` }}
-                  transition={{ duration: 0.6, delay: index * 0.05 + 0.1, ease: "easeOut" }}
-                />
-              </div>
+              {!compact && (
+                <div className="h-1.5 flex-1 overflow-hidden rounded-full bg-white/5">
+                  <motion.div
+                    className="h-full rounded-full bg-[#6744FF]/60"
+                    initial={{ width: 0 }}
+                    animate={{ width: `${(item.totalSeconds / maxSeconds) * 100}%` }}
+                    transition={{ duration: 0.6, delay: index * 0.05 + 0.1, ease: "easeOut" }}
+                  />
+                </div>
+              )}
               <span className="w-12 shrink-0 text-right font-inter text-xs tabular-nums text-neutral-500">
                 {formatDuration(item.totalSeconds)}
               </span>
