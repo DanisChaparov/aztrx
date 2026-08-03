@@ -173,20 +173,8 @@ export async function sendNotification(payload: NotificationPayload): Promise<No
     }
   }
 
-  // SMS via Twilio (paid fallback — only if WhatsApp not configured).
-  if (payload.toPhone && !process.env.WHATSAPP_PHONE_NUMBER_ID && process.env.TWILIO_ACCOUNT_SID) {
-    try {
-      const twilio = require("twilio")(process.env.TWILIO_ACCOUNT_SID, process.env.TWILIO_AUTH_TOKEN);
-      await twilio.messages.create({
-        body: `${payload.title}: ${payload.body}`.slice(0, 160),
-        from: process.env.TWILIO_PHONE_NUMBER,
-        to: payload.toPhone,
-      });
-      result.sms = "sent";
-    } catch (err: any) {
-      result.sms = "error";
-    }
-  }
+  // SMS not yet wired — would use Twilio here.
+  // Free channels (email, WhatsApp, Telegram) cover all current use cases.
 
   return result;
 }
