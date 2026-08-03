@@ -9,6 +9,7 @@ export interface Project {
   deadline: string | null;
   githubRepoUrl: string | null;
   localPath: string | null;
+  archived: boolean;
   createdAt: string;
 }
 

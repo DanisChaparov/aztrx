@@ -21,6 +21,26 @@ export async function recordSessionAppUsage(
   if (error) throw error;
 }
 
+/** Per-session tool usage — what the user had open during a single focus session. */
+export async function getSessionAppUsage(
+  client: SupabaseClient<Database>,
+  sessionId: string
+): Promise<ToolUsageSummary[]> {
+  const { data, error } = await client
+    .from("session_app_usage")
+    .select("app_name, seconds_active")
+    .eq("session_id", sessionId)
+    .order("seconds_active", { ascending: false });
+  if (error) {
+    if (error.code === "42P01" || error.code === "PGRST205") return [];
+    throw error;
+  }
+  return (data ?? []).map((row) => ({
+    appName: row.app_name,
+    totalSeconds: row.seconds_active,
+  }));
+}
+
 /** Aggregated across the user's sessions, for the dashboard's "tools used" breakdown. */
 export async function getToolUsageSummary(client: SupabaseClient<Database>): Promise<ToolUsageSummary[]> {
   const { data, error } = await client.from("session_app_usage").select("app_name, seconds_active");

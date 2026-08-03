@@ -1,9 +1,11 @@
 "use client";
 
-import { CheckCircle2, CircleDashed, XCircle } from "lucide-react";
-import { motion } from "framer-motion";
+import { useState } from "react";
+import { CheckCircle2, CircleDashed, XCircle, ChevronDown } from "lucide-react";
+import { motion, AnimatePresence } from "framer-motion";
 import type { FocusSession } from "@focus-forge/core";
 import { CommitList, type CommitListItem } from "./CommitList";
+import { ToolUsageList, type ToolUsageItem } from "./ToolUsageList";
 
 const STATUS_LABEL: Record<FocusSession["status"], string> = {
   active: "In progress",
@@ -21,13 +23,17 @@ export function SessionCard({
   session,
   projectName,
   commits = [],
+  tools = [],
 }: {
   session: FocusSession;
   projectName?: string;
   commits?: CommitListItem[];
+  tools?: ToolUsageItem[];
 }) {
   const startedAt = new Date(session.startedAt);
   const StatusIcon = STATUS_ICON[session.status];
+  const [showTools, setShowTools] = useState(false);
+  const hasTools = tools.length > 0;
 
   return (
     <motion.div
@@ -70,6 +76,40 @@ export function SessionCard({
         )}
       </div>
       {commits.length > 0 && <CommitList commits={commits} />}
+
+      {/* Per-session tool usage */}
+      {hasTools && (
+        <div>
+          <button
+            type="button"
+            onClick={() => setShowTools(!showTools)}
+            className="flex items-center gap-1.5 font-inter text-xs text-neutral-500 hover:text-neutral-300 transition-colors"
+          >
+            <motion.span
+              animate={{ rotate: showTools ? 180 : 0 }}
+              transition={{ duration: 0.2 }}
+            >
+              <ChevronDown size={12} />
+            </motion.span>
+            {showTools ? "Hide tools" : `Tools used (${tools.length})`}
+          </button>
+          <AnimatePresence>
+            {showTools && (
+              <motion.div
+                initial={{ height: 0, opacity: 0 }}
+                animate={{ height: "auto", opacity: 1 }}
+                exit={{ height: 0, opacity: 0 }}
+                transition={{ duration: 0.25, ease: "easeOut" }}
+                className="overflow-hidden"
+              >
+                <div className="mt-2">
+                  <ToolUsageList items={tools} compact />
+                </div>
+              </motion.div>
+            )}
+          </AnimatePresence>
+        </div>
+      )}
     </motion.div>
   );
 }

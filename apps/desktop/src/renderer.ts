@@ -1,4 +1,5 @@
 import type { FocusSession } from "@focus-forge/core";
+import { MASCOT_STYLES, mascotSvg, type MascotMood } from "./mascot";
 
 interface FocusForgeBridge {
   openSignIn: () => Promise<void>;
@@ -18,6 +19,16 @@ declare global {
 const app = document.getElementById("app")!;
 const DURATIONS = [25, 50, 90];
 
+// The mascot's animations live in a stylesheet injected once, rather than being
+// re-parsed every time a mood changes.
+const mascotStyle = document.createElement("style");
+mascotStyle.textContent = MASCOT_STYLES;
+document.head.appendChild(mascotStyle);
+
+function mascot(mood: MascotMood, size = 84): string {
+  return `<div class="mascot-wrap">${mascotSvg(mood, size)}</div>`;
+}
+
 document.getElementById("close")!.addEventListener("click", () => window.close());
 
 function formatClock(totalSeconds: number): string {
@@ -29,6 +40,7 @@ function formatClock(totalSeconds: number): string {
 
 function renderSignedOut() {
   app.innerHTML = `
+    ${mascot("asleep")}
     <p>Sign in from your browser to connect this widget.</p>
     <button class="action primary" id="signin">Sign in</button>
   `;
@@ -40,6 +52,7 @@ let countdownTimer: ReturnType<typeof setInterval> | undefined;
 function renderActiveSession(session: FocusSession, streak: number) {
   if (countdownTimer) clearInterval(countdownTimer);
   app.innerHTML = `
+    ${mascot("focused", 68)}
     <div class="timer" id="timer">--:--</div>
     <div class="row">
       <button class="action primary" id="complete">I'm done</button>
@@ -70,7 +83,8 @@ function renderActiveSession(session: FocusSession, streak: number) {
 function renderResult(verified: boolean) {
   if (countdownTimer) clearInterval(countdownTimer);
   app.innerHTML = `
-    <p>${verified ? "Verified ✓ — nice work." : "Session completed, but not verified."}</p>
+    ${mascot(verified ? "celebrating" : "alarmed")}
+    <p>${verified ? "Verified — nice work." : "Session completed, but not verified."}</p>
     <button class="action primary" id="again">Start another</button>
   `;
   document.getElementById("again")!.addEventListener("click", init);
@@ -79,6 +93,7 @@ function renderResult(verified: boolean) {
 function renderIdle(streak: number) {
   let selected = DURATIONS[0];
   app.innerHTML = `
+    ${mascot("asleep", 72)}
     <div class="row" id="durations">
       ${DURATIONS.map((d) => `<button class="action ${d === selected ? "selected" : ""}" data-d="${d}">${d}m</button>`).join("")}
     </div>

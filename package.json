@@ -12,9 +12,16 @@
     "lint": "npm run lint --workspace=apps/web",
     "extension:build": "npm run build --workspace=apps/extension",
     "extension:dev": "npm run dev --workspace=apps/extension",
-    "desktop:start": "npm run start --workspace=apps/desktop"
+    "desktop:start": "npm run start --workspace=apps/desktop",
+    "start": "start npm run dev && npm run desktop:start"
   },
   "engines": {
     "node": ">=20"
+  },
+  "dependencies": {
+    "nodemailer": "^9.0.3"
+  },
+  "devDependencies": {
+    "@types/nodemailer": "^8.0.1"
   }
 }

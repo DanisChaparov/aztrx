@@ -1,5 +1,6 @@
 import Link from "next/link";
-import { GithubSignInButton } from "@/components/GithubSignInButton";
+import { EmailSignInForm } from "@/components/EmailSignInForm";
+import { SocialSignInButton } from "@/components/SocialSignInButton";
 import { Logo } from "@/components/Logo";
 import { SiteBackground } from "@/components/SiteBackground";
 
@@ -24,10 +25,37 @@ export default async function LoginPage({
           <p className="font-inter text-sm text-[#A1A1AA]">
             {isDesktop
               ? "Signing in here connects your Upstream desktop widget."
-              : "We use GitHub to check that your commits landed during a focus session. Signing in grants read access to your profile only — no repository access, and nothing is ever written to your account."}
+              : "Welcome back. Sign in to your account to continue."}
           </p>
         </div>
-        <GithubSignInButton desktop={isDesktop} />
+
+        {/* Social sign-in buttons */}
+        <div className="flex w-full flex-col gap-2.5">
+          <SocialSignInButton provider="google" desktop={isDesktop} />
+          <SocialSignInButton provider="github" desktop={isDesktop} />
+          <SocialSignInButton provider="twitter" desktop={isDesktop} />
+          <SocialSignInButton provider="facebook" desktop={isDesktop} />
+        </div>
+
+        <div className="flex w-full items-center gap-3">
+          <div className="h-px flex-1 bg-white/10" />
+          <span className="font-inter text-[11px] text-neutral-500">or</span>
+          <div className="h-px flex-1 bg-white/10" />
+        </div>
+
+        {/* Email/password sign-in */}
+        <EmailSignInForm />
+
+        <p className="font-inter text-[13px] text-neutral-500">
+          Don&apos;t have an account?{" "}
+          <Link href="/signup" className="text-[#8b74ff] hover:underline">
+            Sign up
+          </Link>
+        </p>
+
+        <p className="font-inter text-[11px] text-neutral-600">
+          By signing in you agree to our Terms of Service and Privacy Policy.
+        </p>
       </div>
     </main>
   );

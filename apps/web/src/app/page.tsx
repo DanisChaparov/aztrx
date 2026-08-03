@@ -8,7 +8,7 @@ const FEATURES: { icon: LucideIcon; title: string; description: string }[] = [
     icon: ShieldCheck,
     title: "Verified, not just timed",
     description:
-      "Sessions are checked against real GitHub commits — a locked screen doesn't fake it, honest output does.",
+      "Sessions are checked against real commits and local activity — a locked screen doesn't fake it, honest output does.",
   },
   {
     icon: HeartHandshake,
@@ -31,7 +31,7 @@ const FEATURES: { icon: LucideIcon; title: string; description: string }[] = [
 
 const STEPS = [
   {
-    title: "Connect GitHub",
+    title: "Connect your accounts",
     description: "Sign in and optionally link a repo so sessions can be verified against real commits.",
   },
   {
@@ -105,10 +105,10 @@ export default function LandingPage() {
             Start your streak today
           </h2>
           <p className="max-w-[520px] font-inter text-[17px] leading-relaxed text-[#A1A1AA]">
-            Sign in with GitHub and run your first verified session in under a minute.
+            Sign up with your preferred account and run your first verified session in under a minute.
           </p>
           <Link
-            href="/login"
+            href="/signup"
             className="rounded-xl bg-[#6744FF] px-8 py-3.5 font-inter text-[16px] font-medium text-white transition-colors hover:bg-[#5a39f0]"
           >
             Get started

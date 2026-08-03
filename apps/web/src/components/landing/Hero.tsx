@@ -20,7 +20,7 @@ const HERO_VIDEO_URL =
 const HEADLINE_LINE_ONE = "Prove your focus is real,";
 const HEADLINE_LINE_TWO = "fund the code you build on.";
 const SUBHEAD =
-  "Upstream checks every session against your real GitHub commits, stays in sync across web, browser and desktop, and turns honest work into funding for the open source you depend on.";
+  "Upstream verifies every session against real commits and local activity, stays in sync across web, browser and desktop, and turns honest work into funding for the open source you depend on.";
 
 const HEADLINE_ONE_WORDS = HEADLINE_LINE_ONE.split(" ").length;
 
@@ -78,7 +78,7 @@ export function Hero() {
             href="/login"
             className="hidden rounded-lg border border-white/10 bg-[#1c1d22] px-5 py-2 font-inter text-[14px] text-white transition-colors hover:bg-[#26272e] md:block"
           >
-            Log in
+            Sign in
           </Link>
 
           <button
@@ -118,7 +118,7 @@ export function Hero() {
               href="/login"
               className="mt-2 rounded-lg border border-white/10 bg-[#1c1d22] px-5 py-3 text-center font-inter text-[15px] text-white"
             >
-              Log in
+              Sign in
             </Link>
           </div>
         </div>
@@ -151,7 +151,7 @@ export function Hero() {
           style={{ animationDelay: "2.2s" }}
         >
           <Link
-            href="/login"
+            href="/signup"
             className="rounded-xl bg-[#6744FF] px-8 py-3.5 text-center font-inter text-[16px] font-medium text-white transition-colors hover:bg-[#5a39f0]"
           >
             Get started

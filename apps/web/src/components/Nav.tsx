@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { motion } from "framer-motion";
-import { LayoutDashboard, FolderKanban, Timer } from "lucide-react";
+import { LayoutDashboard, FolderKanban, Timer, Crown, Settings, User, Monitor } from "lucide-react";
 import { Logo } from "./Logo";
 import { SignOutButton } from "./SignOutButton";
 
@@ -11,6 +11,10 @@ const LINKS = [
   { href: "/dashboard", label: "Dashboard", icon: LayoutDashboard },
   { href: "/projects", label: "Projects", icon: FolderKanban },
   { href: "/session", label: "Focus", icon: Timer },
+  { href: "/screen-time", label: "Screen Time", icon: Monitor },
+  { href: "/plans", label: "Plans", icon: Crown },
+  { href: "/profile", label: "Profile", icon: User },
+  { href: "/settings", label: "Settings", icon: Settings },
 ];
 
 export function Nav() {

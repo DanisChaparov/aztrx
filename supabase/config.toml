@@ -15,8 +15,33 @@ port = 54323
 enabled = true
 site_url = "http://127.0.0.1:3000"
 additional_redirect_urls = ["http://127.0.0.1:3000/auth/callback"]
+jwt_expiry = 3600
+# Email/password auth — sign-up confirmation is handled via /api/email/send-code
+enable_signup = true
+
+[auth.email]
+enable_signup = true
+double_confirm_changes = false
+
+# ── External OAuth providers ──────────────────────────────────────────────
 
 [auth.external.github]
 enabled = true
 client_id = "env(SUPABASE_AUTH_GITHUB_CLIENT_ID)"
 secret = "env(SUPABASE_AUTH_GITHUB_SECRET)"
+
+[auth.external.google]
+enabled = true
+client_id = "env(SUPABASE_AUTH_GOOGLE_CLIENT_ID)"
+secret = "env(SUPABASE_AUTH_GOOGLE_SECRET)"
+skip_nonce_check = false
+
+[auth.external.facebook]
+enabled = true
+client_id = "env(SUPABASE_AUTH_FACEBOOK_CLIENT_ID)"
+secret = "env(SUPABASE_AUTH_FACEBOOK_SECRET)"
+
+[auth.external.twitter]
+enabled = true
+client_id = "env(SUPABASE_AUTH_TWITTER_CLIENT_ID)"
+secret = "env(SUPABASE_AUTH_TWITTER_SECRET)"

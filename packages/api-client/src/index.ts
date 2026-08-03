@@ -12,3 +12,4 @@ export * from "./queries/commits";
 export * from "./queries/commands";
 export * from "./queries/chats";
 export * from "./queries/tts";
+export * from "./queries/ambient";
