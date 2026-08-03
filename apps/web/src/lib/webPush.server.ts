@@ -1,16 +1,30 @@
 import webpush from "web-push";
 import type { PushSubscriptionRow } from "@focus-forge/api-client";
 
-webpush.setVapidDetails(
-  process.env.VAPID_SUBJECT ?? "mailto:hello@example.com",
-  process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY!,
-  process.env.VAPID_PRIVATE_KEY!
-);
+let vapidReady = false;
+
+function ensureVapid(): boolean {
+  if (vapidReady) return true;
+  const publicKey = process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY;
+  const privateKey = process.env.VAPID_PRIVATE_KEY;
+  if (!publicKey || !privateKey) return false;
+  webpush.setVapidDetails(
+    process.env.VAPID_SUBJECT ?? "mailto:hello@example.com",
+    publicKey,
+    privateKey
+  );
+  vapidReady = true;
+  return true;
+}
 
 export async function sendPushToSubscriptions(
   subscriptions: PushSubscriptionRow[],
   payload: { title: string; body: string; url?: string }
 ): Promise<void> {
+  if (!ensureVapid()) {
+    console.warn("[push] VAPID keys not configured — skipping push notifications");
+    return;
+  }
   await Promise.all(
     subscriptions.map((sub) =>
       webpush
