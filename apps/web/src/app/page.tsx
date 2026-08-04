@@ -71,7 +71,7 @@ export default function LandingPage() {
       <main className="flex flex-col">
         <Hero />
 
-        <section id="features" className="relative z-10 bg-[#0b0c10]/70 backdrop-blur-sm px-6 py-28">
+        <section id="features" className="relative z-10 bg-[#0b0c10]/40 backdrop-blur-sm px-6 py-28">
           <div className="mx-auto flex max-w-[1100px] flex-col gap-14">
             <Reveal>
               <h2 className="max-w-[20ch] font-inter text-[2rem] font-extrabold leading-[1.15] tracking-tight text-white sm:text-[2.75rem]">
@@ -94,7 +94,7 @@ export default function LandingPage() {
           </div>
         </section>
 
-        <section id="how-it-works" className="relative z-10 bg-[#0b0c10]/70 backdrop-blur-sm px-6 pb-28">
+        <section id="how-it-works" className="relative z-10 bg-[#0b0c10]/40 backdrop-blur-sm px-6 pb-28">
           <div className="mx-auto flex max-w-[1100px] flex-col gap-12">
             <Reveal>
               <h2 className="font-inter text-[2rem] font-extrabold leading-[1.15] tracking-tight text-white sm:text-[2.75rem]">
@@ -117,7 +117,7 @@ export default function LandingPage() {
           </div>
         </section>
 
-        <section className="relative z-10 bg-[#0b0c10]/70 backdrop-blur-sm px-6 pb-32 text-center">
+        <section className="relative z-10 bg-[#0b0c10]/40 backdrop-blur-sm px-6 pb-32 text-center">
           <Reveal className="mx-auto flex max-w-[720px] flex-col items-center gap-7 rounded-3xl border border-white/10 bg-[#0e0f14] px-8 py-16">
             <h2 className="font-inter text-[2rem] font-extrabold leading-[1.15] tracking-tight text-white sm:text-[2.5rem]">
               Start your streak today

@@ -3,9 +3,9 @@
 import { useEffect, useRef } from "react";
 
 /**
- * Dark nebula + black hole particle field.
- * Particles orbit a central gravitational well with glowing trails.
- * 60fps canvas, <2ms per frame.
+ * Cinematic blue wave particle field — like the CloudFront video but instant.
+ * Layered flowing particles with deep blues, cyans, and soft whites.
+ * 60fps canvas, zero bandwidth, zero lag.
  */
 export function ParticleBackground() {
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -19,16 +19,12 @@ export function ParticleBackground() {
     let running = true;
     let w = 0;
     let h = 0;
-    let cx = 0;
-    let cy = 0;
-    let time = 0;
 
     interface Particle {
       x: number; y: number;
-      r: number;
-      angle: number; dist: number; speed: number;
-      hue: number; alpha: number;
-      trail: { x: number; y: number }[];
+      r: number; alpha: number;
+      vx: number; vy: number;
+      hue: number;
     }
 
     const particles: Particle[] = [];
@@ -36,28 +32,22 @@ export function ParticleBackground() {
     function resize() {
       w = window.innerWidth;
       h = window.innerHeight;
-      cx = w / 2;
-      cy = h / 2;
       canvas!.width = w;
       canvas!.height = h;
     }
 
     function spawn() {
       particles.length = 0;
-      const count = Math.min(Math.floor((w * h) / 12000), 100);
+      const count = Math.min(Math.floor((w * h) / 10000), 100);
       for (let i = 0; i < count; i++) {
-        const angle = Math.random() * Math.PI * 2;
-        const dist = Math.random() * Math.max(w, h) * 0.7 + 50;
         particles.push({
-          x: cx + Math.cos(angle) * dist,
-          y: cy + Math.sin(angle) * dist,
-          r: Math.random() * 2 + 0.8,
-          angle,
-          dist,
-          speed: (Math.random() * 0.3 + 0.1) * (Math.random() > 0.5 ? 1 : -1),
-          hue: Math.random() > 0.5 ? 240 + Math.random() * 40 : 200 + Math.random() * 30,
-          alpha: Math.random() * 0.6 + 0.2,
-          trail: [],
+          x: Math.random() * w,
+          y: Math.random() * h,
+          r: Math.random() * 2.5 + 1,
+          alpha: Math.random() * 0.5 + 0.15,
+          vx: (Math.random() - 0.5) * 0.3,
+          vy: (Math.random() - 0.5) * 0.25 - 0.15,
+          hue: 190 + Math.random() * 50,
         });
       }
     }
@@ -67,98 +57,51 @@ export function ParticleBackground() {
 
     function draw(ts: number) {
       if (!running || !ctx) return;
-      time = ts * 0.001;
+      const t = ts * 0.001;
 
-      // Dark void background
-      ctx.fillStyle = "#0c0c0c";
+      // Deep dark base
+      ctx.fillStyle = "#080c14";
       ctx.fillRect(0, 0, w, h);
 
-      // Nebula glow layers
-      const nebula1 = ctx.createRadialGradient(cx - w * 0.15, cy - h * 0.1, 0, cx, cy, Math.max(w, h) * 0.6);
-      nebula1.addColorStop(0, "rgba(60,30,120,0.08)");
-      nebula1.addColorStop(0.4, "rgba(20,40,100,0.04)");
-      nebula1.addColorStop(0.7, "rgba(5,10,40,0.02)");
-      nebula1.addColorStop(1, "rgba(0,0,0,0)");
-      ctx.fillStyle = nebula1;
+      // Ambient glow layers — deep blue tones
+      const g1 = ctx.createRadialGradient(w * 0.3, h * 0.2, 0, w * 0.5, h * 0.5, Math.max(w, h) * 0.7);
+      g1.addColorStop(0, "rgba(20,60,130,0.08)");
+      g1.addColorStop(0.5, "rgba(5,20,60,0.04)");
+      g1.addColorStop(1, "rgba(0,0,0,0)");
+      ctx.fillStyle = g1;
       ctx.fillRect(0, 0, w, h);
 
-      const nebula2 = ctx.createRadialGradient(cx + w * 0.2, cy - h * 0.2, 0, cx, cy, Math.max(w, h) * 0.5);
-      nebula2.addColorStop(0, "rgba(20,60,100,0.06)");
-      nebula2.addColorStop(0.5, "rgba(10,20,60,0.03)");
-      nebula2.addColorStop(1, "rgba(0,0,0,0)");
-      ctx.fillStyle = nebula2;
+      const g2 = ctx.createRadialGradient(w * 0.7, h * 0.6, 0, w * 0.5, h * 0.5, Math.max(w, h) * 0.6);
+      g2.addColorStop(0, "rgba(0,180,220,0.05)");
+      g2.addColorStop(0.6, "rgba(0,80,160,0.02)");
+      g2.addColorStop(1, "rgba(0,0,0,0)");
+      ctx.fillStyle = g2;
       ctx.fillRect(0, 0, w, h);
 
-      // Black hole core (subtle)
-      const core = ctx.createRadialGradient(cx, cy, 0, cx, cy, 300);
-      core.addColorStop(0, "rgba(0,0,0,0.6)");
-      core.addColorStop(0.5, "rgba(10,5,30,0.15)");
-      core.addColorStop(1, "rgba(0,0,0,0)");
-      ctx.fillStyle = core;
+      // Top bright area — like the cloudfront video's upper glow
+      const topGlow = ctx.createRadialGradient(w * 0.5, h * 0.05, 0, w * 0.5, h * 0.3, h * 0.6);
+      topGlow.addColorStop(0, "rgba(140,200,255,0.07)");
+      topGlow.addColorStop(0.5, "rgba(60,120,200,0.03)");
+      topGlow.addColorStop(1, "rgba(0,0,0,0)");
+      ctx.fillStyle = topGlow;
       ctx.fillRect(0, 0, w, h);
 
-      // Accretion ring glow
-      ctx.save();
-      ctx.translate(cx, cy);
-      ctx.rotate(time * 0.05);
-      const ring = ctx.createRadialGradient(0, 0, 80, 0, 0, 250);
-      ring.addColorStop(0, "rgba(255,255,255,0)");
-      ring.addColorStop(0.3, "rgba(100,140,255,0.04)");
-      ring.addColorStop(0.5, "rgba(140,100,255,0.06)");
-      ring.addColorStop(0.7, "rgba(60,80,200,0.02)");
-      ring.addColorStop(1, "rgba(0,0,0,0)");
-      ctx.fillStyle = ring;
-      ctx.fillRect(-250, -250, 500, 500);
-      ctx.restore();
-
-      // Particles with gravitational orbit
-      const G = 0.03;
+      // Particles with gentle wave motion
       for (const p of particles) {
-        // Gravitational pull toward center
-        const dx = cx - p.x;
-        const dy = cy - p.y;
-        const d = Math.sqrt(dx * dx + dy * dy) + 1;
-        const fx = (dx / d) * G * (200 / Math.max(d, 50));
-        const fy = (dy / d) * G * (200 / Math.max(d, 50));
+        p.x += p.vx + Math.sin(t * 0.5 + p.y * 0.01) * 0.2;
+        p.y += p.vy;
 
-        // Orbital velocity (perpendicular to radius)
-        const orbitSpeed = p.speed * (100 / Math.max(d, 80));
-        const perpX = -dy / d;
-        const perpY = dx / d;
+        if (p.y < -20) { p.y = h + 20; p.x = Math.random() * w; }
+        if (p.x < -20) p.x = w + 20;
+        if (p.x > w + 20) p.x = -20;
 
-        // Apply forces
-        p.x += fx + perpX * orbitSpeed;
-        p.y += fy + perpY * orbitSpeed;
-
-        // Drift correction — keep particles from escaping
-        if (d > Math.max(w, h) * 0.6) {
-          p.x += dx / d * 0.5;
-          p.y += dy / d * 0.5;
-        }
-
-        // Trail
-        p.trail.push({ x: p.x, y: p.y });
-        if (p.trail.length > 8) p.trail.shift();
-
-        // Draw trail
-        if (p.trail.length > 1) {
-          ctx.beginPath();
-          ctx.moveTo(p.trail[0].x, p.trail[0].y);
-          for (let i = 1; i < p.trail.length; i++) {
-            ctx.lineTo(p.trail[i].x, p.trail[i].y);
-          }
-          ctx.strokeStyle = `hsla(${p.hue},60%,70%,${p.alpha * 0.3})`;
-          ctx.lineWidth = p.r * 0.7;
-          ctx.stroke();
-        }
-
-        // Draw particle
-        const glow = ctx.createRadialGradient(p.x, p.y, 0, p.x, p.y, p.r * 3);
-        glow.addColorStop(0, `hsla(${p.hue},80%,80%,${p.alpha})`);
-        glow.addColorStop(0.5, `hsla(${p.hue},60%,60%,${p.alpha * 0.3})`);
-        glow.addColorStop(1, `hsla(${p.hue},40%,40%,0)`);
+        // Soft glow around each particle
+        const glow = ctx.createRadialGradient(p.x, p.y, 0, p.x, p.y, p.r * 4);
+        glow.addColorStop(0, `hsla(${p.hue},70%,80%,${p.alpha})`);
+        glow.addColorStop(0.4, `hsla(${p.hue},60%,60%,${p.alpha * 0.4})`);
+        glow.addColorStop(1, "rgba(0,0,0,0)");
         ctx.fillStyle = glow;
-        ctx.fillRect(p.x - p.r * 3, p.y - p.r * 3, p.r * 6, p.r * 6);
+        ctx.fillRect(p.x - p.r * 4, p.y - p.r * 4, p.r * 8, p.r * 8);
       }
 
       requestAnimationFrame(draw);
