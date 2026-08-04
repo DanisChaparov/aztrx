@@ -1,6 +1,5 @@
 import type { Metadata, Viewport } from "next";
 import { Cabin, Inter, Instrument_Serif, Manrope, Plus_Jakarta_Sans } from "next/font/google";
-import { ThemeProvider } from "@/components/ThemeProvider";
 import "./globals.css";
 
 const manrope = Manrope({ subsets: ["latin"], variable: "--font-manrope", weight: ["400", "500", "600", "700"] });
@@ -34,9 +33,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       lang="en"
       className={`${manrope.variable} ${cabin.variable} ${instrumentSerif.variable} ${inter.variable} ${jakarta.variable}`}
     >
-      <body className="min-h-screen antialiased">
-        <ThemeProvider>{children}</ThemeProvider>
-      </body>
+      <body className="min-h-screen antialiased">{children}</body>
     </html>
   );
 }
