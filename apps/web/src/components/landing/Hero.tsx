@@ -16,7 +16,7 @@ const NAV_LINKS = [
 ];
 
 const HERO_VIDEO_URL =
-  "https://cdn.sceneai.art/Hero%20Section%20Video/973fa3f6-7715-4e73-9cfd-100ee86285b5.mp4";
+  "https://d8j0ntlcm91z4.cloudfront.net/user_38xzZboKViGWJOttwIXH07lWA1P/hf_20260508_064122_c4750c0e-7476-4b44-94a2-a85a65c63bf2.mp4";
 
 const HEADLINE_LINE_ONE = "Prove your focus is real,";
 const HEADLINE_LINE_TWO = "fund the code you build on.";
