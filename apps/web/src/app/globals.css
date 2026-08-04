@@ -90,6 +90,17 @@ html, body {
   animation: shiny 6s linear infinite;
 }
 
+/* ── Background gradient shift ────────────────────────────── */
+@keyframes gradientShift {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+.animate-gradient-shift {
+  animation: gradientShift 15s ease-in-out infinite;
+}
+
 /* ── Landing page entrance animations ─────────────────────── */
 @keyframes fadeInUp {
   from { opacity: 0; transform: translate3d(0, 24px, 0); }

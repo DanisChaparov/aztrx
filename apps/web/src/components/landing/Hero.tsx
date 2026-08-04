@@ -15,9 +15,6 @@ const NAV_LINKS = [
   { label: "Impact", href: "#features" },
 ];
 
-const HERO_VIDEO_URL =
-  "https://d8j0ntlcm91z4.cloudfront.net/user_38xzZboKViGWJOttwIXH07lWA1P/hf_20260508_064122_c4750c0e-7476-4b44-94a2-a85a65c63bf2.mp4";
-
 const HEADLINE_LINE_ONE = "Prove your focus is real,";
 const HEADLINE_LINE_TWO = "fund the code you build on.";
 const SUBHEAD =
@@ -38,18 +35,15 @@ export function Hero() {
 
   return (
     <>
-      {/* Background video */}
-      <video
-        className="fixed inset-0 z-0 h-full w-full object-cover opacity-50"
-        src={HERO_VIDEO_URL}
-        autoPlay
-        muted
-        loop
-        playsInline
-        preload="auto"
-        disablePictureInPicture
-        aria-hidden
-      />
+      {/* Animated gradient background — zero lag, pure CSS */}
+      <div className="fixed inset-0 z-0 pointer-events-none bg-[#0c0c0c]">
+        <div className="absolute inset-0 animate-gradient-shift opacity-40"
+          style={{
+            background: "radial-gradient(ellipse 80% 60% at 50% -10%, rgba(100,130,255,0.15), transparent 50%), radial-gradient(ellipse 60% 50% at 80% 80%, rgba(0,210,255,0.08), transparent 50%), radial-gradient(ellipse 50% 50% at 20% 50%, rgba(100,200,255,0.06), transparent 50%)",
+            backgroundSize: "200% 200%",
+          }}
+        />
+      </div>
 
       {/* Ambient glow behind hero */}
       <div
