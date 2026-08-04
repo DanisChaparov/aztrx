@@ -21,7 +21,9 @@ const APP_ICONS: Record<string, LucideIcon> = {
   "Sublime Text": Code2, Obsidian: BookOpen, Terminal: Terminal,
   iTerm2: Terminal, "Windows Terminal": Terminal, Warp: Terminal,
   "Claude Code": Sparkles, "Codex CLI": Sparkles, "Gemini CLI": Sparkles,
-  Aider: Sparkles, Antigravity: Sparkles,
+  Aider: Sparkles, Antigravity: Sparkles, Cline: Sparkles, "Roo Code": Sparkles,
+  Continue: Sparkles, Cody: Sparkles, "GitHub Copilot": Sparkles,
+  Notion: BookOpen, Linear: Code2, Figma: Code2, Slack: Code2, Discord: Code2,
 };
 
 function formatDuration(seconds: number): string {

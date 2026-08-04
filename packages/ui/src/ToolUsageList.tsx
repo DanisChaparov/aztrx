@@ -37,6 +37,16 @@ const ICONS: Record<string, LucideIcon> = {
   "Codex CLI": Sparkles,
   "Gemini CLI": Sparkles,
   Aider: Sparkles,
+  Cline: Sparkles,
+  "Roo Code": Sparkles,
+  Continue: Sparkles,
+  Cody: Sparkles,
+  "GitHub Copilot": Sparkles,
+  Notion: BookOpen,
+  Linear: Code2,
+  Figma: Code2,
+  Slack: Code2,
+  Discord: Code2,
 };
 
 function formatDuration(seconds: number): string {

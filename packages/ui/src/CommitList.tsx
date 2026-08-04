@@ -1,4 +1,5 @@
 import { GitCommitHorizontal } from "lucide-react";
+import { motion } from "framer-motion";
 
 export interface CommitListItem {
   sha: string;
@@ -9,13 +10,28 @@ export interface CommitListItem {
   committedAt: string | null;
 }
 
+const list = {
+  hidden: {},
+  show: { transition: { staggerChildren: 0.04 } },
+};
+
+const item = {
+  hidden: { opacity: 0, x: -8 },
+  show: { opacity: 1, x: 0, transition: { duration: 0.3, ease: "easeOut" } },
+};
+
 export function CommitList({ commits }: { commits: CommitListItem[] }) {
   if (commits.length === 0) return null;
 
   return (
-    <ul className="flex w-full flex-col gap-1.5 text-left">
+    <motion.ul
+      className="flex w-full flex-col gap-1.5 text-left"
+      initial="hidden"
+      animate="show"
+      variants={list}
+    >
       {commits.map((commit) => (
-        <li key={commit.sha}>
+        <motion.li key={commit.sha} variants={item}>
           <a
             href={commit.htmlUrl}
             target="_blank"
@@ -32,8 +48,8 @@ export function CommitList({ commits }: { commits: CommitListItem[] }) {
             )}
             <span className="shrink-0 font-inter text-[11px] text-neutral-500">{commit.sha.slice(0, 7)}</span>
           </a>
-        </li>
+        </motion.li>
       ))}
-    </ul>
+    </motion.ul>
   );
 }
