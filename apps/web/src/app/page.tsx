@@ -121,7 +121,7 @@ export default function LandingPage() {
           <div className="max-w-6xl mx-auto flex items-center justify-between">
             <div className="flex items-center gap-2.5"><span className="text-sm font-semibold text-white/40">Upstream</span></div>
             <div className="flex items-center gap-6 text-xs text-white/40">
-              <a href="#" className="hover:text-white/70">Privacy</a><a href="#" className="hover:text-white/70">Terms</a>
+              <Link href="/privacy" className="hover:text-white/70">Privacy</Link>
               <a href="https://github.com/DanisChaparov/upstream-app" className="hover:text-white/70">GitHub</a>
             </div>
           </div>
