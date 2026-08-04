@@ -14,9 +14,9 @@ import type { SupabaseClient } from "@supabase/supabase-js";
 import { matchTrackedTool, isAiAssistedTool } from "@focus-forge/core";
 import type { Database } from "@focus-forge/api-client";
 
-const POLL_INTERVAL_MS = 10_000;
-// Sync aggregated hourly buckets to Supabase every 5 minutes.
-const SYNC_INTERVAL_MS = 5 * 60 * 1000;
+const POLL_INTERVAL_MS = 5_000;
+// Sync aggregated hourly buckets to Supabase every 60 seconds.
+const SYNC_INTERVAL_MS = 60 * 1000;
 
 interface HourBucket {
   appName: string;
