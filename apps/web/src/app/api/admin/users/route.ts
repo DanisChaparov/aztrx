@@ -1,27 +1,36 @@
 import { NextResponse } from "next/server";
-import { getServerSupabaseClient } from "@/lib/supabase/server";
+import { createClient } from "@supabase/supabase-js";
 
 /**
  * GET /api/admin/users
- * Returns all users with profile data. Requires admin access.
+ * Returns ALL registered users with profile + session stats.
+ * Uses service_role key to bypass RLS.
  */
 export async function GET() {
-  const supabase = await getServerSupabaseClient();
-  const { data: { user } } = await supabase.auth.getUser();
-  if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  const serviceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
+  if (!serviceRoleKey) {
+    return NextResponse.json({ error: "SUPABASE_SERVICE_ROLE_KEY not set" }, { status: 500 });
+  }
 
-  // Fetch profiles with session stats
-  const { data: profiles, error } = await supabase
+  const admin = createClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    serviceRoleKey,
+    { auth: { autoRefreshToken: false, persistSession: false } }
+  );
+
+  // Get all profiles
+  const { data: profiles, error } = await admin
     .from("profiles")
     .select("id, display_name, auth_provider, avatar_url, plan, github_username")
-    .limit(50);
+    .order("id", { ascending: false })
+    .limit(100);
 
   if (error) {
     return NextResponse.json({ users: [], total: 0, error: error.message });
   }
 
-  // Get session stats
-  const { data: sessions } = await supabase
+  // Get session stats per user
+  const { data: sessions } = await admin
     .from("focus_sessions")
     .select("user_id, verified");
 
