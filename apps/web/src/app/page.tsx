@@ -1,6 +1,5 @@
 "use client";
 
-import { useState } from "react";
 import Link from "next/link";
 import { motion } from "framer-motion";
 import { ArrowRight, Ban, ChevronRight, HeartHandshake, ShieldCheck, Sparkles, type LucideIcon } from "lucide-react";
@@ -21,12 +20,6 @@ const STEPS = [
 
 const LOGOS = ["Cursor","VS Code","GitHub","Claude","Codex","Linear","Docker","Notion"];
 
-const PLANS = [
-  { tier: "Free", price: "0", desc: "Start tracking and verifying your focus sessions. No credit card required.", features: ["Up to 3 projects","Session verification","Basic streak tracking","Browser extension","Web dashboard"], cta: "Get started", href: "/signup" },
-  { tier: "Pro", price: "8", desc: "Everything you need to ship consistently and prove your output.", features: ["Unlimited projects","AI developer twin","Desktop app + system tray","Advanced analytics","Priority support","Impact ledger & OSS funding"], cta: "Start Pro trial", href: "/signup", pro: true },
-  { tier: "Team", price: "12", desc: "For engineering teams that want visibility into collective output.", features: ["Everything in Pro","Team dashboard","Shared projects","Manager reports","SSO & SAML","Dedicated support"], cta: "Contact us", href: "/signup" },
-];
-
 const gradientStyle = {
   backgroundImage: "linear-gradient(to right, #091020 0%, #0B2551 12.5%, #A4F4FD 32.5%, #00d2ff 50%, #0B2551 67.5%, #091020 87.5%, #091020 100%)",
   backgroundSize: "200% auto",
@@ -35,8 +28,6 @@ const gradientStyle = {
 };
 
 export default function LandingPage() {
-  const [yearly, setYearly] = useState(false);
-
   return (
     <div className="relative min-h-screen overflow-x-hidden bg-[#0c0c0c] text-white">
 
@@ -108,28 +99,6 @@ export default function LandingPage() {
             {LOGOS.map((name,i) => (
               <motion.div key={name} initial={{ opacity:0 }} whileInView={{ opacity:1 }} viewport={{ once:true }} transition={{ delay:i*0.05 }}
                 className="text-sm font-semibold tracking-tight text-white/50 hover:text-white transition-colors cursor-default">{name}</motion.div>
-            ))}
-          </div>
-        </section>
-
-        {/* Pricing */}
-        <section className="c3-pricing-section relative z-10">
-          <svg width="0" height="0" className="absolute"><filter id="c3-noise-pricing"><feTurbulence type="fractalNoise" baseFrequency="0.5" numOctaves="2" stitchTiles="stitch" /><feComponentTransfer><feFuncA type="linear" slope="0.075" /></feComponentTransfer><feComposite in2="SourceGraphic" operator="in" result="noise" /><feBlend in="SourceGraphic" in2="noise" mode="overlay" /></filter></svg>
-          <div className="c3-watermark-container"><div className="c3-watermark-main"><span className="c3-watermark-line-1">Choose your</span><span className="c3-watermark-line-2">flow</span></div></div>
-          <div className="c3-toggle-wrap">
-            <span className="text-sm text-white/60">Monthly</span>
-            <button onClick={()=>setYearly(!yearly)} className={`c3-toggle${yearly?" active":""}`}><span className="c3-toggle-knob" /></button>
-            <span className="text-sm text-white/60">Yearly</span>
-          </div>
-          <div className="c3-grid">
-            {PLANS.map(p => (
-              <div key={p.tier} className={`c3-card${p.pro?" c3-card-pro":""}`}>
-                <div className="c3-tier-small">{p.tier}</div>
-                <div className="c3-tier-large">{yearly?`$${Math.round(parseInt(p.price)*0.6)}`:`$${p.price}`}<span className="text-lg text-white/40">/mo</span></div>
-                <div className="c3-desc">{p.desc}</div>
-                <ul className="c3-list">{p.features.map(f=><li key={f}><span className="c3-check"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="3"><path d="M20 6L9 17l-5-5"/></svg></span>{f}</li>)}</ul>
-                <Link href={p.href} className="c3-btn">{p.cta}</Link>
-              </div>
             ))}
           </div>
         </section>

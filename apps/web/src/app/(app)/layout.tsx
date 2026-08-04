@@ -1,6 +1,6 @@
 import { redirect } from "next/navigation";
 import { AssistantPanel } from "@/components/AssistantPanel";
-import { ParticleBackground } from "@/components/ParticleBackground";
+import { VideoBackground } from "@/components/VideoBackground";
 import { SiteBackground } from "@/components/SiteBackground";
 import { ExtensionBridge } from "@/components/ExtensionBridge";
 import { Nav } from "@/components/Nav";
@@ -17,7 +17,7 @@ export default async function AppLayout({ children }: { children: React.ReactNod
   return (
     <div className="relative min-h-screen">
       <div className="fixed inset-0">
-        <ParticleBackground />
+        <VideoBackground />
       </div>
       <ExtensionBridge />
       <div className="relative">

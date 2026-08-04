@@ -14,7 +14,7 @@ const NAV_LINKS = [
   { label: "Impact", href: "#features" },
 ];
 
-const HEADLINE_LINE_ONE = "Prove your focus is real,";
+const HEADLINE_LINE_ONE = "Prove your focus is real";
 const HEADLINE_LINE_TWO = "fund the code you build on.";
 const SUBHEAD =
   "Upstream verifies every session against real commits and local activity, stays in sync across web, browser and desktop, and turns honest work into funding for the open source you depend on.";
@@ -34,22 +34,12 @@ export function Hero() {
 
   return (
     <>
-      {/* Ambient glow behind hero */}
-      <div
-        className="fixed inset-0 z-[1] pointer-events-none"
-        style={{ background: "radial-gradient(600px at 50% 0%, rgba(255,255,255,0.08), transparent 70%)" }}
-      />
-
       {/* macOS frosted menu bar */}
       <motion.header
         initial={{ opacity: 0, y: -12 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
-        className={`fixed inset-x-0 top-0 z-40 transition-all duration-300 ${
-          scrolled
-            ? "bg-black/40 backdrop-blur-2xl border-b border-white/10"
-            : ""
-        }`}
+        className="fixed inset-x-0 top-0 z-40"
       >
         <div className="mx-auto flex max-w-[1400px] items-center justify-between px-6 py-4 md:py-5">
           <Link href="#top" className="flex items-center gap-2.5">
