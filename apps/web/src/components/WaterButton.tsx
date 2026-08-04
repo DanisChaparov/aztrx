@@ -3,6 +3,7 @@
 import { useState, type MouseEvent, type ReactNode } from "react";
 import Link from "next/link";
 import { AnimatePresence, motion } from "framer-motion";
+import { playClick } from "@/lib/sounds";
 
 interface RippleDot {
   id: number;
@@ -43,6 +44,7 @@ export function WaterButton({
 
   function spawnRipple(e: MouseEvent<HTMLElement>) {
     if (disabled) return;
+    playClick();
     const rect = e.currentTarget.getBoundingClientRect();
     const size = Math.max(rect.width, rect.height) * 2.2;
     const id = rippleSeq++;

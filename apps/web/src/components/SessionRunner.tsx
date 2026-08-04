@@ -13,6 +13,7 @@ import {
 import type { FocusSession, Project } from "@focus-forge/core";
 import { CommitList, Confetti, Timer } from "@focus-forge/ui";
 import { getBrowserSupabaseClient } from "@/lib/supabase/browser";
+import { playSessionStart, playSessionComplete, playStreak } from "@/lib/sounds";
 import { Select } from "@/components/Select";
 import { WaterButton } from "@/components/WaterButton";
 import { notifySessionEnd, playChime } from "@/lib/chime";
@@ -100,6 +101,7 @@ export function SessionRunner({
         plannedDurationMin: duration,
       });
       setSession(created);
+      playSessionStart();
     } catch (err) {
       setError(err instanceof Error ? err.message : "Could not start session");
     } finally {
@@ -124,6 +126,11 @@ export function SessionRunner({
       setCompletedDurationMin(session.plannedDurationMin);
       setSession(null);
       router.refresh();
+      if (verifyResult.verified) {
+        playStreak();
+      } else {
+        playSessionComplete();
+      }
 
       fetch("/api/push/notify", {
         method: "POST",
