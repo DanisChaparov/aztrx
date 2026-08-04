@@ -1,6 +1,7 @@
 import type { Metadata, Viewport } from "next";
 import { Cabin, Inter, Instrument_Serif, Manrope, Plus_Jakarta_Sans } from "next/font/google";
 import "./globals.css";
+import "./globals-v2.css";
 
 const manrope = Manrope({ subsets: ["latin"], variable: "--font-manrope", weight: ["400", "500", "600", "700"] });
 const cabin = Cabin({ subsets: ["latin"], variable: "--font-cabin", weight: ["400", "500", "600"] });
