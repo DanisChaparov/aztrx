@@ -19,13 +19,7 @@ const STEPS = [
   { title: "Get verified & level up", description: "Honest sessions extend your streak, earn XP, unlock achievements, and grow your impact ledger." },
 ];
 
-const TESTIMONIALS = [
-  { quote: "Upstream changed how I think about focus. Knowing my sessions are verified against real commits makes every minute count.", name: "Sarah Chen", role: "Senior Engineer", company: "VERCEL" },
-  { quote: "The streak system is addictive in the best way. I've shipped more in the last month than the previous three combined.", name: "Marcus Webb", role: "Founder", company: "INDIE" },
-  { quote: "Finally a focus app that understands developers. The GitHub integration means I don't have to manually log anything.", name: "David Lim", role: "Tech Lead", company: "STRIPE" },
-];
-
-const LOGOS = ["Cursor","VS Code","GitHub","Claude","Supabase","Vercel","Docker","Notion"];
+const LOGOS = ["Cursor","VS Code","GitHub","Claude","Codex","Linear","Docker","Notion"];
 
 const PLANS = [
   { tier: "Free", price: "0", desc: "Start tracking and verifying your focus sessions. No credit card required.", features: ["Up to 3 projects","Session verification","Basic streak tracking","Browser extension","Web dashboard"], cta: "Get started", href: "/signup" },
@@ -129,19 +123,6 @@ export default function LandingPage() {
             {LOGOS.map((name,i) => (
               <motion.div key={name} initial={{ opacity:0 }} whileInView={{ opacity:1 }} viewport={{ once:true }} transition={{ delay:i*0.05 }}
                 className="text-sm font-semibold tracking-tight text-white/50 hover:text-white transition-colors cursor-default">{name}</motion.div>
-            ))}
-          </div>
-        </section>
-
-        {/* Testimonials */}
-        <section className="relative z-10 max-w-6xl mx-auto px-6 py-20 md:py-28 border-t border-white/10">
-          <div className="grid md:grid-cols-3 gap-6">
-            {TESTIMONIALS.map((t,i) => (
-              <motion.figure key={i} initial={{ opacity:0,y:20 }} whileInView={{ opacity:1,y:0 }} viewport={{ once:true }} transition={{ delay:i*0.1,duration:0.6 }}
-                className="liquid-glass rounded-2xl p-6">
-                <blockquote className="text-sm text-white/80 leading-[1.6]">"{t.quote}"</blockquote>
-                <figcaption className="mt-6 pt-5 border-t border-white/10"><div className="text-sm font-semibold">{t.name}</div><div className="text-xs text-white/50">{t.role}</div><div className="text-xs text-white font-semibold tracking-wide mt-1">{t.company}</div></figcaption>
-              </motion.figure>
             ))}
           </div>
         </section>
