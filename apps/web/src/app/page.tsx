@@ -103,6 +103,25 @@ export default function LandingPage() {
           </div>
         </section>
 
+        {/* Trust */}
+        <section className="relative z-10 max-w-6xl mx-auto px-6 py-16 border-t border-white/10">
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 text-center">
+            {[
+              { title: "No screenshots", desc: "We never see your screen, code, or keystrokes. Only app names are tracked." },
+              { title: "Local-first", desc: "Activity data is processed on your device. Only hourly summaries are synced." },
+              { title: "You control your data", desc: "Delete your account anytime. Everything is permanently removed." },
+            ].map((t) => (
+              <div key={t.title} className="flex flex-col items-center gap-2 p-4">
+                <h3 className="font-inter text-sm font-semibold text-white">{t.title}</h3>
+                <p className="font-inter text-xs text-[#A1A1AA] max-w-[220px]">{t.desc}</p>
+              </div>
+            ))}
+          </div>
+          <p className="text-center mt-6 font-inter text-xs text-[#A1A1AA]">
+            <Link href="/privacy" className="text-[#3B82F6] underline">Read our full privacy policy</Link>
+          </p>
+        </section>
+
         {/* Final CTA */}
         <section className="relative z-10 max-w-6xl mx-auto px-6 py-20 md:py-32">
           <motion.div initial={{ opacity:0,y:30 }} whileInView={{ opacity:1,y:0 }} viewport={{ once:true }} transition={{ duration:0.8 }}
