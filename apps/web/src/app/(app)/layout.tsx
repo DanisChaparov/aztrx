@@ -3,7 +3,6 @@ import { AssistantPanel } from "@/components/AssistantPanel";
 import { VideoBackground } from "@/components/VideoBackground";
 import { SiteBackground } from "@/components/SiteBackground";
 import { ExtensionBridge } from "@/components/ExtensionBridge";
-import { WebTimeTracker } from "@/components/WebTimeTracker";
 import { Nav } from "@/components/Nav";
 import { getServerSupabaseClient } from "@/lib/supabase/server";
 
@@ -21,7 +20,6 @@ export default async function AppLayout({ children }: { children: React.ReactNod
         <VideoBackground />
       </div>
       <ExtensionBridge />
-      <WebTimeTracker />
       <div className="relative">
         <Nav />
         <div className="mx-auto max-w-4xl px-6 pb-16">{children}</div>
