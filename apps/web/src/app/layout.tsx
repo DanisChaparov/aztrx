@@ -1,5 +1,6 @@
 import type { Metadata, Viewport } from "next";
 import { Cabin, Inter, Instrument_Serif, Manrope, Plus_Jakarta_Sans } from "next/font/google";
+import { ThemeActivator } from "@/components/ThemeActivator";
 import "./globals.css";
 import "./globals-v2.css";
 
@@ -34,7 +35,10 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       lang="en"
       className={`${manrope.variable} ${cabin.variable} ${instrumentSerif.variable} ${inter.variable} ${jakarta.variable}`}
     >
-      <body className="min-h-screen antialiased">{children}</body>
+      <body className="min-h-screen antialiased">
+        <ThemeActivator />
+        {children}
+      </body>
     </html>
   );
 }
