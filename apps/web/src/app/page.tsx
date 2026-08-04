@@ -1,26 +1,29 @@
+"use client";
+
+import { useEffect, useState } from "react";
 import Link from "next/link";
-import { Ban, HeartHandshake, ShieldCheck, Sparkles, type LucideIcon } from "lucide-react";
+import { motion } from "framer-motion";
+import { Ban, HeartHandshake, ShieldCheck, Sparkles, Moon, Sun, ArrowRight } from "lucide-react";
 import { Hero } from "@/components/landing/Hero";
 import { Reveal } from "@/components/landing/Reveal";
+import { Logo } from "@/components/Logo";
+import { useTheme } from "@/components/ThemeProvider";
 
-const FEATURES: { icon: LucideIcon; title: string; description: string }[] = [
+const FEATURES = [
   {
     icon: ShieldCheck,
     title: "Verified, not just timed",
-    description:
-      "Sessions are checked against real commits and local activity — a locked screen doesn't fake it, honest output does.",
+    description: "Sessions are checked against real commits and local activity — a locked screen doesn't fake it, honest output does.",
   },
   {
     icon: HeartHandshake,
     title: "Funds the code you depend on",
-    description:
-      "Every verified session builds a simulated impact ledger, split across the open-source dependencies your project actually uses.",
+    description: "Every verified session builds a simulated impact ledger, split across the open-source dependencies your project actually uses.",
   },
   {
     icon: Ban,
     title: "Blocks real distractions",
-    description:
-      "A browser extension blocks distracting sites mid-session; the desktop widget catches native apps the browser can't see.",
+    description: "A browser extension blocks distracting sites mid-session; the desktop widget catches native apps the browser can't see.",
   },
   {
     icon: Sparkles,
@@ -30,27 +33,41 @@ const FEATURES: { icon: LucideIcon; title: string; description: string }[] = [
 ];
 
 const STEPS = [
-  {
-    title: "Connect your accounts",
-    description: "Sign in and optionally link a repo so sessions can be verified against real commits.",
-  },
-  {
-    title: "Start a session",
-    description:
-      "Pick a duration from the web app, browser toolbar, or desktop widget — they all stay in sync.",
-  },
-  {
-    title: "Get verified & level up",
-    description:
-      "Honest sessions extend your streak, earn XP, unlock achievements, and grow your impact ledger.",
-  },
+  { title: "Connect your accounts", description: "Sign in and optionally link a repo so sessions can be verified against real commits." },
+  { title: "Start a session", description: "Pick a duration from the web app, browser toolbar, or desktop widget — they all stay in sync." },
+  { title: "Get verified & level up", description: "Honest sessions extend your streak, earn XP, unlock achievements, and grow your impact ledger." },
 ];
 
 export default function LandingPage() {
+  const { theme, toggle } = useTheme();
+  const [scrolled, setScrolled] = useState(false);
+
+  useEffect(() => {
+    const onScroll = () => setScrolled(window.scrollY > 12);
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
+  }, []);
+
   return (
-    // Deliberately transparent: the hero's fixed video sits behind this, and
-    // each section below paints its own #0b0c10 to cover it on scroll.
     <main className="flex flex-col">
+      {/* Theme toggle — fixed top-right */}
+      <div className="fixed top-4 right-4 z-50 flex items-center gap-2">
+        <Moon size={14} className={theme === "dark" ? "text-white" : "text-zinc-400"} />
+        <button
+          onClick={toggle}
+          className={`w-11 h-6 rounded-full transition-colors duration-300 relative ${
+            theme === "dark" ? "bg-white/20" : "bg-zinc-300"
+          }`}
+        >
+          <span
+            className={`absolute top-1 w-4 h-4 rounded-full bg-white transition-transform duration-300 ${
+              theme === "dark" ? "left-1" : "left-6"
+            }`}
+          />
+        </button>
+        <Sun size={14} className={theme === "light" ? "text-zinc-800" : "text-zinc-400"} />
+      </div>
+
       <Hero />
 
       <section id="features" className="relative z-10 bg-[#0b0c10] px-6 py-28">
