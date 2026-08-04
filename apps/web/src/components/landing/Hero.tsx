@@ -10,8 +10,7 @@ import { DashboardPreview } from "@/components/landing/DashboardPreview";
 const NAV_LINKS = [
   { label: "Product", href: "#features" },
   { label: "How it works", href: "#how-it-works" },
-  { label: "Verification", href: "#features" },
-  { label: "Impact", href: "#features" },
+  { label: "Download", href: "/download" },
 ];
 
 const HEADLINE_LINE_ONE = "Prove your focus is real";
