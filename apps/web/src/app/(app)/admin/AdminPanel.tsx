@@ -111,6 +111,7 @@ export function AdminPanel({ userId }: { userId: string }) {
             { icon: Eye, label: "View profile", action: () => { const keys = ["upstream-display-name","upstream-email","upstream-onboarding-done"]; const data: any = { localStorage: {} }; for (const k of keys) data.localStorage[k] = localStorage.getItem(k); setResult({ ok: true, data, time: 0 }); } },
             { icon: Trash2, label: "Reset onboarding", action: () => { ["upstream-onboarding-done","upstream-email-verified","upstream-display-name"].forEach(k => localStorage.removeItem(k)); setResult({ ok: true, data: { message: "Reset. Refresh dashboard." }, time: 0 }); } },
             { icon: Key, label: "Clear localStorage", action: () => { localStorage.clear(); setResult({ ok: true, data: { message: "Cleared." }, time: 0 }); } },
+            { icon: Sparkles, label: "Reset all trials", action: () => run(() => fetch("/api/admin/reset-trial", { method: "POST" })) },
           ].map(({ icon: Icon, label, action }) => (
             <button key={label} onClick={action} disabled={busy} className={btn}>
               <Icon size={13} /> {label}
