@@ -1,6 +1,6 @@
 import { redirect } from "next/navigation";
 import { AssistantPanel } from "@/components/AssistantPanel";
-import { SiteBackground } from "@/components/SiteBackground";
+import { AnimatedBackground } from "@/components/AnimatedBackground";
 import { ExtensionBridge } from "@/components/ExtensionBridge";
 import { Nav } from "@/components/Nav";
 import { getServerSupabaseClient } from "@/lib/supabase/server";
@@ -15,9 +15,7 @@ export default async function AppLayout({ children }: { children: React.ReactNod
 
   return (
     <div className="relative min-h-screen">
-      <div className="fixed inset-0">
-        <SiteBackground videoOpacity={0.3} />
-      </div>
+      <AnimatedBackground />
       <ExtensionBridge />
       <div className="relative">
         <Nav />

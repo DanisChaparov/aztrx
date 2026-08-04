@@ -94,7 +94,7 @@ export async function getAmbientDailyHours(
 /** Convenience: today's ambient tool summary for the iPhone-style Screen Time card. */
 export async function getDailyScreenTime(client: SupabaseClient<Database>): Promise<AmbientToolSummary[]> {
   const today = new Date();
-  today.setUTCHours(0, 0, 0, 0);
+  today.setHours(0, 0, 0, 0);
   return getAmbientToolSummary(client, { since: today.toISOString() });
 }
 
@@ -115,9 +115,12 @@ export async function getHourlyScreenTime(
   client: SupabaseClient<Database>,
   date: Date
 ): Promise<{ dateLabel: string; hours: HourlyBucket[] }> {
-  const dayStart = new Date(Date.UTC(date.getUTCFullYear(), date.getUTCMonth(), date.getUTCDate(), 0, 0, 0, 0));
-  const dayEnd = new Date(dayStart);
-  dayEnd.setUTCDate(dayEnd.getUTCDate() + 1);
+  // Build the day range in the user's LOCAL timezone, then convert to ISO
+  // for the database query. The old code used getUTC* methods which lose the
+  // local day — e.g., 00:00 Aug 4 local = 21:00 Aug 3 UTC, so getUTCDate()
+  // returned 3 and the page showed the wrong date.
+  const dayStart = new Date(date.getFullYear(), date.getMonth(), date.getDate(), 0, 0, 0, 0);
+  const dayEnd = new Date(date.getFullYear(), date.getMonth(), date.getDate() + 1, 0, 0, 0, 0);
 
   // We store bucketed by UTC hour, but display in local hour.
   // The bucket_hour column is a timestamptz — Postgres does the conversion.
