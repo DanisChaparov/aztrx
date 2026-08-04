@@ -7,13 +7,13 @@ export function Logo({ size = 28 }: { size?: number }) {
     <svg width={size} height={size} viewBox="0 0 32 32" fill="none" aria-hidden="true">
       <defs>
         <linearGradient id="logo-grad" x1="4" y1="4" x2="28" y2="28" gradientUnits="userSpaceOnUse">
-          <stop stopColor="#A78BFA" />
-          <stop offset="0.5" stopColor="#8B5CF6" />
-          <stop offset="1" stopColor="#7C3AED" />
+          <stop stopColor="#93C5FD" />
+          <stop offset="0.5" stopColor="#3B82F6" />
+          <stop offset="1" stopColor="#2563EB" />
         </linearGradient>
         <linearGradient id="logo-glow" x1="16" y1="0" x2="16" y2="32" gradientUnits="userSpaceOnUse">
-          <stop stopColor="#A78BFA" stopOpacity="0.3" />
-          <stop offset="1" stopColor="#7C3AED" stopOpacity="0" />
+          <stop stopColor="#93C5FD" stopOpacity="0.3" />
+          <stop offset="1" stopColor="#2563EB" stopOpacity="0" />
         </linearGradient>
       </defs>
       {/* Background glow */}

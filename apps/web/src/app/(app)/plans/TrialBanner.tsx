@@ -8,10 +8,10 @@ export function TrialBanner({ endsAt }: { endsAt: string }) {
   const formatted = endDate.toLocaleDateString("en-US", { month: "long", day: "numeric", year: "numeric" });
 
   return (
-    <div className="flex items-center justify-between rounded-2xl border border-[#6744FF]/30 bg-[#6744FF]/[0.08] p-5">
+    <div className="flex items-center justify-between rounded-2xl border border-[#3B82F6]/30 bg-[#3B82F6]/[0.08] p-5">
       <div className="flex items-center gap-3">
-        <div className="flex h-10 w-10 items-center justify-center rounded-full bg-[#6744FF]/20">
-          <Sparkles size={18} className="text-[#8b74ff]" />
+        <div className="flex h-10 w-10 items-center justify-center rounded-full bg-[#3B82F6]/20">
+          <Sparkles size={18} className="text-[#60A5FA]" />
         </div>
         <div>
           <p className="font-manrope text-sm font-medium text-white">
@@ -25,7 +25,7 @@ export function TrialBanner({ endsAt }: { endsAt: string }) {
       </div>
       <a
         href="/api/plans/subscribe"
-        className="shrink-0 rounded-xl bg-[#6744FF] px-5 py-2.5 font-manrope text-sm font-semibold text-white transition-colors hover:bg-[#6744FF]/90"
+        className="shrink-0 rounded-xl bg-[#3B82F6] px-5 py-2.5 font-manrope text-sm font-semibold text-white transition-colors hover:bg-[#3B82F6]/90"
       >
         Subscribe now
       </a>

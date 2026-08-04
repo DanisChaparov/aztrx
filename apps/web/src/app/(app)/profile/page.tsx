@@ -85,7 +85,7 @@ export default async function ProfilePage() {
             className="flex items-center gap-3 rounded-2xl border border-white/10 bg-[#0e0f14] p-4 transition-colors hover:border-white/20"
           >
             <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-white/5">
-              <link.icon size={16} className="text-[#8b74ff]" />
+              <link.icon size={16} className="text-[#60A5FA]" />
             </div>
             <div>
               <p className="font-manrope text-sm font-medium text-white">{link.label}</p>

@@ -68,7 +68,7 @@ export function FeatureTutorial({ feature, open, onClose }: Props) {
               {/* Header */}
               <div className="flex flex-col gap-2">
                 <div className="flex items-center gap-2">
-                  <Info size={18} className="text-[#8b74ff]" />
+                  <Info size={18} className="text-[#60A5FA]" />
                   <h2 className="font-manrope text-lg font-semibold text-white">{feature}</h2>
                 </div>
                 {tutorial.status === "coming-soon" && (
@@ -95,7 +95,7 @@ export function FeatureTutorial({ feature, open, onClose }: Props) {
                   <ol className="flex flex-col gap-2">
                     {tutorial.how.split("\n").filter(Boolean).map((step, i) => (
                       <li key={i} className="flex items-start gap-2.5">
-                        <span className="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-[#6744FF]/15 font-manrope text-[10px] font-bold text-[#8b74ff]">
+                        <span className="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-[#3B82F6]/15 font-manrope text-[10px] font-bold text-[#60A5FA]">
                           {i + 1}
                         </span>
                         <span className="font-inter text-sm text-[#A1A1AA]">{step.replace(/^\d+\.\s*/, "")}</span>

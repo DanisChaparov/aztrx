@@ -72,11 +72,11 @@ export function ToolUsageList({ items, compact = false }: { items: ToolUsageItem
               animate={{ opacity: 1, x: 0 }}
               transition={{ duration: 0.35, delay: index * 0.05, ease: "easeOut" }}
             >
-              <Icon size={compact ? 12 : 14} className="shrink-0 text-[#8b74ff]" />
+              <Icon size={compact ? 12 : 14} className="shrink-0 text-[#60A5FA]" />
               <span className={`flex shrink-0 items-center gap-1.5 truncate font-inter text-sm text-neutral-300 ${compact ? "w-28" : "w-32"}`}>
                 {item.appName}
                 {isAiAssistedTool(item.appName) && (
-                  <span className="shrink-0 rounded-full bg-[#6744FF]/15 px-1.5 py-0.5 font-jakarta text-[9px] font-bold uppercase tracking-wide text-[#8b74ff]">
+                  <span className="shrink-0 rounded-full bg-[#3B82F6]/15 px-1.5 py-0.5 font-jakarta text-[9px] font-bold uppercase tracking-wide text-[#60A5FA]">
                     AI
                   </span>
                 )}
@@ -84,7 +84,7 @@ export function ToolUsageList({ items, compact = false }: { items: ToolUsageItem
               {!compact && (
                 <div className="h-1.5 flex-1 overflow-hidden rounded-full bg-white/5">
                   <motion.div
-                    className="h-full rounded-full bg-[#6744FF]/60"
+                    className="h-full rounded-full bg-[#3B82F6]/60"
                     initial={{ width: 0 }}
                     animate={{ width: `${(item.totalSeconds / maxSeconds) * 100}%` }}
                     transition={{ duration: 0.6, delay: index * 0.05 + 0.1, ease: "easeOut" }}

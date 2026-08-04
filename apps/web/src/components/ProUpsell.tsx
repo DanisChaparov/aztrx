@@ -9,8 +9,8 @@ import { Sparkles } from "lucide-react";
  */
 export function ProUpsell({ feature }: { feature: string }) {
   return (
-    <div className="flex items-center gap-2 rounded-lg border border-[#6744FF]/30 bg-[#6744FF]/[0.06] px-3 py-2">
-      <Sparkles size={14} className="shrink-0 text-[#8b74ff]" />
+    <div className="flex items-center gap-2 rounded-lg border border-[#3B82F6]/30 bg-[#3B82F6]/[0.06] px-3 py-2">
+      <Sparkles size={14} className="shrink-0 text-[#60A5FA]" />
       <span className="font-manrope text-xs text-[#A1A1AA]">
         <span className="font-semibold text-white">{feature}</span> is a Pro feature
       </span>

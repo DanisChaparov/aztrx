@@ -58,7 +58,7 @@ export function FeatureComparisonTable({ features }: { features: Feature[] }) {
             <tr className="border-b border-white/10 bg-white/[0.02]">
               <th className="px-5 py-3 text-left font-manrope text-sm font-medium text-white">Feature</th>
               <th className="px-5 py-3 text-center font-manrope text-sm font-medium text-neutral-400">Free</th>
-              <th className="px-5 py-3 text-center font-manrope text-sm font-medium text-[#8b74ff]">Pro</th>
+              <th className="px-5 py-3 text-center font-manrope text-sm font-medium text-[#60A5FA]">Pro</th>
             </tr>
           </thead>
           <tbody className="divide-y divide-white/5">
@@ -89,7 +89,7 @@ export function FeatureComparisonTable({ features }: { features: Feature[] }) {
                     {comingSoon ? (
                       <Clock size={15} className="mx-auto text-amber-400/60" />
                     ) : (
-                      <Check size={15} className="mx-auto text-[#8b74ff]" />
+                      <Check size={15} className="mx-auto text-[#60A5FA]" />
                     )}
                   </td>
                 </tr>

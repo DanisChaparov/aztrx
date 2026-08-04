@@ -31,7 +31,7 @@ export function WelcomeGreeting({ name, streak }: { name: string; streak: number
   return (
     <div className="flex flex-col gap-0.5">
       <h1 className="font-instrument-serif text-3xl text-white">
-        {g}, <span className="text-[#8b74ff]">{displayName}</span>
+        {g}, <span className="text-[#60A5FA]">{displayName}</span>
       </h1>
       {streak > 0 ? (
         <p className="font-inter text-sm text-[#A1A1AA]">

@@ -37,7 +37,7 @@ function formatHour(hour: number): string {
 
 function appColor(appName: string, trackedTool: string | null, isAi: boolean, index: number): string {
   if (isAi) {
-    const aiColors = ["#6744FF", "#8b74ff", "#7C3AED", "#A78BFA", "#6D28D9"];
+    const aiColors = ["#3B82F6", "#60A5FA", "#7C3AED", "#A78BFA", "#6D28D9"];
     return aiColors[index % aiColors.length];
   }
   const colors = ["#3B3B4D", "#5A5A72", "#4A4A5E", "#6B6B80", "#2D2D3D"];
@@ -204,7 +204,7 @@ export function ScreenTimeDetail({
                                     />
                                     <span className="text-neutral-300">{name}</span>
                                     {ai && (
-                                      <span className="rounded-full bg-[#6744FF]/15 px-1.5 py-0.5 font-jakarta text-[9px] font-bold uppercase tracking-wide text-[#8b74ff]">
+                                      <span className="rounded-full bg-[#3B82F6]/15 px-1.5 py-0.5 font-jakarta text-[9px] font-bold uppercase tracking-wide text-[#60A5FA]">
                                         AI
                                       </span>
                                     )}

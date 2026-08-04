@@ -56,7 +56,7 @@ export function Select({
         aria-haspopup="listbox"
         aria-expanded={open}
         className={`flex w-full items-center justify-between rounded-xl border bg-white/[0.03] px-4 py-2.5 text-left font-inter text-sm text-white transition-colors ${
-          open ? "border-[#6744FF]" : "border-white/10 hover:border-white/25"
+          open ? "border-[#3B82F6]" : "border-white/10 hover:border-white/25"
         }`}
       >
         <span className={selected ? "text-white" : "text-neutral-500"}>{selected?.label ?? placeholder}</span>
@@ -89,11 +89,11 @@ export function Select({
                       setOpen(false);
                     }}
                     className={`flex w-full items-center justify-between rounded-lg px-3 py-2 text-left font-inter text-sm transition-colors ${
-                      isSelected ? "bg-[#6744FF]/20 text-white" : "text-neutral-300 hover:bg-white/[0.06]"
+                      isSelected ? "bg-[#3B82F6]/20 text-white" : "text-neutral-300 hover:bg-white/[0.06]"
                     }`}
                   >
                     {option.label}
-                    {isSelected && <Check size={14} className="text-[#8b74ff]" />}
+                    {isSelected && <Check size={14} className="text-[#60A5FA]" />}
                   </button>
                 </li>
               );

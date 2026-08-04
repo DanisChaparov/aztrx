@@ -163,7 +163,7 @@ export function DashboardData({ initialSessions, projects, plan, publicProfileEn
             {screenTime.length > 0 && (
               <a
                 href="/screen-time"
-                className="font-inter text-xs text-[#8b74ff] hover:underline transition-colors"
+                className="font-inter text-xs text-[#60A5FA] hover:underline transition-colors"
               >
                 See all →
               </a>
@@ -261,7 +261,7 @@ export function DashboardData({ initialSessions, projects, plan, publicProfileEn
               <button
                 type="button"
                 onClick={() => setShowAllSessions(!showAllSessions)}
-                className="font-inter text-xs text-[#8b74ff] hover:underline"
+                className="font-inter text-xs text-[#60A5FA] hover:underline"
               >
                 {showAllSessions ? "Show less" : `Show all (${sessions.length})`}
               </button>

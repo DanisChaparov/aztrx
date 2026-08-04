@@ -15,9 +15,9 @@ interface RippleDot {
 let rippleSeq = 0;
 
 const VARIANTS = {
-  primary: "bg-[#6744FF] text-white shadow-[0_4px_24px_-6px_rgba(103,68,255,0.5)] hover:bg-[#5a39f0]",
+  primary: "bg-[#3B82F6] text-white shadow-[0_4px_24px_-6px_rgba(103,68,255,0.5)] hover:bg-[#2563EB]",
   glass: "liquid-glass text-white hover:bg-white/[0.05]",
-  ghost: "border border-white/15 text-white hover:border-[#6744FF]/60 hover:text-[#8b74ff]",
+  ghost: "border border-white/15 text-white hover:border-[#3B82F6]/60 hover:text-[#60A5FA]",
 } as const;
 
 interface WaterButtonProps {

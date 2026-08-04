@@ -110,7 +110,7 @@ export function DailyScreenTime({
               >
                 {/* Icon */}
                 <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-white/[0.04]">
-                  <Icon size={14} className={aiAssisted ? "text-[#8b74ff]" : "text-neutral-400"} />
+                  <Icon size={14} className={aiAssisted ? "text-[#60A5FA]" : "text-neutral-400"} />
                 </div>
 
                 {/* Name + bar */}
@@ -130,7 +130,7 @@ export function DailyScreenTime({
                       style={{
                         width: `${pct}%`,
                         background: aiAssisted
-                          ? "linear-gradient(90deg, #6744FF, #8b74ff)"
+                          ? "linear-gradient(90deg, #3B82F6, #60A5FA)"
                           : "linear-gradient(90deg, #3B3B4D, #5A5A72)",
                       }}
                       initial={{ width: 0 }}
@@ -149,7 +149,7 @@ export function DailyScreenTime({
       <div className="flex gap-4 rounded-xl bg-white/[0.02] p-3">
         <div className="flex-1">
           <div className="flex items-center gap-1.5">
-            <Sparkles size={11} className="text-[#8b74ff]" />
+            <Sparkles size={11} className="text-[#60A5FA]" />
             <span className="font-inter text-[11px] text-neutral-500">AI tools</span>
           </div>
           <span className="font-manrope text-sm font-semibold text-white tabular-nums">

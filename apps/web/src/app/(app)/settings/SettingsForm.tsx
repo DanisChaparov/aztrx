@@ -53,10 +53,10 @@ export function SettingsForm({ profile }: { profile: ProfileData }) {
   }
 
   const inputClass =
-    "rounded-xl border border-white/10 bg-white/[0.03] px-4 py-2.5 font-inter text-sm text-white outline-none transition-colors focus:border-[#6744FF]";
+    "rounded-xl border border-white/10 bg-white/[0.03] px-4 py-2.5 font-inter text-sm text-white outline-none transition-colors focus:border-[#3B82F6]";
 
   const toggleClass = (enabled: boolean) =>
-    `relative h-6 w-11 shrink-0 rounded-full transition-colors ${enabled ? "bg-[#6744FF]" : "bg-white/15"}`;
+    `relative h-6 w-11 shrink-0 rounded-full transition-colors ${enabled ? "bg-[#3B82F6]" : "bg-white/15"}`;
 
   return (
     <form onSubmit={save} className="flex flex-col gap-8">
@@ -90,7 +90,7 @@ export function SettingsForm({ profile }: { profile: ProfileData }) {
       </div>
 
       <button type="submit" disabled={saving}
-        className="self-start rounded-xl bg-[#6744FF] px-6 py-2.5 font-manrope text-sm font-semibold text-white transition-colors hover:bg-[#6744FF]/90 disabled:opacity-50">
+        className="self-start rounded-xl bg-[#3B82F6] px-6 py-2.5 font-manrope text-sm font-semibold text-white transition-colors hover:bg-[#3B82F6]/90 disabled:opacity-50">
         {saving ? "Saving…" : saved ? "Saved ✓" : "Save changes"}
       </button>
     </form>

@@ -55,10 +55,10 @@ function heatLevel(week: number, day: number): number {
 
 const HEAT_FILL = [
   "bg-white/[0.06]",
-  "bg-[#6744FF]/25",
-  "bg-[#6744FF]/45",
-  "bg-[#6744FF]/70",
-  "bg-[#6744FF]",
+  "bg-[#3B82F6]/25",
+  "bg-[#3B82F6]/45",
+  "bg-[#3B82F6]/70",
+  "bg-[#3B82F6]",
 ];
 
 function Panel({
@@ -97,7 +97,7 @@ export function DashboardPreview() {
             <span
               key={item.label}
               className={`flex items-center gap-1.5 rounded-full px-3 py-1.5 text-[12px] font-medium ${
-                item.active ? "bg-[#6744FF]/20 text-white" : "text-[#A1A1AA]"
+                item.active ? "bg-[#3B82F6]/20 text-white" : "text-[#A1A1AA]"
               }`}
             >
               <item.icon size={13} />
@@ -111,20 +111,20 @@ export function DashboardPreview() {
       <div className="flex flex-col gap-5 p-5">
         <div className="flex items-center justify-between">
           <h2 className="text-[20px] font-bold tracking-tight">Dashboard</h2>
-          <span className="rounded-lg bg-[#6744FF] px-3.5 py-1.5 text-[12px] font-medium">Start a session</span>
+          <span className="rounded-lg bg-[#3B82F6] px-3.5 py-1.5 text-[12px] font-medium">Start a session</span>
         </div>
 
         {/* Streak + level */}
         <div className="flex flex-wrap items-center gap-3">
           <span className="flex items-center gap-2 rounded-full border border-white/10 bg-white/[0.03] px-3.5 py-1.5 text-[12px]">
-            <Flame size={14} className="text-[#8b74ff]" />
+            <Flame size={14} className="text-[#60A5FA]" />
             <strong className="font-semibold">12</strong>
             <span className="text-[#A1A1AA]">day streak</span>
           </span>
           <span className="flex items-center gap-2.5 rounded-full border border-white/10 bg-white/[0.03] px-3.5 py-1.5 text-[12px]">
             <span className="font-semibold">Level 7</span>
             <span className="h-1.5 w-24 overflow-hidden rounded-full bg-white/10">
-              <span className="block h-full w-[68%] rounded-full bg-[#6744FF]" />
+              <span className="block h-full w-[68%] rounded-full bg-[#3B82F6]" />
             </span>
             <span className="text-[#A1A1AA]">3,240 XP</span>
           </span>
@@ -153,7 +153,7 @@ export function DashboardPreview() {
               {LEDGER.map((dep) => (
                 <div key={dep.name} className="flex items-center justify-between py-2 text-[12px] first:pt-0 last:pb-0">
                   <span className="font-mono text-[#A1A1AA]">{dep.name}</span>
-                  <span className="font-medium text-[#8b74ff]">{dep.amount}</span>
+                  <span className="font-medium text-[#60A5FA]">{dep.amount}</span>
                 </div>
               ))}
             </div>
@@ -170,7 +170,7 @@ export function DashboardPreview() {
                     <span className="text-[#A1A1AA]">{tool.time}</span>
                   </div>
                   <span className="h-1.5 w-full overflow-hidden rounded-full bg-white/[0.06]">
-                    <span className="block h-full rounded-full bg-[#6744FF]/70" style={{ width: `${tool.pct}%` }} />
+                    <span className="block h-full rounded-full bg-[#3B82F6]/70" style={{ width: `${tool.pct}%` }} />
                   </span>
                 </div>
               ))}
@@ -192,7 +192,7 @@ export function DashboardPreview() {
                     {session.sha && <span className="font-mono text-[11px] text-[#A1A1AA]">{session.sha}</span>}
                     <span
                       className={`rounded-full px-2.5 py-0.5 text-[11px] font-medium ${
-                        session.verified ? "bg-[#6744FF]/20 text-[#a996ff]" : "bg-white/[0.06] text-[#A1A1AA]"
+                        session.verified ? "bg-[#3B82F6]/20 text-[#a996ff]" : "bg-white/[0.06] text-[#A1A1AA]"
                       }`}
                     >
                       {session.verified ? "Verified" : "Unverified"}

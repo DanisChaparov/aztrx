@@ -57,10 +57,10 @@ export function OnboardingForm() {
   }
 
   const inputClass =
-    "rounded-xl border border-white/10 bg-white/[0.03] px-4 py-2.5 font-inter text-sm text-white outline-none transition-colors focus:border-[#6744FF]";
+    "rounded-xl border border-white/10 bg-white/[0.03] px-4 py-2.5 font-inter text-sm text-white outline-none transition-colors focus:border-[#3B82F6]";
 
   return (
-    <div className="rounded-2xl border border-[#6744FF]/20 bg-[#0e0f14] p-6">
+    <div className="rounded-2xl border border-[#3B82F6]/20 bg-[#0e0f14] p-6">
       <div className="mb-4">
         <h2 className="font-manrope text-lg font-medium text-white">Welcome to Upstream</h2>
         <p className="mt-1 font-inter text-sm text-[#A1A1AA]">
@@ -91,7 +91,7 @@ export function OnboardingForm() {
           <button
             onClick={finish}
             disabled={busy}
-            className="rounded-xl bg-[#6744FF] px-6 py-2.5 font-manrope text-sm font-semibold text-white transition-colors hover:bg-[#6744FF]/90 disabled:opacity-50"
+            className="rounded-xl bg-[#3B82F6] px-6 py-2.5 font-manrope text-sm font-semibold text-white transition-colors hover:bg-[#3B82F6]/90 disabled:opacity-50"
           >
             {busy ? "Saving…" : "Save & continue"}
           </button>

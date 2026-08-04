@@ -20,7 +20,7 @@ export function Timer({
       </div>
       <div className="h-1.5 w-full max-w-xs overflow-hidden rounded-full bg-white/10">
         <div
-          className="h-full rounded-full bg-[#6744FF] shadow-[0_0_12px_rgba(103,68,255,0.7)] transition-[width] duration-1000 ease-linear"
+          className="h-full rounded-full bg-[#3B82F6] shadow-[0_0_12px_rgba(103,68,255,0.7)] transition-[width] duration-1000 ease-linear"
           style={{ width: `${progress * 100}%` }}
         />
       </div>

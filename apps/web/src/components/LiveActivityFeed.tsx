@@ -67,7 +67,7 @@ export function LiveActivityFeed({ projectId, projectName }: { projectId: string
   return (
     <div className="glass-panel flex flex-col gap-3 p-4">
       <div className="flex items-center gap-2">
-        <Radio size={12} className="animate-pulse text-[#8b74ff]" />
+        <Radio size={12} className="animate-pulse text-[#60A5FA]" />
         <span className="font-manrope text-xs font-medium text-neutral-300">
           Live activity — {projectName}
         </span>
@@ -95,7 +95,7 @@ export function LiveActivityFeed({ projectId, projectName }: { projectId: string
                 rel="noreferrer"
                 className="flex items-center gap-2 rounded-lg px-2 py-1.5 transition-colors hover:bg-white/[0.06]"
               >
-                <GitCommitHorizontal size={12} className="shrink-0 text-[#8b74ff]" />
+                <GitCommitHorizontal size={12} className="shrink-0 text-[#60A5FA]" />
                 <span className="min-w-0 flex-1 truncate font-inter text-xs text-neutral-300">
                   {commit.message}
                 </span>

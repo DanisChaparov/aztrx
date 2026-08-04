@@ -72,9 +72,9 @@ export default async function PlansPage({
       </div>
 
       {billingNote && (
-        <div className="rounded-2xl border border-[#6744FF]/20 bg-[#6744FF]/[0.06] p-4">
+        <div className="rounded-2xl border border-[#3B82F6]/20 bg-[#3B82F6]/[0.06] p-4">
           <p className="flex items-center gap-2 font-inter text-sm text-[#A1A1AA]">
-            <Sparkles size={15} className="shrink-0 text-[#8b74ff]" />
+            <Sparkles size={15} className="shrink-0 text-[#60A5FA]" />
             {billingNote}
           </p>
         </div>

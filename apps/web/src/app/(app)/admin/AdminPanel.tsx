@@ -43,7 +43,7 @@ export function AdminPanel({ userId }: { userId: string }) {
   }
 
   const btn = "flex items-center gap-2 rounded-xl border border-white/10 bg-white/[0.03] px-3 py-2 font-manrope text-xs text-white transition-colors hover:bg-white/[0.08] disabled:opacity-50";
-  const inp = "rounded-xl border border-white/10 bg-white/[0.03] px-3 py-2 font-mono text-xs text-white outline-none focus:border-[#6744FF]";
+  const inp = "rounded-xl border border-white/10 bg-white/[0.03] px-3 py-2 font-mono text-xs text-white outline-none focus:border-[#3B82F6]";
 
   const tests = [
     {
@@ -147,7 +147,7 @@ export function AdminPanel({ userId }: { userId: string }) {
         {tests.map(({ icon: Icon, label, desc, action }) => (
           <button key={label} onClick={action} disabled={busy} className="flex items-start gap-3 rounded-2xl border border-white/10 bg-[#0e0f14] p-4 text-left transition-colors hover:border-white/20 disabled:opacity-50">
             <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-white/5">
-              <Icon size={15} className="text-[#8b74ff]" />
+              <Icon size={15} className="text-[#60A5FA]" />
             </div>
             <div>
               <p className="font-manrope text-sm font-medium text-white">{label}</p>

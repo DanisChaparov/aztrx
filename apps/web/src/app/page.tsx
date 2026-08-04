@@ -83,7 +83,7 @@ export default function LandingPage() {
               {STEPS.map((step,i) => (
                 <motion.div key={step.title} initial={{ opacity:0,y:15 }} whileInView={{ opacity:1,y:0 }} viewport={{ once:true }} transition={{ duration:0.6, delay:i*0.08 }}
                   className="liquid-glass rounded-2xl flex flex-col gap-3 p-7">
-                  <div className="flex h-9 w-9 items-center justify-center rounded-full bg-[#6744FF] font-inter text-sm font-semibold text-white">{i+1}</div>
+                  <div className="flex h-9 w-9 items-center justify-center rounded-full bg-[#3B82F6] font-inter text-sm font-semibold text-white">{i+1}</div>
                   <h3 className="font-inter text-lg font-semibold text-white">{step.title}</h3>
                   <p className="font-inter text-[15px] leading-relaxed text-[#A1A1AA]">{step.description}</p>
                 </motion.div>

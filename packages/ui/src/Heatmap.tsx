@@ -8,7 +8,7 @@ function intensityClass(day: HeatmapDay): string {
   if (day.verifiedMinutes < 30) return "bg-[#241c52]";
   if (day.verifiedMinutes < 60) return "bg-[#3a2a9c]";
   if (day.verifiedMinutes < 120) return "bg-[#5236d6]";
-  return "bg-[#6744FF]";
+  return "bg-[#3B82F6]";
 }
 
 export function Heatmap({ days }: { days: HeatmapDay[] }) {

@@ -104,7 +104,7 @@ export function AssistantPanel() {
             {/* Header */}
             <div className="flex items-center justify-between border-b border-white/10 px-4 py-3">
               <div className="flex items-center gap-2">
-                <Sparkles size={14} className="text-[#8b74ff]" />
+                <Sparkles size={14} className="text-[#60A5FA]" />
                 <span className="font-manrope text-sm font-medium text-white">Upstream AI</span>
               </div>
               <button
@@ -135,7 +135,7 @@ export function AssistantPanel() {
                     <button
                       type="button"
                       onClick={() => window.location.href = "/settings"}
-                      className="rounded-lg bg-[#6744FF] px-3 py-1.5 font-manrope text-[11px] font-semibold text-white"
+                      className="rounded-lg bg-[#3B82F6] px-3 py-1.5 font-manrope text-[11px] font-semibold text-white"
                     >
                       Add API key in Settings →
                     </button>
@@ -166,7 +166,7 @@ export function AssistantPanel() {
                   key={i}
                   className={`max-w-[85%] rounded-xl px-3 py-2 font-inter text-sm ${
                     m.role === "user"
-                      ? "ml-auto bg-[#6744FF] text-white"
+                      ? "ml-auto bg-[#3B82F6] text-white"
                       : "bg-white/5 text-neutral-200"
                   }`}
                 >
@@ -179,7 +179,7 @@ export function AssistantPanel() {
                     {[0, 1, 2].map((i) => (
                       <motion.div
                         key={i}
-                        className="h-1.5 w-1.5 rounded-full bg-[#8b74ff]"
+                        className="h-1.5 w-1.5 rounded-full bg-[#60A5FA]"
                         animate={{ opacity: [0.3, 1, 0.3] }}
                         transition={{ duration: 1, repeat: Infinity, delay: i * 0.15 }}
                       />
@@ -197,12 +197,12 @@ export function AssistantPanel() {
                 onChange={(e) => setInput(e.target.value)}
                 placeholder="Ask Upstream AI anything…"
                 disabled={busy}
-                className="flex-1 rounded-full border border-white/10 bg-white/[0.03] px-4 py-2 font-inter text-sm text-white outline-none transition-colors focus:border-[#6744FF] disabled:opacity-50"
+                className="flex-1 rounded-full border border-white/10 bg-white/[0.03] px-4 py-2 font-inter text-sm text-white outline-none transition-colors focus:border-[#3B82F6] disabled:opacity-50"
               />
               <button
                 type="submit"
                 disabled={busy || !input.trim()}
-                className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-[#6744FF] text-white transition-colors hover:bg-[#5a39f0] disabled:opacity-40"
+                className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-[#3B82F6] text-white transition-colors hover:bg-[#2563EB] disabled:opacity-40"
                 aria-label="Send"
               >
                 <Send size={14} />
@@ -225,15 +225,15 @@ export function AssistantPanel() {
         >
           <motion.div
             className="absolute inset-0 rounded-full"
-            style={{ background: "radial-gradient(circle, #8b74ff55, transparent 70%)" }}
+            style={{ background: "radial-gradient(circle, #60A5FA55, transparent 70%)" }}
             animate={{ scale: [1, 1.2, 1], opacity: [0.4, 0.8, 0.4] }}
             transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
           />
           <div
             className="relative flex h-10 w-10 items-center justify-center rounded-full"
             style={{
-              background: "linear-gradient(135deg, #8b74ff, #5a39f0)",
-              boxShadow: "0 0 20px #8b74ff88",
+              background: "linear-gradient(135deg, #60A5FA, #2563EB)",
+              boxShadow: "0 0 20px #60A5FA88",
             }}
           >
             <Sparkles size={16} className="text-white" />
