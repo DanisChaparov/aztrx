@@ -192,7 +192,7 @@ export function DashboardPreview() {
                     {session.sha && <span className="font-mono text-[11px] text-[#A1A1AA]">{session.sha}</span>}
                     <span
                       className={`rounded-full px-2.5 py-0.5 text-[11px] font-medium ${
-                        session.verified ? "bg-[#3B82F6]/20 text-[#a996ff]" : "bg-white/[0.06] text-[#A1A1AA]"
+                        session.verified ? "bg-[#3B82F6]/20 text-[#93C5FD]" : "bg-white/[0.06] text-[#A1A1AA]"
                       }`}
                     >
                       {session.verified ? "Verified" : "Unverified"}

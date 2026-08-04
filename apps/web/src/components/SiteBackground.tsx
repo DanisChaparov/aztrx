@@ -46,7 +46,7 @@ export function SiteBackground({ videoOpacity = 0.6 }: { videoOpacity?: number }
             <feGaussianBlur stdDeviation="25" />
           </filter>
           <radialGradient id="site-glow-grad" cx="50%" cy="50%" r="50%">
-            <stop offset="0%" stopColor="#a996ff" stopOpacity="0.5" />
+            <stop offset="0%" stopColor="#93C5FD" stopOpacity="0.5" />
             <stop offset="55%" stopColor="#5A36F0" stopOpacity="0.28" />
             <stop offset="100%" stopColor="#0b0c10" stopOpacity="0" />
           </radialGradient>

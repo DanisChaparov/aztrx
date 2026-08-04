@@ -68,7 +68,7 @@ export function SessionCard({
             animate={{ opacity: 1, scale: 1 }}
             transition={{ type: "spring", stiffness: 400, damping: 20 }}
             className={`rounded-full px-2.5 py-1 font-manrope text-xs font-medium ${
-              session.verified ? "bg-[#3B82F6]/20 text-[#a996ff]" : "bg-white/5 text-neutral-400"
+              session.verified ? "bg-[#3B82F6]/20 text-[#93C5FD]" : "bg-white/5 text-neutral-400"
             }`}
           >
             {session.verified ? "Verified" : "Unverified"}

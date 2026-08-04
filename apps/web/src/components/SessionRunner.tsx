@@ -171,7 +171,7 @@ export function SessionRunner({
       <div className="glass-panel relative flex flex-col items-center gap-4 overflow-hidden p-8 text-center">
         {result.verified && <Confetti />}
         <div
-          className={`font-instrument-serif text-3xl ${result.verified ? "text-[#a996ff]" : "text-neutral-300"}`}
+          className={`font-instrument-serif text-3xl ${result.verified ? "text-[#93C5FD]" : "text-neutral-300"}`}
         >
           {result.verified ? "Verified ✓" : "Completed, unverified"}
         </div>
@@ -348,7 +348,7 @@ export function SessionRunner({
                 </span>
                 <span
                   className={`relative font-inter text-[11px] ${
-                    isSelected ? "text-[#a996ff]" : "text-neutral-500"
+                    isSelected ? "text-[#93C5FD]" : "text-neutral-500"
                   }`}
                 >
                   {preset.label}
