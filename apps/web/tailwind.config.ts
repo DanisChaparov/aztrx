@@ -7,6 +7,9 @@ const config: Config = {
   ],
   theme: {
     extend: {
+      colors: {
+        brand: '#3D81E3',
+      },
       fontFamily: {
         manrope: ["var(--font-manrope)", "sans-serif"],
         cabin: ["var(--font-cabin)", "sans-serif"],

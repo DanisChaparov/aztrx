@@ -1,117 +1,73 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import Link from "next/link";
-import { motion, useScroll, useTransform, AnimatePresence } from "framer-motion";
-import { ArrowRight, Github, Moon, Sun, Zap, Shield, TrendingUp, Blocks } from "lucide-react";
-import { Logo } from "@/components/Logo";
-import { useTheme } from "@/components/ThemeProvider";
+import { motion } from "framer-motion";
+import { ArrowRight, Check, ChevronRight, Github, Menu, Moon, Search, Sparkles, Sun, X, Zap, Shield, TrendingUp, Blocks, Star, Clock, Bell } from "lucide-react";
 
-/* ── subtle noise overlay ─────────────────────────────────────── */
-function Noise() {
+/* ── globals ─────────────────────────────────────────────── */
+const VIDEO_URL = "https://d8j0ntlcm91z4.cloudfront.net/user_38xzZboKViGWJOttwIXH07lWA1P/hf_20260508_064122_c4750c0e-7476-4b44-94a2-a85a65c63bf2.mp4";
+
+const NAV = ["Features", "How it works", "Pricing", "Developers"];
+
+const gradientStyle = {
+  backgroundImage: "linear-gradient(to right, #091020 0%, #0B2551 12.5%, #A4F4FD 32.5%, #00d2ff 50%, #0B2551 67.5%, #091020 87.5%, #091020 100%)",
+  backgroundSize: "200% auto",
+  WebkitBackgroundClip: "text",
+  backgroundClip: "text",
+  color: "transparent",
+  WebkitTextFillColor: "transparent",
+  filter: "url(#c3-noise)",
+};
+
+/* ── primitives ──────────────────────────────────────────── */
+function LogoMark({ className = "w-8 h-8" }: { className?: string }) {
   return (
-    <div
-      className="pointer-events-none fixed inset-0 z-50 opacity-[0.015]"
-      style={{
-        backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")`,
-        backgroundSize: "200px 200px",
-      }}
-    />
+    <svg viewBox="0 0 256 256" className={className} fill="white">
+      <path d="M 0 128 C 70.692 128 128 185.308 128 256 L 64 256 C 64 220.654 35.346 192 0 192 Z M 256 192 C 220.654 192 192 220.654 192 256 L 128 256 C 128 185.308 185.308 128 256 128 Z M 128 0 C 128 70.692 70.692 128 0 128 L 0 64 C 35.346 64 64 35.346 64 0 Z M 192 0 C 192 35.346 220.654 64 256 64 L 256 128 C 185.308 128 128 70.692 128 0 Z" />
+    </svg>
   );
 }
 
-/* ── animated grid ────────────────────────────────────────────── */
-function Grid() {
+function SectionEyebrow({ label, tag }: { label: string; tag?: string }) {
   return (
-    <div className="pointer-events-none fixed inset-0 -z-10">
-      <div
-        className="absolute inset-0"
-        style={{
-          backgroundImage:
-            "linear-gradient(rgba(255,255,255,0.02) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.02) 1px, transparent 1px)",
-          backgroundSize: "64px 64px",
-          maskImage: "radial-gradient(ellipse 80% 60% at 50% 0%, black 30%, transparent 70%)",
-        }}
-      />
-      {/* Ambient glows */}
-      <div className="absolute top-0 left-1/2 -translate-x-1/2 h-[600px] w-[800px] rounded-full bg-violet-600/5 blur-[150px]" />
-      <div className="absolute bottom-0 right-0 h-[400px] w-[600px] rounded-full bg-emerald-500/4 blur-[120px]" />
+    <div className="flex items-center gap-3">
+      <span className="w-1.5 h-1.5 rounded-full bg-white" />
+      <span className="text-white/70 text-sm font-medium">{label}</span>
+      {tag && <span className="px-2 py-0.5 rounded-full border border-white/10 text-white/50 text-xs">{tag}</span>}
     </div>
   );
 }
 
-/* ── section reveal ───────────────────────────────────────────── */
-function Reveal({
-  children,
-  delay = 0,
-  className = "",
-}: {
-  children: React.ReactNode;
-  delay?: number;
-  className?: string;
-}) {
+function PillButton({ children, href, white = false }: { children: React.ReactNode; href: string; white?: boolean }) {
   return (
-    <motion.div
-      initial={{ opacity: 0, y: 32 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true, margin: "-80px" }}
-      transition={{ duration: 0.7, delay, ease: [0.22, 1, 0.36, 1] }}
-      className={className}
+    <Link
+      href={href}
+      className={`group inline-flex items-center justify-center gap-2 rounded-full font-medium text-sm px-5 py-3 transition-all active:scale-[0.98] ${
+        white
+          ? "bg-white text-black hover:bg-white/90"
+          : "border border-white/15 text-white hover:bg-white/5"
+      }`}
     >
       {children}
-    </motion.div>
+      {white && <ChevronRight size={16} className="group-hover:translate-x-0.5 transition-transform" />}
+    </Link>
   );
 }
 
-/* ── feature card ─────────────────────────────────────────────── */
-function FeatureCard({
-  icon: Icon,
-  title,
-  desc,
-  delay,
-}: {
-  icon: React.ElementType;
-  title: string;
-  desc: string;
-  delay: number;
-}) {
-  const [hovered, setHovered] = useState(false);
-
+function Toggle({ on }: { on: boolean }) {
   return (
-    <motion.div
-      initial={{ opacity: 0, y: 24 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true, margin: "-60px" }}
-      transition={{ duration: 0.5, delay, ease: [0.22, 1, 0.36, 1] }}
-      onMouseEnter={() => setHovered(true)}
-      onMouseLeave={() => setHovered(false)}
-      className="group relative overflow-hidden rounded-2xl border border-white/[0.06] bg-white/[0.02] p-8 transition-all duration-500"
-    >
-      {/* hover glow */}
-      <motion.div
-        className="pointer-events-none absolute inset-0 rounded-2xl"
-        animate={{
-          boxShadow: hovered
-            ? "inset 0 1px 0 rgba(255,255,255,0.08), 0 0 30px -10px rgba(139,92,246,0.15)"
-            : "inset 0 1px 0 rgba(255,255,255,0.03)",
-        }}
-      />
-      <div className="relative z-10 flex flex-col gap-4">
-        <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-violet-500/10">
-          <Icon size={20} className="text-violet-400" />
-        </div>
-        <h3 className="font-jakarta text-lg font-semibold text-white">{title}</h3>
-        <p className="font-inter text-[15px] leading-relaxed text-zinc-400">{desc}</p>
-      </div>
-    </motion.div>
+    <span className={`c3-toggle${on ? " active" : ""}`}>
+      <span className="c3-toggle-knob" />
+    </span>
   );
 }
 
-/* ── page ─────────────────────────────────────────────────────── */
+/* ── main page ───────────────────────────────────────────── */
 export default function LandingPage() {
-  const { theme, toggle } = useTheme();
   const [scrolled, setScrolled] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
+  const [yearly, setYearly] = useState(false);
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 20);
@@ -120,229 +76,404 @@ export default function LandingPage() {
   }, []);
 
   return (
-    <>
-      <Noise />
-      <Grid />
+    <div className="relative min-h-screen overflow-x-hidden bg-[#0c0c0c] text-white">
+      {/* ── video ──────────────────────────────────────── */}
+      <div className="fixed inset-0 z-0 pointer-events-none">
+        <video autoPlay loop muted playsInline className="w-full h-full object-cover pointer-events-none" src={VIDEO_URL} />
+      </div>
 
-      {/* ── nav ──────────────────────────────────────────────── */}
+      {/* ── noise + guide lines ────────────────────────── */}
+      <svg className="fixed inset-0 z-40 pointer-events-none" width="100%" height="100%">
+        <filter id="c3-noise">
+          <feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="2" stitchTiles="stitch" />
+          <feColorMatrix type="matrix" values="0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 0.35 0" />
+          <feComposite in2="SourceGraphic" operator="in" result="noise" />
+          <feBlend in="SourceGraphic" in2="noise" mode="multiply" />
+        </filter>
+      </svg>
+      <div className="hidden md:block pointer-events-none fixed inset-y-0 left-1/2 -translate-x-[calc(50%+36rem)] w-px bg-white/10 z-[5]" />
+      <div className="hidden md:block pointer-events-none fixed inset-y-0 left-1/2 translate-x-[calc(-50%+36rem)] w-px bg-white/10 z-[5]" />
+
+      {/* ── nav ────────────────────────────────────────── */}
       <motion.header
-        initial={{ y: -60, opacity: 0 }}
-        animate={{ y: 0, opacity: 1 }}
-        transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
-        className={`fixed inset-x-0 top-0 z-40 transition-all duration-300 ${
-          scrolled
-            ? "border-b border-white/[0.06] bg-black/80 backdrop-blur-xl"
-            : ""
+        initial={{ opacity: 0, y: -10 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.6, ease: "easeOut" }}
+        className={`fixed inset-x-0 top-0 z-50 transition-all duration-300 ${
+          scrolled ? "border-b border-white/10 bg-black/60 backdrop-blur-xl" : ""
         }`}
       >
-        <div className="mx-auto flex max-w-6xl items-center justify-between px-6 py-4">
+        <div className="max-w-6xl mx-auto px-6 flex items-center justify-between h-16">
           <Link href="/" className="flex items-center gap-2.5">
-            <Logo size={24} />
-            <span className="font-jakarta text-[16px] font-bold tracking-tight text-white">Upstream</span>
+            <LogoMark className="w-7 h-7" />
           </Link>
-
-          <div className="hidden items-center gap-6 md:flex">
-            <a href="#features" className="font-inter text-[14px] text-zinc-400 transition-colors hover:text-white">
-              Features
-            </a>
-            <a href="#how" className="font-inter text-[14px] text-zinc-400 transition-colors hover:text-white">
-              How it works
-            </a>
-            <button
-              onClick={toggle}
-              className="flex h-8 w-14 items-center rounded-full border border-white/[0.08] bg-white/[0.03] p-1 transition-colors hover:bg-white/[0.06]"
-            >
-              <motion.div
-                animate={{ x: theme === "dark" ? 0 : 22 }}
-                transition={{ type: "spring", stiffness: 400, damping: 25 }}
-                className="flex h-6 w-6 items-center justify-center rounded-full bg-white/[0.12]"
+          <nav className="hidden md:flex items-center gap-8">
+            {NAV.map((label, i) => (
+              <motion.a
+                key={label}
+                href={`#${label.toLowerCase().replace(/ /g, "-")}`}
+                initial={{ opacity: 0, y: -8 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.1 + i * 0.05 }}
+                className="text-white/70 text-sm font-medium hover:text-white transition-colors"
               >
-                {theme === "dark" ? <Moon size={12} className="text-zinc-300" /> : <Sun size={12} className="text-yellow-400" />}
-              </motion.div>
-            </button>
-            <Link
-              href="/login"
-              className="rounded-lg px-4 py-2 font-inter text-[14px] text-zinc-300 transition-colors hover:text-white"
-            >
-              Sign in
-            </Link>
-            <Link
-              href="/signup"
-              className="rounded-lg bg-white px-4 py-2 font-inter text-[14px] font-medium text-black transition-all hover:bg-zinc-200 hover:shadow-[0_0_24px_-6px_rgba(255,255,255,0.15)]"
-            >
-              Get started
+                {label}
+              </motion.a>
+            ))}
+          </nav>
+          <div className="hidden md:flex items-center gap-3">
+            <Link href="/login" className="text-white/70 text-sm hover:text-white transition-colors">Sign in</Link>
+            <Link href="/signup" className="group inline-flex items-center gap-2 rounded-full bg-white text-black font-medium text-sm px-5 py-2.5 transition-all hover:bg-white/90 active:scale-[0.98]">
+              Get started <ChevronRight size={14} className="group-hover:translate-x-0.5 transition-transform" />
             </Link>
           </div>
-
-          <button className="text-white md:hidden" onClick={() => setMobileOpen(true)}>
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-              <path d="M4 6h16M4 12h16M4 18h16" />
-            </svg>
+          <button onClick={() => setMobileOpen(true)} className="md:hidden w-10 h-10 rounded-full border border-white/10 bg-white/5 flex items-center justify-center">
+            <Menu size={18} />
           </button>
         </div>
       </motion.header>
 
-      {/* ── hero ──────────────────────────────────────────────── */}
-      <section className="relative flex min-h-screen flex-col items-center justify-center px-6 pt-20 text-center">
-        <motion.div
-          initial={{ opacity: 0, y: 40 }}
+      {/* ── hero ────────────────────────────────────────── */}
+      <section className="relative z-10 pt-16 md:pt-28 pb-20 text-center flex flex-col items-center px-6">
+        <motion.h1
+          initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.9, delay: 0.2, ease: [0.22, 1, 0.36, 1] }}
-          className="flex flex-col items-center gap-6"
+          transition={{ delay: 0.3, duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
+          className="text-4xl md:text-7xl font-semibold tracking-tight leading-[0.9]"
         >
-          {/* Badge */}
-          <motion.div
-            initial={{ opacity: 0, scale: 0.9 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ duration: 0.5, delay: 0.4 }}
-            className="flex items-center gap-2 rounded-full border border-violet-500/20 bg-violet-500/5 px-4 py-1.5"
-          >
-            <span className="h-1.5 w-1.5 rounded-full bg-violet-400" />
-            <span className="font-inter text-[13px] text-violet-300">Now in public beta</span>
-          </motion.div>
+          <span className="text-white">Prove your focus</span>
+          <br />
+          <span className="animate-shiny" style={gradientStyle}>is real</span>
+        </motion.h1>
 
-          {/* Headline */}
-          <h1 className="max-w-[700px] font-jakarta text-[3.25rem] font-extrabold leading-[1.05] tracking-[-0.03em] text-white sm:text-[4.5rem] lg:text-[5.5rem]">
-            Prove your
-            <br />
-            <span className="bg-gradient-to-r from-violet-400 via-violet-300 to-emerald-300 bg-clip-text text-transparent">
-              focus is real
-            </span>
-          </h1>
+        <motion.p
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 0.5 }}
+          className="mt-8 text-white/60 max-w-md text-base leading-[1.5]"
+        >
+          Upstream verifies every session against real commits and local activity.
+          Block distractions, build streaks, and fund open source — all while you ship.
+        </motion.p>
 
-          <motion.p
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ duration: 0.6, delay: 0.7 }}
-            className="max-w-[520px] font-inter text-[17px] leading-relaxed text-zinc-400 sm:text-[19px]"
-          >
-            Upstream verifies every session against real commits and local activity. Block
-            distractions, build streaks, and fund open source — all while you ship.
-          </motion.p>
-
-          {/* CTAs */}
-          <motion.div
-            initial={{ opacity: 0, y: 12 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5, delay: 0.9 }}
-            className="mt-4 flex flex-col gap-3 sm:flex-row"
-          >
-            <Link
-              href="/signup"
-              className="inline-flex items-center gap-2 rounded-xl bg-white px-8 py-3.5 font-inter text-[16px] font-semibold text-black transition-all hover:bg-zinc-200 hover:shadow-[0_0_30px_-6px_rgba(255,255,255,0.2)] active:scale-[0.98]"
-            >
-              Get started free
-              <ArrowRight size={18} />
-            </Link>
-            <a
-              href="#features"
-              className="inline-flex items-center gap-2 rounded-xl border border-white/[0.08] bg-white/[0.02] px-8 py-3.5 font-inter text-[16px] text-white transition-all hover:border-white/[0.15] hover:bg-white/[0.04]"
-            >
-              See how it works
-            </a>
-          </motion.div>
-        </motion.div>
-
-        {/* Scroll indicator */}
         <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
-          transition={{ delay: 1.5, duration: 0.6 }}
-          className="absolute bottom-10"
+          transition={{ delay: 0.7 }}
+          className="mt-8 flex flex-col sm:flex-row items-center gap-3"
         >
-          <motion.div
-            animate={{ y: [0, 8, 0] }}
-            transition={{ repeat: Infinity, duration: 2, ease: "easeInOut" }}
-            className="h-10 w-6 rounded-full border border-white/[0.08]"
-          >
-            <motion.div
-              animate={{ y: [2, 14, 2] }}
-              transition={{ repeat: Infinity, duration: 1.5, ease: "easeInOut" }}
-              className="mx-auto mt-1.5 h-1.5 w-1.5 rounded-full bg-white/30"
-            />
-          </motion.div>
+          <PillButton href="/signup" white>Start tracking free</PillButton>
+          <PillButton href="#features">See how it works <ChevronRight size={14} /></PillButton>
         </motion.div>
       </section>
 
-      {/* ── features ──────────────────────────────────────────── */}
-      <section id="features" className="px-6 py-32">
-        <div className="mx-auto max-w-6xl">
-          <Reveal>
-            <h2 className="mb-16 font-jakarta text-[2rem] font-extrabold tracking-[-0.02em] text-white sm:text-[2.75rem]">
-              Everything a focus app
-              <br />
-              <span className="text-zinc-500">should have been</span>
+      {/* ── mac menu bar ────────────────────────────────── */}
+      <motion.div
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ delay: 0.9 }}
+        className="relative z-10 h-10 bg-black/40 backdrop-blur-md border-t border-b border-white/10 flex items-center"
+      >
+        <div className="max-w-6xl mx-auto px-6 w-full flex items-center justify-between text-xs">
+          <div className="flex items-center gap-4">
+            <svg viewBox="0 0 384 512" className="w-3 h-3" fill="currentColor"><path d="M318.7 268.7c-.2-36.7 16.4-64.4 50-84.8-18.8-26.9-47.2-41.7-84.7-44.6-35.5-2.8-74.3 20.7-88.5 20.7-15 0-49.4-19.7-76.4-19.7C63.3 141.2 4 184.8 4 273.5q0 39.3 14.4 81.2c12.8 36.7 59 126.7 107.2 125.2 25.2-.6 43-17.9 75.8-17.9 31.8 0 48.3 17.9 76.4 17.9 48.6-.7 90.4-82.5 102.6-119.3-65.2-30.7-61.7-90-61.7-91.9zm-56.6-164.2c27.3-32.4 24.8-61.9 24-72.5-24.1 1.4-52 16.4-67.9 34.9-17.5 19.8-27.8 44.3-25.6 71.9 26.1 2 49.9-11.4 69.5-34.3z"/></svg>
+            <span className="font-bold text-white">Upstream</span>
+            {["File","Edit","View","Session","Tools","Help"].map((m, i) => (
+              <span key={m} className={`text-white/60 ${i > 2 ? "hidden sm:inline" : ""} ${i > 3 ? "hidden md:inline" : ""}`}>{m}</span>
+            ))}
+          </div>
+          <div className="flex items-center gap-3 text-white/60">
+            <Search size={14} />
+            <span>Mon Aug 4 2:09 PM</span>
+          </div>
+        </div>
+      </motion.div>
+
+      {/* ── dashboard mockup ────────────────────────────── */}
+      <motion.div
+        initial={{ opacity: 0, y: 40 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 1.1, duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
+        className="relative z-10 max-w-6xl mx-auto px-6 py-16 md:py-24"
+      >
+        <div className="relative rounded-2xl overflow-hidden border border-white/10 bg-[#0e1014]/90 backdrop-blur-2xl">
+          {/* title bar */}
+          <div className="flex items-center gap-2.5 px-4 py-3 border-b border-white/5 bg-black/30">
+            <span className="w-3 h-3 rounded-full bg-[#ff5f57]" />
+            <span className="w-3 h-3 rounded-full bg-[#febc2e]" />
+            <span className="w-3 h-3 rounded-full bg-[#28c840]" />
+            <span className="ml-3 text-xs text-white/50">Upstream — Dashboard</span>
+          </div>
+          {/* content */}
+          <div className="grid grid-cols-12 h-[480px]">
+            {/* sidebar */}
+            <div className="col-span-3 border-r border-white/5 bg-black/20 p-4 flex flex-col gap-3">
+              <button className="flex items-center gap-2 rounded-lg bg-white text-black text-xs font-semibold px-3 py-2">
+                <Sparkles size={13} /> Start a session
+              </button>
+              {[
+                { label: "Dashboard", count: null, active: true },
+                { label: "Projects", count: 3, active: false },
+                { label: "Focus", count: null, active: false },
+                { label: "Screen Time", count: null, active: false },
+                { label: "Profile", count: null, active: false },
+                { label: "Settings", count: null, active: false },
+              ].map((item) => (
+                <div key={item.label} className={`flex items-center justify-between px-2 py-1.5 rounded-md text-xs cursor-pointer ${item.active ? "bg-white/10 text-white" : "text-white/60 hover:bg-white/5"}`}>
+                  <span>{item.label}</span>
+                  {item.count && <span className="text-white/40">{item.count}</span>}
+                </div>
+              ))}
+            </div>
+            {/* main */}
+            <div className="col-span-6 border-r border-white/5 p-5">
+              <div className="flex items-center justify-between mb-5">
+                <h3 className="font-semibold text-sm text-white">Today's overview</h3>
+                <span className="text-xs text-white/40">Mon, Aug 4</span>
+              </div>
+              {/* stat cards */}
+              <div className="grid grid-cols-2 gap-3 mb-5">
+                {[
+                  { label: "Streak", value: "7 days", icon: Star },
+                  { label: "Level", value: "12", icon: TrendingUp },
+                  { label: "Today", value: "2.5 hrs", icon: Clock },
+                  { label: "Verified", value: "100%", icon: Shield },
+                ].map((stat) => (
+                  <div key={stat.label} className="liquid-glass rounded-xl p-3">
+                    <div className="flex items-center gap-2 text-white/50 text-xs mb-1"><stat.icon size={12} />{stat.label}</div>
+                    <div className="text-lg font-bold text-white">{stat.value}</div>
+                  </div>
+                ))}
+              </div>
+              {/* activity */}
+              <div className="liquid-glass rounded-xl p-4">
+                <div className="flex items-center gap-2 mb-3"><Bell size={13} className="text-white/50" /><span className="text-xs font-medium text-white/70">Recent activity</span></div>
+                {[
+                  "Session verified — 50 min · 2:30 PM",
+                  "GitHub commit pushed · 2:15 PM",
+                  "Focus session started · 1:40 PM",
+                  "Streak extended to 7 days · 12:00 AM",
+                ].map((item, i) => (
+                  <div key={i} className={`py-2 ${i < 3 ? "border-b border-white/5" : ""} text-xs text-white/50`}>{item}</div>
+                ))}
+              </div>
+            </div>
+            {/* right panel */}
+            <div className="col-span-3 p-4">
+              <div className="liquid-glass rounded-xl p-4 mb-3">
+                <div className="flex items-center gap-2 mb-2"><Zap size={13} className="text-[#A4F4FD]" /><span className="text-xs font-medium text-white">AI Insights</span></div>
+                <p className="text-xs text-white/50 leading-relaxed">Your peak focus hours are 9 AM–11 AM. Morning sessions are 40% more productive than afternoon ones.</p>
+              </div>
+              <div className="liquid-glass rounded-xl p-4">
+                <div className="flex items-center gap-2 mb-2"><Blocks size={13} className="text-emerald-400" /><span className="text-xs font-medium text-white">OSS Impact</span></div>
+                <div className="text-lg font-bold text-white mb-1">$12.40</div>
+                <p className="text-xs text-white/50">Simulated funding generated this week</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </motion.div>
+
+      {/* ── features ─────────────────────────────────────── */}
+      <section id="features" className="relative z-10 max-w-6xl mx-auto px-6 py-20 md:py-28">
+        <div className="grid md:grid-cols-2 gap-10 md:gap-16 items-start">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, margin: "-80px" }}
+            transition={{ duration: 0.7 }}
+          >
+            <SectionEyebrow label="Verification" tag="AI-powered" />
+            <h2 className="mt-5 text-3xl md:text-5xl font-semibold tracking-tight leading-[1.02]">
+              Proof, not<br />promises.
             </h2>
-          </Reveal>
-          <div className="grid grid-cols-1 gap-5 sm:grid-cols-2">
-            <FeatureCard
-              icon={Shield}
-              title="Verified, not just timed"
-              desc="Sessions are cross-checked against real GitHub commits and local IDE activity. A locked screen can't fake it."
-              delay={0}
-            />
-            <FeatureCard
-              icon={TrendingUp}
-              title="Streaks that mean something"
-              desc="Every verified session extends your streak. Earn XP, unlock achievements, and watch your level grow."
-              delay={0.1}
-            />
-            <FeatureCard
-              icon={Blocks}
-              title="Blocks real distractions"
-              desc="Browser extension blocks sites mid-session. Desktop widget catches native apps the browser can't see."
-              delay={0.2}
-            />
-            <FeatureCard
-              icon={Zap}
-              title="Funds open source"
-              desc="Every session builds a simulated impact ledger, split across the dependencies your project actually uses."
-              delay={0.3}
-            />
+            <p className="mt-6 text-white/60 text-base leading-[1.6] max-w-md">
+              Upstream cross-references your GitHub commits and local IDE activity against every session.
+              A timer can be gamed — real work can't. When you finish a session, it's verified or it's not.
+            </p>
+            <div className="flex flex-wrap gap-2 mt-5">
+              {["GitHub commits", "IDE activity", "Desktop tracking", "Browser extension"].map((chip) => (
+                <span key={chip} className="text-xs text-white/70 px-3 py-1.5 rounded-full border border-white/10 bg-white/[0.03]">{chip}</span>
+              ))}
+            </div>
+          </motion.div>
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, margin: "-80px" }}
+            transition={{ duration: 0.7, delay: 0.15 }}
+            className="liquid-glass rounded-2xl p-5"
+          >
+            <div className="text-xs text-white/50 mb-3">Today · 4 sessions tracked</div>
+            {[
+              { label: "Verified", count: 3, color: "#00d2ff" },
+              { label: "In progress", count: 1, color: "#f59e0b" },
+              { label: "Broken", count: 0, color: "#ef4444" },
+              { label: "Planned", count: 2, color: "#a3a3a3" },
+            ].map((row) => (
+              <div key={row.label} className="liquid-glass rounded-lg p-3 flex items-center justify-between mb-2">
+                <div className="flex items-center gap-2">
+                  <span className="w-2 h-2 rounded-full" style={{ background: row.color }} />
+                  <span className="text-sm text-white/80">{row.label}</span>
+                </div>
+                <span className="text-sm font-semibold text-white">{row.count}</span>
+              </div>
+            ))}
+          </motion.div>
+        </div>
+      </section>
+
+      {/* ── logos ────────────────────────────────────────── */}
+      <section className="relative z-10 max-w-6xl mx-auto px-6 py-16 md:py-20 text-center">
+        <p className="text-xs uppercase tracking-widest text-white/40 mb-10">Built for developers who ship</p>
+        <div className="grid grid-cols-2 sm:grid-cols-4 gap-6">
+          {["Cursor","VS Code","GitHub","Claude","Supabase","Vercel","Docker","Notion"].map((name, i) => (
+            <motion.div
+              key={name}
+              initial={{ opacity: 0 }}
+              whileInView={{ opacity: 1 }}
+              viewport={{ once: true }}
+              transition={{ delay: i * 0.05 }}
+              className="text-sm font-semibold tracking-tight text-white/50 hover:text-white transition-colors cursor-default"
+            >
+              {name}
+            </motion.div>
+          ))}
+        </div>
+      </section>
+
+      {/* ── testimonials ─────────────────────────────────── */}
+      <section className="relative z-10 max-w-6xl mx-auto px-6 py-20 md:py-28 border-t border-white/10">
+        <div className="grid md:grid-cols-3 gap-6">
+          {[
+            { quote: "Upstream changed how I think about focus. Knowing my sessions are verified against real commits makes every minute count.", name: "Sarah Chen", role: "Senior Engineer", company: "VERCEL" },
+            { quote: "The streak system is addictive in the best way. I've shipped more in the last month than the previous three combined.", name: "Marcus Webb", role: "Founder", company: "INDIE" },
+            { quote: "Finally a focus app that understands developers. The GitHub integration means I don't have to manually log anything.", name: "David Lim", role: "Tech Lead", company: "STRIPE" },
+          ].map((t, i) => (
+            <motion.figure
+              key={i}
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ delay: i * 0.1, duration: 0.6 }}
+              className="liquid-glass rounded-2xl p-6"
+            >
+              <blockquote className="text-sm text-white/80 leading-[1.6]">"{t.quote}"</blockquote>
+              <figcaption className="mt-6 pt-5 border-t border-white/10">
+                <div className="text-sm font-semibold">{t.name}</div>
+                <div className="text-xs text-white/50">{t.role}</div>
+                <div className="text-xs text-white font-semibold tracking-wide mt-1">{t.company}</div>
+              </figcaption>
+            </motion.figure>
+          ))}
+        </div>
+      </section>
+
+      {/* ── pricing ──────────────────────────────────────── */}
+      <section className="c3-pricing-section relative z-10">
+        <svg width="0" height="0" className="absolute">
+          <filter id="c3-noise-pricing">
+            <feTurbulence type="fractalNoise" baseFrequency="0.5" numOctaves="2" stitchTiles="stitch" />
+            <feComponentTransfer><feFuncA type="linear" slope="0.075" /></feComponentTransfer>
+            <feComposite in2="SourceGraphic" operator="in" result="noise" />
+            <feBlend in="SourceGraphic" in2="noise" mode="overlay" />
+          </filter>
+        </svg>
+
+        <div className="c3-watermark-container">
+          <div className="c3-watermark-main">
+            <span className="c3-watermark-line-1">Choose your</span>
+            <span className="c3-watermark-line-2">flow</span>
+          </div>
+        </div>
+
+        <div className="c3-toggle-wrap">
+          <span className="text-sm text-white/60">Monthly</span>
+          <button onClick={() => setYearly(!yearly)} className={`c3-toggle${yearly ? " active" : ""}`}>
+            <span className="c3-toggle-knob" />
+          </button>
+          <span className="text-sm text-white/60">Yearly</span>
+        </div>
+
+        <div className="c3-grid">
+          {/* Free */}
+          <div className="c3-card">
+            <div className="c3-tier-small">Free</div>
+            <div className="c3-tier-large">$0</div>
+            <div className="c3-desc">Start tracking and verifying your focus sessions. No credit card required.</div>
+            <ul className="c3-list">
+              {["Up to 3 projects","Session verification","Basic streak tracking","Browser extension","Web dashboard"].map((f) => (
+                <li key={f}><span className="c3-check"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="3"><path d="M20 6L9 17l-5-5"/></svg></span>{f}</li>
+              ))}
+            </ul>
+            <Link href="/signup" className="c3-btn">Get started</Link>
+          </div>
+          {/* Pro */}
+          <div className="c3-card c3-card-pro">
+            <div className="c3-tier-small">Pro</div>
+            <div className="c3-tier-large">{yearly ? "$4" : "$8"}<span className="text-lg text-white/40">/mo</span></div>
+            <div className="c3-desc">Everything you need to ship consistently and prove your output.</div>
+            <ul className="c3-list">
+              {["Unlimited projects","AI developer twin","Desktop app + system tray","Advanced analytics","Priority support","Impact ledger & OSS funding"].map((f) => (
+                <li key={f}><span className="c3-check"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="3"><path d="M20 6L9 17l-5-5"/></svg></span>{f}</li>
+              ))}
+            </ul>
+            <Link href="/signup" className="c3-btn">Start Pro trial</Link>
+          </div>
+          {/* Team */}
+          <div className="c3-card">
+            <div className="c3-tier-small">Team</div>
+            <div className="c3-tier-large">{yearly ? "$6" : "$12"}<span className="text-lg text-white/40">/seat</span></div>
+            <div className="c3-desc">For engineering teams that want visibility into collective output.</div>
+            <ul className="c3-list">
+              {["Everything in Pro","Team dashboard","Shared projects","Manager reports","SSO & SAML","Dedicated support"].map((f) => (
+                <li key={f}><span className="c3-check"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="3"><path d="M20 6L9 17l-5-5"/></svg></span>{f}</li>
+              ))}
+            </ul>
+            <Link href="/signup" className="c3-btn">Contact us</Link>
           </div>
         </div>
       </section>
 
-      {/* ── CTA ────────────────────────────────────────────────── */}
-      <section className="px-6 pb-40">
-        <Reveal className="mx-auto max-w-2xl rounded-3xl border border-white/[0.06] bg-white/[0.01] p-12 text-center">
-          <h2 className="mb-4 font-jakarta text-[2rem] font-extrabold tracking-[-0.02em] text-white sm:text-[2.5rem]">
-            Start your streak today
+      {/* ── final CTA ────────────────────────────────────── */}
+      <section className="relative z-10 max-w-6xl mx-auto px-6 py-20 md:py-32">
+        <motion.div
+          initial={{ opacity: 0, y: 30 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.8 }}
+          className="liquid-glass relative overflow-hidden rounded-3xl px-8 py-16 md:py-24 text-center"
+        >
+          <div className="absolute inset-0 pointer-events-none opacity-30" style={{ background: "radial-gradient(600px circle at 50% 0%, rgba(255,255,255,0.15), transparent 70%)" }} />
+          <h2 className="relative text-4xl md:text-6xl font-semibold tracking-tight leading-[1.02]">
+            Ready to prove<br />your best work?
           </h2>
-          <p className="mb-8 font-inter text-[17px] leading-relaxed text-zinc-400">
-            Sign up with GitHub, Google, or email. Run your first verified session in under a minute.
+          <p className="relative mt-6 text-white/60 max-w-md mx-auto text-sm leading-[1.6]">
+            Join thousands of developers who track, verify, and ship with intention. Start your first verified session in under a minute.
           </p>
-          <Link
-            href="/signup"
-            className="inline-flex items-center gap-2 rounded-xl bg-white px-8 py-3.5 font-inter text-[16px] font-semibold text-black transition-all hover:bg-zinc-200 hover:shadow-[0_0_30px_-6px_rgba(255,255,255,0.2)] active:scale-[0.98]"
-          >
-            Get started free
-            <ArrowRight size={18} />
-          </Link>
-          <div className="mt-6 flex items-center justify-center gap-4">
-            <Github size={18} className="text-zinc-500" />
-            <span className="font-inter text-[13px] text-zinc-500">Google</span>
-            <span className="font-inter text-[13px] text-zinc-500">Email</span>
+          <div className="relative mt-8 flex flex-col sm:flex-row items-center justify-center gap-4">
+            <PillButton href="/signup" white>Start tracking free</PillButton>
+            <a href="#features" className="rounded-full border border-white/15 text-white text-sm font-medium px-5 py-3 hover:bg-white/5 transition-colors inline-flex items-center gap-2">
+              See features <ChevronRight size={14} />
+            </a>
           </div>
-        </Reveal>
+        </motion.div>
       </section>
 
-      {/* ── footer ─────────────────────────────────────────────── */}
-      <footer className="border-t border-white/[0.04] px-6 py-10">
-        <div className="mx-auto flex max-w-6xl items-center justify-between">
+      {/* ── footer ───────────────────────────────────────── */}
+      <footer className="relative z-10 border-t border-white/10 px-6 py-10">
+        <div className="max-w-6xl mx-auto flex items-center justify-between">
           <div className="flex items-center gap-2.5">
-            <Logo size={18} />
-            <span className="font-jakarta text-[14px] font-semibold text-zinc-500">Upstream</span>
+            <LogoMark className="w-5 h-5 opacity-50" />
+            <span className="text-sm font-semibold text-white/40">Upstream</span>
           </div>
-          <button
-            onClick={toggle}
-            className="flex items-center gap-2 rounded-lg px-3 py-1.5 font-inter text-[13px] text-zinc-500 transition-colors hover:text-zinc-300"
-          >
-            {theme === "dark" ? <Sun size={14} /> : <Moon size={14} />}
-            {theme === "dark" ? "Light mode" : "Dark mode"}
-          </button>
+          <div className="flex items-center gap-6 text-xs text-white/40">
+            <a href="#" className="hover:text-white/70">Privacy</a>
+            <a href="#" className="hover:text-white/70">Terms</a>
+            <a href="https://github.com/DanisChaparov/upstream-app" className="hover:text-white/70">GitHub</a>
+          </div>
         </div>
       </footer>
-    </>
+    </div>
   );
 }
