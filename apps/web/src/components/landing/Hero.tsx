@@ -7,6 +7,7 @@ import { Menu, X } from "lucide-react";
 import { Logo } from "@/components/Logo";
 import { AnimatedText } from "@/components/landing/AnimatedText";
 import { DashboardPreview } from "@/components/landing/DashboardPreview";
+import { ParticleBackground } from "@/components/ParticleBackground";
 
 const NAV_LINKS = [
   { label: "Product", href: "#features" },
@@ -35,15 +36,8 @@ export function Hero() {
 
   return (
     <>
-      {/* Animated gradient background — zero lag, pure CSS */}
-      <div className="fixed inset-0 z-0 pointer-events-none bg-[#0c0c0c]">
-        <div className="absolute inset-0 animate-gradient-shift opacity-40"
-          style={{
-            background: "radial-gradient(ellipse 80% 60% at 50% -10%, rgba(100,130,255,0.15), transparent 50%), radial-gradient(ellipse 60% 50% at 80% 80%, rgba(0,210,255,0.08), transparent 50%), radial-gradient(ellipse 50% 50% at 20% 50%, rgba(100,200,255,0.06), transparent 50%)",
-            backgroundSize: "200% 200%",
-          }}
-        />
-      </div>
+      {/* Particle animation — 60fps canvas, instant start */}
+      <ParticleBackground />
 
       {/* Ambient glow behind hero */}
       <div
