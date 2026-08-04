@@ -50,20 +50,7 @@ function getGmail() {
 }
 
 async function sendEmail(to: string, subject: string, text: string): Promise<"sent" | "error" | "not-configured"> {
-  // Try Gmail SMTP first (no domain verification needed, works right now).
-  const gmail = getGmail();
-  if (gmail) {
-    try {
-      await gmail.sendMail({ from: `Upstream <${process.env.EMAIL_FROM}>`, to, subject, text });
-      console.log(`[notify] Gmail sent to ${to}`);
-      return "sent";
-    } catch (err: any) {
-      console.error("[notify] Gmail failed:", err.message);
-      // Fall through to Resend.
-    }
-  }
-
-  // Try Resend (needs verified domain to send to any address).
+  // Try Resend first — sends from onboarding@resend.dev (neutral, not personal email).
   const resend = getResend();
   if (resend) {
     try {
@@ -76,6 +63,18 @@ async function sendEmail(to: string, subject: string, text: string): Promise<"se
       }
     } catch (err: any) {
       console.error("[notify] Resend failed:", err.message);
+    }
+  }
+
+  // Fallback: Gmail SMTP.
+  const gmail = getGmail();
+  if (gmail) {
+    try {
+      await gmail.sendMail({ from: `Upstream <${process.env.EMAIL_FROM}>`, to, subject, text });
+      console.log(`[notify] Gmail sent to ${to}`);
+      return "sent";
+    } catch (err: any) {
+      console.error("[notify] Gmail failed:", err.message);
     }
   }
 
