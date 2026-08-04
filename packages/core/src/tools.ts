@@ -39,6 +39,18 @@ export const TRACKED_TOOLS: TrackedTool[] = [
   { name: "Codex CLI", aiAssisted: true },
   { name: "Gemini CLI", aiAssisted: true },
   { name: "Aider", aiAssisted: true },
+  { name: "Cline", aiAssisted: true },
+  { name: "Roo Code", aiAssisted: true },
+  { name: "Continue", aiAssisted: true },
+  { name: "Cody", aiAssisted: true },
+  { name: "GitHub Copilot", aiAssisted: true },
+  // Productivity tools that devs spend real time in — tracked for
+  // richer tool-usage breakdowns even though they aren't IDEs.
+  { name: "Notion", aiAssisted: false },
+  { name: "Linear", aiAssisted: false },
+  { name: "Figma", aiAssisted: false },
+  { name: "Slack", aiAssisted: false },
+  { name: "Discord", aiAssisted: false },
 ];
 
 // Terminal apps whose window *title* (not just process name) is where AI-CLI
@@ -51,6 +63,13 @@ const AI_CLI_TITLE_MARKERS: { marker: string; name: string }[] = [
   { marker: "codex", name: "Codex CLI" },
   { marker: "gemini", name: "Gemini CLI" },
   { marker: "aider", name: "Aider" },
+  { marker: "cline", name: "Cline" },
+  { marker: "roo code", name: "Roo Code" },
+  { marker: "continue", name: "Continue" },
+  { marker: "cody", name: "Cody" },
+  { marker: "copilot", name: "GitHub Copilot" },
+  { marker: "windsurf", name: "Windsurf" },
+  { marker: "cursor", name: "Cursor" },
 ];
 
 export function matchTrackedTool(
@@ -106,4 +125,9 @@ export const TRACKED_TOOL_PROCESS_NAMES: Record<string, string> = {
   Warp: "Warp.exe",
   "Windows Terminal": "WindowsTerminal.exe",
   Obsidian: "Obsidian.exe",
+  Notion: "Notion.exe",
+  Linear: "Linear.exe",
+  Figma: "Figma.exe",
+  Slack: "Slack.exe",
+  Discord: "Discord.exe",
 };
