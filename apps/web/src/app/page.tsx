@@ -1,158 +1,196 @@
 "use client";
 
+import { useState } from "react";
 import Link from "next/link";
 import { motion } from "framer-motion";
-import { Ban, HeartHandshake, ShieldCheck, Sparkles, type LucideIcon } from "lucide-react";
+import { ArrowRight, Ban, Check, ChevronRight, HeartHandshake, Search, ShieldCheck, Sparkles, Star, TrendingUp, Zap, type LucideIcon } from "lucide-react";
 import { Hero } from "@/components/landing/Hero";
 
 const FEATURES: { icon: LucideIcon; title: string; description: string }[] = [
-  {
-    icon: ShieldCheck,
-    title: "Verified, not just timed",
-    description:
-      "Sessions are checked against real commits and local activity — a locked screen doesn't fake it, honest output does.",
-  },
-  {
-    icon: HeartHandshake,
-    title: "Funds the code you depend on",
-    description:
-      "Every verified session builds a simulated impact ledger, split across the open-source dependencies your project actually uses.",
-  },
-  {
-    icon: Ban,
-    title: "Blocks real distractions",
-    description:
-      "A browser extension blocks distracting sites mid-session; the desktop widget catches native apps the browser can't see.",
-  },
-  {
-    icon: Sparkles,
-    title: "Built to feel good",
-    description: "Streaks, XP, levels, and achievements — progress you can actually see, not just a number on a page.",
-  },
+  { icon: ShieldCheck, title: "Verified, not just timed", description: "Sessions are checked against real commits and local activity — a locked screen doesn't fake it, honest output does." },
+  { icon: HeartHandshake, title: "Funds the code you depend on", description: "Every verified session builds a simulated impact ledger, split across the open-source dependencies your project actually uses." },
+  { icon: Ban, title: "Blocks real distractions", description: "A browser extension blocks distracting sites mid-session; the desktop widget catches native apps the browser can't see." },
+  { icon: Sparkles, title: "Built to feel good", description: "Streaks, XP, levels, and achievements — progress you can actually see, not just a number on a page." },
 ];
 
 const STEPS = [
-  {
-    title: "Connect your accounts",
-    description: "Sign in and optionally link a repo so sessions can be verified against real commits.",
-  },
-  {
-    title: "Start a session",
-    description:
-      "Pick a duration from the web app, browser toolbar, or desktop widget — they all stay in sync.",
-  },
-  {
-    title: "Get verified & level up",
-    description:
-      "Honest sessions extend your streak, earn XP, unlock achievements, and grow your impact ledger.",
-  },
+  { title: "Connect your accounts", description: "Sign in and optionally link a repo so sessions can be verified against real commits." },
+  { title: "Start a session", description: "Pick a duration from the web app, browser toolbar, or desktop widget — they all stay in sync." },
+  { title: "Get verified & level up", description: "Honest sessions extend your streak, earn XP, unlock achievements, and grow your impact ledger." },
 ];
 
-function GlassCard({ children, delay = 0 }: { children: React.ReactNode; delay?: number }) {
-  return (
-    <motion.div
-      initial={{ opacity: 0, y: 20 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true, margin: "-60px" }}
-      transition={{ duration: 0.6, delay, ease: [0.22, 1, 0.36, 1] }}
-      className="rounded-2xl border border-white/10 bg-white/[0.03] backdrop-blur-2xl shadow-[inset_0_1px_0_0_rgba(255,255,255,0.08)]"
-    >
-      {children}
-    </motion.div>
-  );
-}
+const TESTIMONIALS = [
+  { quote: "Upstream changed how I think about focus. Knowing my sessions are verified against real commits makes every minute count.", name: "Sarah Chen", role: "Senior Engineer", company: "VERCEL" },
+  { quote: "The streak system is addictive in the best way. I've shipped more in the last month than the previous three combined.", name: "Marcus Webb", role: "Founder", company: "INDIE" },
+  { quote: "Finally a focus app that understands developers. The GitHub integration means I don't have to manually log anything.", name: "David Lim", role: "Tech Lead", company: "STRIPE" },
+];
+
+const LOGOS = ["Cursor","VS Code","GitHub","Claude","Supabase","Vercel","Docker","Notion"];
+
+const PLANS = [
+  { tier: "Free", price: "0", desc: "Start tracking and verifying your focus sessions. No credit card required.", features: ["Up to 3 projects","Session verification","Basic streak tracking","Browser extension","Web dashboard"], cta: "Get started", href: "/signup" },
+  { tier: "Pro", price: "8", desc: "Everything you need to ship consistently and prove your output.", features: ["Unlimited projects","AI developer twin","Desktop app + system tray","Advanced analytics","Priority support","Impact ledger & OSS funding"], cta: "Start Pro trial", href: "/signup", pro: true },
+  { tier: "Team", price: "12", desc: "For engineering teams that want visibility into collective output.", features: ["Everything in Pro","Team dashboard","Shared projects","Manager reports","SSO & SAML","Dedicated support"], cta: "Contact us", href: "/signup" },
+];
+
+const gradientStyle = {
+  backgroundImage: "linear-gradient(to right, #091020 0%, #0B2551 12.5%, #A4F4FD 32.5%, #00d2ff 50%, #0B2551 67.5%, #091020 87.5%, #091020 100%)",
+  backgroundSize: "200% auto",
+  WebkitBackgroundClip: "text", backgroundClip: "text", color: "transparent", WebkitTextFillColor: "transparent",
+  filter: "url(#c3-noise)",
+};
 
 export default function LandingPage() {
+  const [yearly, setYearly] = useState(false);
+
   return (
     <div className="relative min-h-screen overflow-x-hidden bg-[#0c0c0c] text-white">
-      <svg className="hidden">
-        <filter id="c3-noise">
-          <feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="2" stitchTiles="stitch" />
-          <feColorMatrix type="matrix" values="0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 0.35 0" />
-          <feComposite in2="SourceGraphic" operator="in" result="noise" />
-          <feBlend in="SourceGraphic" in2="noise" mode="multiply" />
-        </filter>
-      </svg>
 
+      {/* Video background */}
+      <div className="fixed inset-0 z-0 pointer-events-none">
+        <video autoPlay loop muted playsInline preload="auto"
+          className="w-full h-full object-cover pointer-events-none opacity-50"
+          src="https://d8j0ntlcm91z4.cloudfront.net/user_38xzZboKViGWJOttwIXH07lWA1P/hf_20260508_064122_c4750c0e-7476-4b44-94a2-a85a65c63bf2.mp4" />
+      </div>
+
+      {/* Guide lines */}
       <div className="hidden md:block pointer-events-none fixed inset-y-0 left-1/2 -translate-x-[calc(50%+36rem)] w-px bg-white/10 z-[5]" />
       <div className="hidden md:block pointer-events-none fixed inset-y-0 left-1/2 translate-x-[calc(-50%+36rem)] w-px bg-white/10 z-[5]" />
+
+      {/* Noise filter */}
+      <svg className="hidden"><filter id="c3-noise"><feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="2" stitchTiles="stitch" /><feColorMatrix type="matrix" values="0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 0.35 0" /><feComposite in2="SourceGraphic" operator="in" result="noise" /><feBlend in="SourceGraphic" in2="noise" mode="multiply" /></filter></svg>
+
+      {/* macOS menu bar strip */}
+      <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.9 }}
+        className="relative z-10 h-10 bg-black/40 backdrop-blur-md border-t border-b border-white/10 flex items-center">
+        <div className="max-w-6xl mx-auto px-6 w-full flex items-center justify-between text-xs">
+          <div className="flex items-center gap-4">
+            <svg viewBox="0 0 384 512" className="w-3.5 h-3.5" fill="currentColor"><path d="M318.7 268.7c-.2-36.7 16.4-64.4 50-84.8-18.8-26.9-47.2-41.7-84.7-44.6-35.5-2.8-74.3 20.7-88.5 20.7-15 0-49.4-19.7-76.4-19.7C63.3 141.2 4 184.8 4 273.5q0 39.3 14.4 81.2c12.8 36.7 59 126.7 107.2 125.2 25.2-.6 43-17.9 75.8-17.9 31.8 0 48.3 17.9 76.4 17.9 48.6-.7 90.4-82.5 102.6-119.3-65.2-30.7-61.7-90-61.7-91.9zm-56.6-164.2c27.3-32.4 24.8-61.9 24-72.5-24.1 1.4-52 16.4-67.9 34.9-17.5 19.8-27.8 44.3-25.6 71.9 26.1 2 49.9-11.4 69.5-34.3z"/></svg>
+            <span className="font-bold text-white">Upstream</span>
+            {["File","Edit","View","Session","Tools","Help"].map((m,i) => (
+              <span key={m} className={`text-white/60 ${i>2?"hidden sm:inline":""} ${i>3?"hidden md:inline":""}`}>{m}</span>
+            ))}
+          </div>
+          <div className="flex items-center gap-3 text-white/60"><Search size={14} /><span>Mon Aug 4 2:09 PM</span></div>
+        </div>
+      </motion.div>
 
       <main className="flex flex-col">
         <Hero />
 
-        <section id="features" className="relative z-10 px-6 py-28">
-          <div className="mx-auto flex max-w-[1100px] flex-col gap-14">
-            <motion.h2
-              initial={{ opacity: 0, y: 15 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
-              className="max-w-[20ch] font-inter text-[2rem] font-extrabold leading-[1.15] tracking-tight text-white sm:text-[2.75rem]"
-            >
-              Everything a focus app should have been
-            </motion.h2>
-            <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
-              {FEATURES.map((feature, i) => (
-                <GlassCard key={feature.title} delay={i * 0.08}>
-                  <div className="flex h-full flex-col gap-3 p-7">
-                    <div className="flex h-11 w-11 items-center justify-center rounded-full bg-[#6744FF]/15">
-                      <feature.icon size={20} className="text-[#8b74ff]" />
-                    </div>
-                    <h3 className="font-inter text-lg font-semibold text-white">{feature.title}</h3>
-                    <p className="font-inter text-[15px] leading-relaxed text-[#A1A1AA]">{feature.description}</p>
-                  </div>
-                </GlassCard>
+        {/* Features */}
+        <section id="features" className="relative z-10 px-6 py-20 md:py-28">
+          <div className="max-w-6xl mx-auto grid md:grid-cols-2 gap-10 md:gap-16 items-start">
+            <motion.div initial={{ opacity:0,y:20 }} whileInView={{ opacity:1,y:0 }} viewport={{ once:true }} transition={{ duration:0.7 }}>
+              <div className="flex items-center gap-3 mb-5"><span className="w-1.5 h-1.5 rounded-full bg-white" /><span className="text-white/70 text-sm font-medium">Verification</span><span className="px-2 py-0.5 rounded-full border border-white/10 text-white/50 text-xs">AI-powered</span></div>
+              <h2 className="text-3xl md:text-5xl font-semibold tracking-tight leading-[1.02]">Proof, not<br />promises.</h2>
+              <p className="mt-6 text-white/60 text-base leading-[1.6] max-w-md">Upstream cross-references your GitHub commits and local IDE activity against every session. A timer can be gamed — real work can't.</p>
+              <div className="flex flex-wrap gap-2 mt-5">
+                {["GitHub commits","IDE activity","Desktop tracking","Browser extension"].map(c => (
+                  <span key={c} className="text-xs text-white/70 px-3 py-1.5 rounded-full border border-white/10 bg-white/[0.03]">{c}</span>
+                ))}
+              </div>
+            </motion.div>
+            <motion.div initial={{ opacity:0,y:20 }} whileInView={{ opacity:1,y:0 }} viewport={{ once:true }} transition={{ duration:0.7, delay:0.15 }}
+              className="liquid-glass rounded-2xl p-5">
+              <div className="text-xs text-white/50 mb-3">Today · 4 sessions tracked</div>
+              {[{label:"Verified",count:3,color:"#00d2ff"},{label:"In progress",count:1,color:"#f59e0b"},{label:"Broken",count:0,color:"#ef4444"},{label:"Planned",count:2,color:"#a3a3a3"}].map(r => (
+                <div key={r.label} className="liquid-glass rounded-lg p-3 flex items-center justify-between mb-2">
+                  <div className="flex items-center gap-2"><span className="w-2 h-2 rounded-full" style={{background:r.color}} /><span className="text-sm text-white/80">{r.label}</span></div>
+                  <span className="text-sm font-semibold text-white">{r.count}</span>
+                </div>
               ))}
-            </div>
+            </motion.div>
           </div>
         </section>
 
-        <section id="how-it-works" className="relative z-10 px-6 pb-28">
-          <div className="mx-auto flex max-w-[1100px] flex-col gap-12">
-            <motion.h2
-              initial={{ opacity: 0, y: 15 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
-              className="font-inter text-[2rem] font-extrabold leading-[1.15] tracking-tight text-white sm:text-[2.75rem]"
-            >
-              How it works
-            </motion.h2>
+        {/* How it works */}
+        <section id="how-it-works" className="relative z-10 px-6 pb-20">
+          <div className="max-w-6xl mx-auto flex flex-col gap-10">
+            <motion.h2 initial={{ opacity:0,y:15 }} whileInView={{ opacity:1,y:0 }} viewport={{ once:true }} transition={{ duration:0.6 }}
+              className="font-inter text-[2rem] font-extrabold leading-[1.15] tracking-tight text-white sm:text-[2.75rem]">How it works</motion.h2>
             <div className="grid grid-cols-1 gap-6 md:grid-cols-3">
-              {STEPS.map((step, i) => (
-                <GlassCard key={step.title} delay={i * 0.08}>
-                  <div className="flex h-full flex-col gap-3 p-7">
-                    <div className="flex h-9 w-9 items-center justify-center rounded-full bg-[#6744FF] font-inter text-sm font-semibold text-white">
-                      {i + 1}
-                    </div>
-                    <h3 className="font-inter text-lg font-semibold text-white">{step.title}</h3>
-                    <p className="font-inter text-[15px] leading-relaxed text-[#A1A1AA]">{step.description}</p>
-                  </div>
-                </GlassCard>
+              {STEPS.map((step,i) => (
+                <motion.div key={step.title} initial={{ opacity:0,y:15 }} whileInView={{ opacity:1,y:0 }} viewport={{ once:true }} transition={{ duration:0.6, delay:i*0.08 }}
+                  className="liquid-glass rounded-2xl flex flex-col gap-3 p-7">
+                  <div className="flex h-9 w-9 items-center justify-center rounded-full bg-[#6744FF] font-inter text-sm font-semibold text-white">{i+1}</div>
+                  <h3 className="font-inter text-lg font-semibold text-white">{step.title}</h3>
+                  <p className="font-inter text-[15px] leading-relaxed text-[#A1A1AA]">{step.description}</p>
+                </motion.div>
               ))}
             </div>
           </div>
         </section>
 
-        <section className="relative z-10 px-6 pb-32 text-center">
-          <div className="mx-auto max-w-[720px] rounded-3xl border border-white/15 bg-white/[0.02] backdrop-blur-2xl shadow-[inset_0_1px_0_0_rgba(255,255,255,0.12)] px-8 py-16 relative overflow-hidden">
-            <div className="absolute inset-0 pointer-events-none opacity-30" style={{ background: "radial-gradient(400px at 50% 0%, rgba(255,255,255,0.1), transparent 70%)" }} />
-            <div className="relative z-10 flex flex-col items-center gap-7">
-              <h2 className="font-inter text-[2rem] font-extrabold leading-[1.15] tracking-tight text-white sm:text-[2.5rem]">
-                Start your streak today
-              </h2>
-              <p className="max-w-[520px] font-inter text-[17px] leading-relaxed text-[#A1A1AA]">
-                Sign up with your preferred account and run your first verified session in under a minute.
-              </p>
-              <Link
-                href="/signup"
-                className="rounded-full bg-white text-black font-medium px-8 py-3.5 font-inter text-[16px] transition-all hover:bg-white/90 active:scale-[0.98]"
-              >
-                Get started
-              </Link>
-            </div>
+        {/* Logos */}
+        <section className="relative z-10 max-w-6xl mx-auto px-6 py-16 text-center border-t border-white/10">
+          <p className="text-xs uppercase tracking-widest text-white/40 mb-10">Built for developers who ship</p>
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-6">
+            {LOGOS.map((name,i) => (
+              <motion.div key={name} initial={{ opacity:0 }} whileInView={{ opacity:1 }} viewport={{ once:true }} transition={{ delay:i*0.05 }}
+                className="text-sm font-semibold tracking-tight text-white/50 hover:text-white transition-colors cursor-default">{name}</motion.div>
+            ))}
           </div>
         </section>
+
+        {/* Testimonials */}
+        <section className="relative z-10 max-w-6xl mx-auto px-6 py-20 md:py-28 border-t border-white/10">
+          <div className="grid md:grid-cols-3 gap-6">
+            {TESTIMONIALS.map((t,i) => (
+              <motion.figure key={i} initial={{ opacity:0,y:20 }} whileInView={{ opacity:1,y:0 }} viewport={{ once:true }} transition={{ delay:i*0.1,duration:0.6 }}
+                className="liquid-glass rounded-2xl p-6">
+                <blockquote className="text-sm text-white/80 leading-[1.6]">"{t.quote}"</blockquote>
+                <figcaption className="mt-6 pt-5 border-t border-white/10"><div className="text-sm font-semibold">{t.name}</div><div className="text-xs text-white/50">{t.role}</div><div className="text-xs text-white font-semibold tracking-wide mt-1">{t.company}</div></figcaption>
+              </motion.figure>
+            ))}
+          </div>
+        </section>
+
+        {/* Pricing */}
+        <section className="c3-pricing-section relative z-10">
+          <svg width="0" height="0" className="absolute"><filter id="c3-noise-pricing"><feTurbulence type="fractalNoise" baseFrequency="0.5" numOctaves="2" stitchTiles="stitch" /><feComponentTransfer><feFuncA type="linear" slope="0.075" /></feComponentTransfer><feComposite in2="SourceGraphic" operator="in" result="noise" /><feBlend in="SourceGraphic" in2="noise" mode="overlay" /></filter></svg>
+          <div className="c3-watermark-container"><div className="c3-watermark-main"><span className="c3-watermark-line-1">Choose your</span><span className="c3-watermark-line-2">flow</span></div></div>
+          <div className="c3-toggle-wrap">
+            <span className="text-sm text-white/60">Monthly</span>
+            <button onClick={()=>setYearly(!yearly)} className={`c3-toggle${yearly?" active":""}`}><span className="c3-toggle-knob" /></button>
+            <span className="text-sm text-white/60">Yearly</span>
+          </div>
+          <div className="c3-grid">
+            {PLANS.map(p => (
+              <div key={p.tier} className={`c3-card${p.pro?" c3-card-pro":""}`}>
+                <div className="c3-tier-small">{p.tier}</div>
+                <div className="c3-tier-large">{yearly?`$${Math.round(parseInt(p.price)*0.6)}`:`$${p.price}`}<span className="text-lg text-white/40">/mo</span></div>
+                <div className="c3-desc">{p.desc}</div>
+                <ul className="c3-list">{p.features.map(f=><li key={f}><span className="c3-check"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="3"><path d="M20 6L9 17l-5-5"/></svg></span>{f}</li>)}</ul>
+                <Link href={p.href} className="c3-btn">{p.cta}</Link>
+              </div>
+            ))}
+          </div>
+        </section>
+
+        {/* Final CTA */}
+        <section className="relative z-10 max-w-6xl mx-auto px-6 py-20 md:py-32">
+          <motion.div initial={{ opacity:0,y:30 }} whileInView={{ opacity:1,y:0 }} viewport={{ once:true }} transition={{ duration:0.8 }}
+            className="liquid-glass relative overflow-hidden rounded-3xl px-8 py-16 md:py-24 text-center">
+            <div className="absolute inset-0 pointer-events-none opacity-30" style={{background:"radial-gradient(600px circle at 50% 0%, rgba(255,255,255,0.15), transparent 70%)"}} />
+            <h2 className="relative text-4xl md:text-6xl font-semibold tracking-tight leading-[1.02]">Ready to prove<br />your best work?</h2>
+            <p className="relative mt-6 text-white/60 max-w-md mx-auto text-sm leading-[1.6]">Join thousands of developers who track, verify, and ship with intention. Start your first verified session in under a minute.</p>
+            <div className="relative mt-8 flex flex-col sm:flex-row items-center justify-center gap-4">
+              <Link href="/signup" className="group inline-flex items-center gap-2 rounded-full bg-white text-black font-medium text-sm px-5 py-3 transition-all hover:bg-white/90 active:scale-[0.98]">Start tracking free<ChevronRight size={14} className="group-hover:translate-x-0.5 transition-transform" /></Link>
+            </div>
+          </motion.div>
+        </section>
+
+        {/* Footer */}
+        <footer className="relative z-10 border-t border-white/10 px-6 py-10">
+          <div className="max-w-6xl mx-auto flex items-center justify-between">
+            <div className="flex items-center gap-2.5"><span className="text-sm font-semibold text-white/40">Upstream</span></div>
+            <div className="flex items-center gap-6 text-xs text-white/40">
+              <a href="#" className="hover:text-white/70">Privacy</a><a href="#" className="hover:text-white/70">Terms</a>
+              <a href="https://github.com/DanisChaparov/upstream-app" className="hover:text-white/70">GitHub</a>
+            </div>
+          </div>
+        </footer>
       </main>
     </div>
   );

@@ -7,8 +7,6 @@ import { Menu, X } from "lucide-react";
 import { Logo } from "@/components/Logo";
 import { AnimatedText } from "@/components/landing/AnimatedText";
 import { DashboardPreview } from "@/components/landing/DashboardPreview";
-import { ParticleBackground } from "@/components/ParticleBackground";
-
 const NAV_LINKS = [
   { label: "Product", href: "#features" },
   { label: "How it works", href: "#how-it-works" },
@@ -36,9 +34,6 @@ export function Hero() {
 
   return (
     <>
-      {/* Particle animation — 60fps canvas, instant start */}
-      <ParticleBackground />
-
       {/* Ambient glow behind hero */}
       <div
         className="fixed inset-0 z-[1] pointer-events-none"
