@@ -88,21 +88,27 @@ export function ApiKeyInput() {
   }
 
   return (
-    <div className="flex flex-col gap-3 rounded-2xl border border-white/10 bg-[#0e0f14] p-5">
+    <div className="flex flex-col gap-3 rounded-2xl border border-white/[0.06] bg-[#0e0f14] p-5">
       <div className="flex items-center gap-2">
-        <Key size={15} className="text-[#60A5FA]" />
-        <h3 className="font-manrope text-sm font-medium text-white">Bring your own API key</h3>
+        <Key size={15} className="text-neutral-500" />
+        <h3 className="font-manrope text-sm font-medium text-neutral-400">Bring your own API key</h3>
+        <span className="rounded-full border border-amber-400/30 bg-amber-400/10 px-2 py-0.5 font-manrope text-[10px] font-bold uppercase tracking-wider text-amber-400/80">
+          Optional
+        </span>
       </div>
 
-      <p className="font-inter text-sm leading-relaxed text-[#A1A1AA]">
-        <strong className="text-white">Desktop app users don't need a key at all</strong> — it uses your
-        local Claude Code installation and nothing leaves your machine.
-      </p>
+      <div className="rounded-xl border border-[#3B82F6]/15 bg-[#3B82F6]/[0.04] p-4">
+        <p className="font-inter text-sm leading-relaxed text-white/90">
+          <strong>You don't need to set this up.</strong> Upstream includes{" "}
+          <strong className="text-[#60A5FA]">5 free AI questions per day</strong> built in,
+          and the desktop app uses your local Claude Code at no cost.
+          Only add a key if you want unlimited questions from the web dashboard.
+        </p>
+      </div>
+
       <p className="font-inter text-xs leading-relaxed text-neutral-500">
-        Keys are only for using AI features from the web dashboard. Pick your
-        provider, paste the key, and it's stored in your profile — used only
-        for AI calls you initiate.{" "}
-        <strong className="text-white">We never see your chats, never log your prompts, never share your key.</strong>
+        If you do add one: stored in your profile, used only for your own
+        AI calls, never logged or shared. Delete it anytime.
       </p>
 
       {/* Provider selector */}
