@@ -70,8 +70,8 @@ export default async function ReportPage({
       <div className="mx-auto flex max-w-2xl flex-col gap-12">
         {/* Header */}
         <div className="flex flex-col items-center gap-4 text-center">
-          <div className="rounded-full bg-[#6744FF]/10 px-4 py-1.5">
-            <span className="font-manrope text-[11px] font-semibold uppercase tracking-widest text-[#8b74ff]">
+          <div className="rounded-full bg-[#3B82F6]/10 px-4 py-1.5">
+            <span className="font-manrope text-[11px] font-semibold uppercase tracking-widest text-[#60A5FA]">
               {report.period.label}
             </span>
           </div>
@@ -93,7 +93,7 @@ export default async function ReportPage({
               <span className="font-manrope text-3xl font-bold text-white">{stat.value}</span>
               <span className="font-inter text-xs text-[#A1A1AA]">{stat.label}</span>
               {stat.comparison && (
-                <span className="font-mono text-[11px] text-[#8b74ff]">{stat.comparison}</span>
+                <span className="font-mono text-[11px] text-[#60A5FA]">{stat.comparison}</span>
               )}
             </div>
           ))}
@@ -106,7 +106,7 @@ export default async function ReportPage({
             <ul className="flex flex-col gap-2">
               {report.highlights.map((h) => (
                 <li key={h} className="flex items-center gap-2.5 font-inter text-sm text-white">
-                  <span className="text-[#8b74ff]">✦</span> {h}
+                  <span className="text-[#60A5FA]">✦</span> {h}
                 </li>
               ))}
             </ul>
@@ -122,7 +122,7 @@ export default async function ReportPage({
                 <div key={bar.month} className="flex flex-1 flex-col items-center gap-1.5">
                   <div className="flex w-full flex-col justify-end" style={{ height: 100 }}>
                     <div
-                      className="w-full rounded-t-sm bg-[#6744FF]/60 transition-all hover:bg-[#6744FF]"
+                      className="w-full rounded-t-sm bg-[#3B82F6]/60 transition-all hover:bg-[#3B82F6]"
                       style={{ height: `${Math.max(2, (bar.minutes / maxMinutes) * 100)}%` }}
                       title={`${bar.month}: ${bar.sessions} sessions, ${bar.minutes} min`}
                     />
@@ -142,7 +142,7 @@ export default async function ReportPage({
               {report.achievements.map((name) => (
                 <span
                   key={name}
-                  className="rounded-full border border-[#6744FF]/30 bg-[#6744FF]/[0.08] px-3 py-1 font-inter text-xs text-[#8b74ff]"
+                  className="rounded-full border border-[#3B82F6]/30 bg-[#3B82F6]/[0.08] px-3 py-1 font-inter text-xs text-[#60A5FA]"
                 >
                   {name}
                 </span>

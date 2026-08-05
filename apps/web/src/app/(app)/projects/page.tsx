@@ -97,7 +97,7 @@ export default async function ProjectsPage() {
                 {project.deadline && <DeadlineCountdown deadline={project.deadline} />}
                 {project.deadline && <span className="text-neutral-600">·</span>}
                 {project.githubRepoUrl ? (
-                  <span className="flex items-center gap-1 text-[#8b74ff]">
+                  <span className="flex items-center gap-1 text-[#60A5FA]">
                     <Github size={11} /> GitHub linked
                   </span>
                 ) : (

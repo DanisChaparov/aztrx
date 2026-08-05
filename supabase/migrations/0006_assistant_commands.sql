@@ -15,6 +15,7 @@ create index if not exists assistant_commands_user_id_status_idx on public.assis
 
 alter table public.assistant_commands enable row level security;
 
+drop policy if exists assistant_commands_owner_all on public.assistant_commands;
 create policy assistant_commands_owner_all on public.assistant_commands
   for all
   using (auth.uid() = user_id)

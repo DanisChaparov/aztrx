@@ -13,6 +13,7 @@ import {
 import type { FocusSession, Project } from "@focus-forge/core";
 import { CommitList, Confetti, Timer } from "@focus-forge/ui";
 import { getBrowserSupabaseClient } from "@/lib/supabase/browser";
+import { playSessionStart, playSessionComplete, playStreak } from "@/lib/sounds";
 import { Select } from "@/components/Select";
 import { WaterButton } from "@/components/WaterButton";
 import { notifySessionEnd, playChime } from "@/lib/chime";
@@ -100,6 +101,7 @@ export function SessionRunner({
         plannedDurationMin: duration,
       });
       setSession(created);
+      playSessionStart();
     } catch (err) {
       setError(err instanceof Error ? err.message : "Could not start session");
     } finally {
@@ -124,6 +126,11 @@ export function SessionRunner({
       setCompletedDurationMin(session.plannedDurationMin);
       setSession(null);
       router.refresh();
+      if (verifyResult.verified) {
+        playStreak();
+      } else {
+        playSessionComplete();
+      }
 
       fetch("/api/push/notify", {
         method: "POST",
@@ -164,12 +171,12 @@ export function SessionRunner({
       <div className="glass-panel relative flex flex-col items-center gap-4 overflow-hidden p-8 text-center">
         {result.verified && <Confetti />}
         <div
-          className={`font-instrument-serif text-3xl ${result.verified ? "text-[#a996ff]" : "text-neutral-300"}`}
+          className={`font-instrument-serif text-3xl ${result.verified ? "text-[#93C5FD]" : "text-neutral-300"}`}
         >
           {result.verified ? "Verified ✓" : "Completed, unverified"}
         </div>
         {result.verified && (
-          <div className="font-manrope text-sm font-medium text-[#8b74ff]">+{completedDurationMin} XP</div>
+          <div className="font-manrope text-sm font-medium text-[#60A5FA]">+{completedDurationMin} XP</div>
         )}
         {distractions.length > 0 && (
           <div className="w-full max-w-sm rounded-xl border border-amber-400/25 bg-amber-400/[0.06] p-4 text-left">
@@ -226,7 +233,7 @@ export function SessionRunner({
             <button
               onClick={handleComplete}
               disabled={busy}
-              className="rounded-[10px] bg-[#6744FF] px-5 py-2.5 font-cabin text-sm font-medium text-white transition-colors hover:bg-[#5a39f0] disabled:cursor-wait disabled:opacity-50"
+              className="rounded-[10px] bg-[#3B82F6] px-5 py-2.5 font-cabin text-sm font-medium text-white transition-colors hover:bg-[#2563EB] disabled:cursor-wait disabled:opacity-50"
             >
               {busy ? "Verifying…" : "I'm done"}
             </button>
@@ -256,7 +263,7 @@ export function SessionRunner({
             type="button"
             onClick={() => setMode("github")}
             className={`flex-1 rounded-xl border px-4 py-3 text-left transition-colors ${
-              mode === "github" ? "border-[#6744FF] bg-[#6744FF]/10" : "border-white/10 bg-white/[0.02]"
+              mode === "github" ? "border-[#3B82F6] bg-[#3B82F6]/10" : "border-white/10 bg-white/[0.02]"
             }`}
           >
             <span className="font-manrope text-sm font-medium text-white">GitHub</span>
@@ -266,7 +273,7 @@ export function SessionRunner({
             type="button"
             onClick={() => setMode("tool")}
             className={`flex-1 rounded-xl border px-4 py-3 text-left transition-colors ${
-              mode === "tool" ? "border-[#6744FF] bg-[#6744FF]/10" : "border-white/10 bg-white/[0.02]"
+              mode === "tool" ? "border-[#3B82F6] bg-[#3B82F6]/10" : "border-white/10 bg-white/[0.02]"
             }`}
           >
             <span className="font-manrope text-sm font-medium text-white">Tool-tracked</span>
@@ -318,7 +325,7 @@ export function SessionRunner({
                 transition={{ type: "spring", stiffness: 400, damping: 25 }}
                 className={`relative flex flex-col items-center gap-1 overflow-hidden rounded-2xl border px-3 py-5 transition-colors ${
                   isSelected
-                    ? "border-[#6744FF] bg-[#6744FF]/10"
+                    ? "border-[#3B82F6] bg-[#3B82F6]/10"
                     : "border-white/10 bg-white/[0.02] hover:border-white/25"
                 }`}
               >
@@ -341,7 +348,7 @@ export function SessionRunner({
                 </span>
                 <span
                   className={`relative font-inter text-[11px] ${
-                    isSelected ? "text-[#a996ff]" : "text-neutral-500"
+                    isSelected ? "text-[#93C5FD]" : "text-neutral-500"
                   }`}
                 >
                   {preset.label}
@@ -352,7 +359,7 @@ export function SessionRunner({
         </div>
         <label
           className={`flex cursor-text items-center gap-3 rounded-xl border px-4 py-3 transition-colors ${
-            customDuration !== "" ? "border-[#6744FF] bg-[#6744FF]/[0.06]" : "border-white/10 bg-white/[0.02]"
+            customDuration !== "" ? "border-[#3B82F6] bg-[#3B82F6]/[0.06]" : "border-white/10 bg-white/[0.02]"
           }`}
         >
           <span className="font-inter text-sm text-neutral-500">Something else</span>
@@ -369,7 +376,7 @@ export function SessionRunner({
               if (parsed > 0 && parsed <= 480) setDuration(parsed);
             }}
             placeholder="45"
-            className="w-14 border-b border-white/15 bg-transparent pb-0.5 text-center font-manrope text-lg font-semibold text-white outline-none transition-colors placeholder:font-normal placeholder:text-neutral-600 focus:border-[#6744FF]"
+            className="w-14 border-b border-white/15 bg-transparent pb-0.5 text-center font-manrope text-lg font-semibold text-white outline-none transition-colors placeholder:font-normal placeholder:text-neutral-600 focus:border-[#3B82F6]"
           />
           <span className="font-inter text-sm text-neutral-500">minutes</span>
         </label>

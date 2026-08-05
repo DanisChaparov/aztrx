@@ -42,7 +42,7 @@ export function ApiKeyInput() {
   return (
     <div className="flex flex-col gap-3 rounded-2xl border border-white/10 bg-[#0e0f14] p-5">
       <div className="flex items-center gap-2">
-        <Key size={15} className="text-[#8b74ff]" />
+        <Key size={15} className="text-[#60A5FA]" />
         <h3 className="font-manrope text-sm font-medium text-white">Bring your own API key</h3>
       </div>
       <p className="font-inter text-sm leading-relaxed text-[#A1A1AA]">
@@ -52,7 +52,7 @@ export function ApiKeyInput() {
           href="https://claude.ai/claude-code"
           target="_blank"
           rel="noopener noreferrer"
-          className="text-[#8b74ff] underline underline-offset-2"
+          className="text-[#60A5FA] underline underline-offset-2"
         >
           Claude Code
         </a>{" "}
@@ -67,7 +67,7 @@ export function ApiKeyInput() {
             value={key}
             onChange={(e) => { setKey(e.target.value); setSaved(false); }}
             placeholder="sk-ant-api03-..."
-            className="w-full rounded-lg border border-white/10 bg-white/[0.03] py-2 pl-3 pr-9 font-mono text-xs text-white outline-none transition-colors focus:border-[#6744FF]"
+            className="w-full rounded-lg border border-white/10 bg-white/[0.03] py-2 pl-3 pr-9 font-mono text-xs text-white outline-none transition-colors focus:border-[#3B82F6]"
           />
           <button
             type="button"
@@ -83,7 +83,7 @@ export function ApiKeyInput() {
           disabled={busy || !key.trim()}
           className="shrink-0 rounded-lg border border-white/10 bg-[#1c1d22] px-4 py-2 font-inter text-sm text-white transition-colors hover:bg-[#26272e] disabled:opacity-50"
         >
-          {saved ? <Check size={14} className="text-[#8b74ff]" /> : busy ? "Saving…" : "Save"}
+          {saved ? <Check size={14} className="text-[#60A5FA]" /> : busy ? "Saving…" : "Save"}
         </button>
       </div>
 

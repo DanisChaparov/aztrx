@@ -13,6 +13,7 @@ create index if not exists assistant_tts_user_id_status_idx on public.assistant_
 
 alter table public.assistant_tts enable row level security;
 
+drop policy if exists assistant_tts_owner_all on public.assistant_tts;
 create policy assistant_tts_owner_all on public.assistant_tts
   for all
   using (auth.uid() = user_id)

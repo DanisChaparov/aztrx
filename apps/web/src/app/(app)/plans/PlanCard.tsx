@@ -75,13 +75,13 @@ export function PlanCard({
 }) {
   const showProFeatures = variant === "pro";
   const borderClass = highlight
-    ? "border-[#6744FF]/40 ring-1 ring-[#6744FF]/20"
+    ? "border-[#3B82F6]/40 ring-1 ring-[#3B82F6]/20"
     : "border-white/10";
 
   return (
     <div className={`relative flex flex-col gap-5 rounded-2xl ${borderClass} bg-[#0e0f14] p-6`}>
       {highlight && (
-        <div className="absolute -top-3 left-1/2 -translate-x-1/2 rounded-full bg-[#6744FF] px-4 py-1">
+        <div className="absolute -top-3 left-1/2 -translate-x-1/2 rounded-full bg-[#3B82F6] px-4 py-1">
           <span className="font-manrope text-[11px] font-bold uppercase tracking-wider text-white">
             Most popular
           </span>
@@ -91,14 +91,14 @@ export function PlanCard({
       <div className="flex flex-col gap-1">
         <div className="flex items-center gap-2">
           <h3 className="font-manrope text-xl font-bold text-white">{name}</h3>
-          {variant === "pro" && <Crown size={16} className="text-[#8b74ff]" />}
+          {variant === "pro" && <Crown size={16} className="text-[#60A5FA]" />}
         </div>
         <div className="flex items-baseline gap-1">
           <span className="font-instrument-serif text-4xl font-bold text-white">{price}</span>
           <span className="font-inter text-sm text-[#A1A1AA]">/{period}</span>
         </div>
         {annualPrice && annualPeriod && (
-          <p className="font-inter text-xs text-[#8b74ff]">
+          <p className="font-inter text-xs text-[#60A5FA]">
             {annualPrice} {annualPeriod} — save 25%
           </p>
         )}
@@ -111,7 +111,7 @@ export function PlanCard({
           href={action.href}
           className={`flex items-center justify-center gap-2 rounded-xl py-3 font-manrope text-sm font-semibold transition-all ${
             variant === "pro"
-              ? "bg-[#6744FF] text-white hover:bg-[#6744FF]/90 shadow-lg shadow-[#6744FF]/20"
+              ? "bg-[#3B82F6] text-white hover:bg-[#3B82F6]/90 shadow-lg shadow-[#3B82F6]/20"
               : "border border-white/10 bg-white/[0.03] text-white hover:bg-white/[0.08]"
           }`}
         >
@@ -123,7 +123,7 @@ export function PlanCard({
           disabled={action.disabled}
           className={`flex items-center justify-center gap-2 rounded-xl py-3 font-manrope text-sm font-semibold transition-all ${
             current
-              ? "border border-[#6744FF]/30 bg-[#6744FF]/[0.08] text-[#8b74ff]"
+              ? "border border-[#3B82F6]/30 bg-[#3B82F6]/[0.08] text-[#60A5FA]"
               : "border border-white/10 bg-white/[0.03] text-neutral-500"
           }`}
         >
@@ -152,9 +152,9 @@ export function PlanCard({
                     {comingSoon ? (
                       <Clock size={13} className="shrink-0 text-amber-400/60" />
                     ) : feature.included ? (
-                      <Check size={13} className="shrink-0 text-[#8b74ff]" />
+                      <Check size={13} className="shrink-0 text-[#60A5FA]" />
                     ) : showProFeatures ? (
-                      <Check size={13} className="shrink-0 text-[#8b74ff]" />
+                      <Check size={13} className="shrink-0 text-[#60A5FA]" />
                     ) : (
                       <Minus size={13} className="shrink-0 text-neutral-700" />
                     )}

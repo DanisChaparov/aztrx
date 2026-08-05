@@ -35,7 +35,7 @@ export function GrantPrivateRepoAccessButton() {
   return (
     <div className="flex flex-col gap-3 rounded-2xl border border-white/10 bg-[#0e0f14] p-5">
       <div className="flex items-center gap-2">
-        <Lock size={15} className="text-[#8b74ff]" />
+        <Lock size={15} className="text-[#60A5FA]" />
         <h3 className="font-manrope text-sm font-medium text-white">Verifying a private repo?</h3>
       </div>
       <p className="font-inter text-sm leading-relaxed text-[#A1A1AA]">

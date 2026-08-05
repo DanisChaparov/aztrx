@@ -47,7 +47,7 @@ export function NewProjectForm() {
   }
 
   const inputClass =
-    "rounded-[10px] border border-white/10 bg-white/[0.03] px-3 py-2 font-inter text-sm text-white outline-none transition-colors focus:border-[#6744FF]";
+    "rounded-[10px] border border-white/10 bg-white/[0.03] px-3 py-2 font-inter text-sm text-white outline-none transition-colors focus:border-[#3B82F6]";
 
   return (
     <form onSubmit={handleSubmit} className="glass-panel flex flex-col gap-4 p-5">

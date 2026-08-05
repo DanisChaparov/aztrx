@@ -77,7 +77,7 @@ export function EmailSignUpForm() {
         <p className="font-inter text-sm text-white">Account created!</p>
         <p className="font-inter text-xs text-neutral-400">
           Check your email for a confirmation link, then{" "}
-          <a href="/login" className="text-[#8b74ff] underline">
+          <a href="/login" className="text-[#60A5FA] underline">
             sign in
           </a>
           .
@@ -87,7 +87,7 @@ export function EmailSignUpForm() {
   }
 
   const inputClass =
-    "w-full rounded-xl border border-white/10 bg-white/[0.03] py-2.5 pl-10 pr-4 font-inter text-sm text-white outline-none transition-colors placeholder:text-neutral-500 focus:border-[#6744FF]";
+    "w-full rounded-xl border border-white/10 bg-white/[0.03] py-2.5 pl-10 pr-4 font-inter text-sm text-white outline-none transition-colors placeholder:text-neutral-500 focus:border-[#3B82F6]";
 
   return (
     <form onSubmit={handleSubmit} className="flex w-full flex-col gap-3">
@@ -135,7 +135,7 @@ export function EmailSignUpForm() {
       <button
         type="submit"
         disabled={busy}
-        className="w-full rounded-xl bg-[#6744FF] px-4 py-2.5 font-manrope text-sm font-semibold text-white transition-colors hover:bg-[#5a39f0] disabled:opacity-50"
+        className="w-full rounded-xl bg-[#3B82F6] px-4 py-2.5 font-manrope text-sm font-semibold text-white transition-colors hover:bg-[#2563EB] disabled:opacity-50"
       >
         {busy ? "Creating account…" : "Sign up with email"}
       </button>

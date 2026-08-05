@@ -55,7 +55,7 @@ export function WeeklyInsight() {
         value: String(sessionCount),
         subtitle: `focus ${label} this week`,
         icon: Target,
-        color: "text-[#8b74ff]",
+        color: "text-[#60A5FA]",
       });
     }
 
@@ -78,7 +78,7 @@ export function WeeklyInsight() {
         value: "Day 1",
         subtitle: "Your journey begins. Start a session to see insights.",
         icon: TrendingUp,
-        color: "text-[#8b74ff]",
+        color: "text-[#60A5FA]",
       });
     }
 
@@ -89,17 +89,17 @@ export function WeeklyInsight() {
   if (loading) {
     return (
       <div className="flex items-center gap-2.5 rounded-2xl border border-white/10 bg-[#0e0f14] p-5">
-        <Sparkles size={15} className="animate-pulse text-[#8b74ff]" />
+        <Sparkles size={15} className="animate-pulse text-[#60A5FA]" />
         <span className="font-inter text-sm text-[#A1A1AA]">Analyzing your week…</span>
       </div>
     );
   }
 
   return (
-    <div className="flex flex-col gap-3 rounded-2xl border border-[#6744FF]/20 bg-[#0e0f14] p-5">
+    <div className="flex flex-col gap-3 rounded-2xl border border-[#3B82F6]/20 bg-[#0e0f14] p-5">
       <div className="flex items-center gap-2">
-        <Sparkles size={14} className="text-[#8b74ff]" />
-        <h3 className="font-manrope text-xs font-semibold uppercase tracking-wider text-[#8b74ff]">
+        <Sparkles size={14} className="text-[#60A5FA]" />
+        <h3 className="font-manrope text-xs font-semibold uppercase tracking-wider text-[#60A5FA]">
           Your week in code
         </h3>
       </div>

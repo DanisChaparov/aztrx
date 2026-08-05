@@ -32,7 +32,7 @@ export default async function SharePage() {
         <div className="flex flex-col items-center gap-6 text-center">
           <span className="font-manrope text-4xl font-bold text-white">Upstream</span>
           <p className="font-inter text-lg text-[#A1A1AA]">Productive Focus for Developers</p>
-          <Link href="/login" className="rounded-xl bg-[#6744FF] px-6 py-3 font-manrope font-semibold text-white">
+          <Link href="/login" className="rounded-xl bg-[#3B82F6] px-6 py-3 font-manrope font-semibold text-white">
             Sign in to see your stats
           </Link>
         </div>
@@ -76,10 +76,10 @@ export default async function SharePage() {
         {/* Header */}
         <div className="flex items-center justify-between">
           <div>
-            <span className="font-manrope text-xs font-semibold uppercase tracking-[0.2em] text-[#8b74ff]">Upstream</span>
+            <span className="font-manrope text-xs font-semibold uppercase tracking-[0.2em] text-[#60A5FA]">Upstream</span>
             <h1 className="mt-1 font-manrope text-2xl font-bold text-white">{username}</h1>
           </div>
-          <span className="rounded-full border border-[#8b74ff]/30 px-4 py-1.5 font-manrope text-xs font-semibold text-[#8b74ff]">
+          <span className="rounded-full border border-[#60A5FA]/30 px-4 py-1.5 font-manrope text-xs font-semibold text-[#60A5FA]">
             {devType}
           </span>
         </div>
@@ -96,7 +96,7 @@ export default async function SharePage() {
         <div className="flex flex-wrap items-center gap-2">
           <span className="font-manrope text-xs text-neutral-400">Top tools</span>
           {topTools.length > 0 ? topTools.map((tool: string) => (
-            <span key={tool} className="rounded-full bg-[#8b74ff]/15 px-4 py-1.5 font-manrope text-xs font-semibold text-white">
+            <span key={tool} className="rounded-full bg-[#60A5FA]/15 px-4 py-1.5 font-manrope text-xs font-semibold text-white">
               {tool}
             </span>
           )) : (
@@ -109,7 +109,7 @@ export default async function SharePage() {
           <p className="font-inter text-sm text-[#A1A1AA]">
             Productive Focus for Developers
           </p>
-          <Link href="/dashboard" className="rounded-xl bg-[#6744FF] px-6 py-2.5 font-manrope text-sm font-semibold text-white">
+          <Link href="/dashboard" className="rounded-xl bg-[#3B82F6] px-6 py-2.5 font-manrope text-sm font-semibold text-white">
             Get your own stats →
           </Link>
         </div>
@@ -121,7 +121,7 @@ export default async function SharePage() {
 function StatBox({ label, value }: { label: string; value: string }) {
   return (
     <div className="flex flex-col items-center gap-1 rounded-2xl border border-white/[0.07] bg-white/[0.02] py-4">
-      <span className="font-manrope text-3xl font-bold text-[#8b74ff]">{value}</span>
+      <span className="font-manrope text-3xl font-bold text-[#60A5FA]">{value}</span>
       <span className="font-manrope text-[11px] uppercase tracking-wider text-neutral-500">{label}</span>
     </div>
   );

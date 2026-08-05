@@ -77,7 +77,7 @@ export async function GET(request: NextRequest) {
           {/* Header */}
           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start" }}>
             <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
-              <span style={{ color: "#8b74ff", fontSize: 18, fontWeight: 700, fontFamily: "Manrope", letterSpacing: "0.15em", textTransform: "uppercase" }}>
+              <span style={{ color: "#60A5FA", fontSize: 18, fontWeight: 700, fontFamily: "Manrope", letterSpacing: "0.15em", textTransform: "uppercase" }}>
                 Upstream
               </span>
               <span style={{ color: "#A1A1AA", fontSize: 24, fontFamily: "Manrope" }}>
@@ -85,7 +85,7 @@ export async function GET(request: NextRequest) {
               </span>
             </div>
             <span style={{
-              color: "#8b74ff", fontSize: 16, fontWeight: 600,
+              color: "#60A5FA", fontSize: 16, fontWeight: 600,
               border: "1px solid rgba(139,116,255,0.3)", borderRadius: 999,
               padding: "8px 20px", fontFamily: "Manrope",
             }}>
@@ -95,7 +95,7 @@ export async function GET(request: NextRequest) {
 
           {/* Main stats */}
           <div style={{ display: "flex", gap: 40, marginTop: 60 }}>
-            <StatBox label="Streak" value={`${streak}d`} color="#8b74ff" />
+            <StatBox label="Streak" value={`${streak}d`} color="#60A5FA" />
             <StatBox label="Level" value={String(level.level)} color="#a78bfa" />
             <StatBox label="Sessions" value={String(verified.length)} color="#c4b5fd" />
             <StatBox label="XP" value={String(xp)} color="#ddd6fe" />
@@ -156,7 +156,7 @@ function statsFallback(bold: ArrayBuffer, reg: ArrayBuffer, inter: ArrayBuffer) 
         display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center",
         padding: 60, gap: 24,
       }}>
-        <span style={{ color: "#8b74ff", fontSize: 48, fontWeight: 700, fontFamily: "Manrope" }}>
+        <span style={{ color: "#60A5FA", fontSize: 48, fontWeight: 700, fontFamily: "Manrope" }}>
           Upstream
         </span>
         <span style={{ color: "#A1A1AA", fontSize: 28, fontFamily: "Manrope" }}>

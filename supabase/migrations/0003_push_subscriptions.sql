@@ -11,5 +11,6 @@ create index if not exists push_subscriptions_user_id_idx on public.push_subscri
 
 alter table public.push_subscriptions enable row level security;
 
+drop policy if exists "push_subscriptions_owner_all" on public.push_subscriptions;
 create policy "push_subscriptions_owner_all" on public.push_subscriptions
   for all using (auth.uid() = user_id) with check (auth.uid() = user_id);

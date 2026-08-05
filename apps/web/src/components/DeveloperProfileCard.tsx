@@ -28,7 +28,7 @@ export function DeveloperProfileCard({ plan }: { plan: "free" | "pro" }) {
   if (loading) {
     return (
       <div className="flex items-center gap-2.5 rounded-2xl border border-white/10 bg-[#0e0f14] p-6">
-        <Loader2 size={16} className="animate-spin text-[#8b74ff]" />
+        <Loader2 size={16} className="animate-spin text-[#60A5FA]" />
         <span className="font-inter text-sm text-[#A1A1AA]">Building your developer profile…</span>
       </div>
     );
@@ -52,7 +52,7 @@ export function DeveloperProfileCard({ plan }: { plan: "free" | "pro" }) {
           <div className="flex flex-col gap-2">
             {profile.strengths.map((s) => (
               <div key={s.title} className="flex items-start gap-2.5 rounded-xl border border-white/[0.07] bg-white/[0.02] p-3">
-                <TrendingUp size={15} className="mt-0.5 shrink-0 text-[#8b74ff]" />
+                <TrendingUp size={15} className="mt-0.5 shrink-0 text-[#60A5FA]" />
                 <div>
                   <p className="font-manrope text-sm font-medium text-white">{s.title}</p>
                   <p className="mt-0.5 font-inter text-[13px] leading-relaxed text-[#A1A1AA]">{s.detail}</p>
@@ -85,8 +85,8 @@ export function DeveloperProfileCard({ plan }: { plan: "free" | "pro" }) {
           <h3 className="font-manrope text-xs font-medium uppercase tracking-wider text-neutral-500">Recommended next steps</h3>
           <div className="flex flex-col gap-2">
             {profile.growthPath.map((step, i) => (
-              <div key={step.title} className="flex items-start gap-3 rounded-xl border border-[#6744FF]/20 bg-[#6744FF]/[0.04] p-3">
-                <div className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-[#6744FF]/20 text-[11px] font-bold text-[#8b74ff]">
+              <div key={step.title} className="flex items-start gap-3 rounded-xl border border-[#3B82F6]/20 bg-[#3B82F6]/[0.04] p-3">
+                <div className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-[#3B82F6]/20 text-[11px] font-bold text-[#60A5FA]">
                   {i + 1}
                 </div>
                 <div className="flex-1">

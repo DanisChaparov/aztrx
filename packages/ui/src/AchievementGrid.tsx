@@ -94,15 +94,15 @@ export function AchievementGrid({
               onClick={() => setSelectedId(selectedId === achievement.id ? null : achievement.id)}
               title={unlocked ? achievement.description : `${achievement.name} — click for details`}
               className={`glass-panel flex cursor-pointer flex-col items-center gap-1.5 p-3 text-center transition-colors ${
-                unlocked ? "border-[#6744FF]/40" : "opacity-50 grayscale hover:opacity-70"
+                unlocked ? "border-[#3B82F6]/40" : "opacity-50 grayscale hover:opacity-70"
               }`}
             >
               <div
                 className={`flex h-9 w-9 items-center justify-center rounded-full ${
-                  unlocked ? "bg-[#6744FF]/20" : "bg-white/5"
+                  unlocked ? "bg-[#3B82F6]/20" : "bg-white/5"
                 }`}
               >
-                <Icon size={16} className={unlocked ? "text-[#8b74ff]" : "text-neutral-500"} />
+                <Icon size={16} className={unlocked ? "text-[#60A5FA]" : "text-neutral-500"} />
               </div>
               <span className="font-manrope text-[10px] leading-tight text-neutral-300">
                 {achievement.name}
@@ -116,7 +116,7 @@ export function AchievementGrid({
                     whileInView={{ width: `${Math.min(100, ((progress.current ?? 0) / progress.target) * 100)}%` }}
                     viewport={{ once: true }}
                     transition={{ duration: 0.6, ease: "easeOut" }}
-                    className="h-full rounded-full bg-[#6744FF]/40"
+                    className="h-full rounded-full bg-[#3B82F6]/40"
                   />
                 </div>
               )}
@@ -142,10 +142,10 @@ export function AchievementGrid({
                   return (
                     <div
                       className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-full ${
-                        selected.unlocked ? "bg-[#6744FF]/20" : "bg-white/5"
+                        selected.unlocked ? "bg-[#3B82F6]/20" : "bg-white/5"
                       }`}
                     >
-                      <Icon size={18} className={selected.unlocked ? "text-[#8b74ff]" : "text-neutral-500"} />
+                      <Icon size={18} className={selected.unlocked ? "text-[#60A5FA]" : "text-neutral-500"} />
                     </div>
                   );
                 })()}
@@ -153,7 +153,7 @@ export function AchievementGrid({
                   <div className="flex items-baseline gap-2">
                     <h4 className="font-manrope text-sm font-medium text-white">{selected.name}</h4>
                     {selected.unlocked ? (
-                      <span className="font-inter text-[11px] text-[#8b74ff]">Unlocked</span>
+                      <span className="font-inter text-[11px] text-[#60A5FA]">Unlocked</span>
                     ) : (
                       <span className="font-inter text-[11px] text-neutral-500">Locked</span>
                     )}
@@ -164,7 +164,7 @@ export function AchievementGrid({
                     <div className="mt-1 flex items-center gap-2">
                       <div className="h-1.5 flex-1 overflow-hidden rounded-full bg-white/5">
                         <div
-                          className="h-full rounded-full bg-[#6744FF]/50 transition-all"
+                          className="h-full rounded-full bg-[#3B82F6]/50 transition-all"
                           style={{
                             width: `${Math.min(100, ((selected.progress.current ?? 0) / selected.progress.target) * 100)}%`,
                           }}

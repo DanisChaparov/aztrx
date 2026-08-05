@@ -14,7 +14,7 @@ export function PlanBadge({ plan }: { plan: Plan }) {
 
   return (
     <span
-      className="inline-flex items-center gap-1.5 rounded-full border border-[#6744FF]/40 bg-[#6744FF]/15 px-2.5 py-1 font-inter text-[11px] font-medium text-[#a996ff]"
+      className="inline-flex items-center gap-1.5 rounded-full border border-[#3B82F6]/40 bg-[#3B82F6]/15 px-2.5 py-1 font-inter text-[11px] font-medium text-[#93C5FD]"
       title={BILLING_LIVE ? "Pro plan" : "Pro plan — billing isn't live yet, so everyone has these features"}
     >
       <Sparkles size={11} />

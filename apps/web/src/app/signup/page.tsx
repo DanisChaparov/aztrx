@@ -2,7 +2,7 @@ import Link from "next/link";
 import { SocialSignInButton } from "@/components/SocialSignInButton";
 import { EmailSignUpForm } from "@/components/EmailSignUpForm";
 import { Logo } from "@/components/Logo";
-import { SiteBackground } from "@/components/SiteBackground";
+import { VideoBackground } from "@/components/VideoBackground";
 
 export default async function SignUpPage({
   searchParams,
@@ -14,7 +14,7 @@ export default async function SignUpPage({
 
   return (
     <main className="relative flex min-h-screen flex-col items-center justify-center overflow-hidden px-6">
-      <SiteBackground />
+      <VideoBackground />
       <div className="relative z-10 flex w-full max-w-sm flex-col items-center gap-6 rounded-3xl border border-white/10 bg-[#0e0f14]/90 px-8 py-10 text-center backdrop-blur-md">
         <Link href="/" className="flex items-center gap-2">
           <Logo size={24} />
@@ -48,7 +48,7 @@ export default async function SignUpPage({
 
         <p className="font-inter text-[13px] text-neutral-500">
           Already have an account?{" "}
-          <Link href="/login" className="text-[#8b74ff] hover:underline">
+          <Link href="/login" className="text-[#60A5FA] hover:underline">
             Sign in
           </Link>
         </p>

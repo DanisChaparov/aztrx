@@ -25,7 +25,7 @@ export function ProfileCard({
   return (
     <div className="overflow-hidden rounded-2xl border border-white/10 bg-[#0e0f14]">
       {/* Banner */}
-      <div className="h-24 bg-gradient-to-r from-[#6744FF]/30 via-[#8b74ff]/20 to-transparent" />
+      <div className="h-24 bg-gradient-to-r from-[#3B82F6]/30 via-[#60A5FA]/20 to-transparent" />
 
       <div className="-mt-10 flex flex-col gap-4 px-6 pb-6">
         {/* Avatar + name */}
@@ -51,7 +51,7 @@ export function ProfileCard({
             </div>
           </div>
           {plan === "pro" && (
-            <span className="mb-1 rounded-full bg-[#6744FF]/20 px-3 py-0.5 font-manrope text-[11px] font-semibold text-[#8b74ff]">
+            <span className="mb-1 rounded-full bg-[#3B82F6]/20 px-3 py-0.5 font-manrope text-[11px] font-semibold text-[#60A5FA]">
               PRO
             </span>
           )}
@@ -74,7 +74,7 @@ export function ProfileCard({
           </div>
           <div className="h-1.5 overflow-hidden rounded-full bg-white/5">
             <div
-              className="h-full rounded-full bg-[#6744FF] transition-all"
+              className="h-full rounded-full bg-[#3B82F6] transition-all"
               style={{ width: `${Math.round(level.progress * 100)}%` }}
             />
           </div>
@@ -86,7 +86,7 @@ export function ProfileCard({
             href={publicUrl}
             target="_blank"
             rel="noopener noreferrer"
-            className="flex items-center gap-2 rounded-xl border border-white/10 bg-white/[0.02] px-4 py-2.5 font-inter text-sm text-[#8b74ff] transition-colors hover:border-[#6744FF]/30"
+            className="flex items-center gap-2 rounded-xl border border-white/10 bg-white/[0.02] px-4 py-2.5 font-inter text-sm text-[#60A5FA] transition-colors hover:border-[#3B82F6]/30"
           >
             <ExternalLink size={13} />
             Your public developer twin
@@ -100,7 +100,7 @@ export function ProfileCard({
 function Stat({ icon: Icon, value, label }: { icon?: any; value: string; label: string }) {
   return (
     <div className="flex items-center gap-2">
-      {Icon && <Icon size={14} className="text-[#8b74ff]" />}
+      {Icon && <Icon size={14} className="text-[#60A5FA]" />}
       <div className="flex flex-col">
         <span className="font-manrope text-lg font-semibold text-white">{value}</span>
         <span className="font-inter text-[11px] text-[#A1A1AA]">{label}</span>

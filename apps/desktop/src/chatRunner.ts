@@ -32,6 +32,8 @@ const TOOL_NAMES = [
   "get_session_history",
   "get_recent_commits",
   "get_tool_usage",
+  "get_profile",
+  "get_daily_screen_time",
 ];
 const ALLOWED_TOOLS = TOOL_NAMES.map((name) => `mcp__upstream__${name}`).join(",");
 

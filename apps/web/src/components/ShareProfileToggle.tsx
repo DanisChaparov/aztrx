@@ -64,7 +64,7 @@ export function ShareProfileToggle({
       <div className="flex items-start justify-between gap-4">
         <div className="flex flex-col gap-1">
           <div className="flex items-center gap-2">
-            <Globe size={15} className="text-[#8b74ff]" />
+            <Globe size={15} className="text-[#60A5FA]" />
             <h3 className="font-manrope text-sm font-medium text-white">Share your developer twin</h3>
           </div>
           <p className="font-inter text-sm leading-relaxed text-[#A1A1AA]">
@@ -79,7 +79,7 @@ export function ShareProfileToggle({
           onClick={toggle}
           disabled={busy}
           className={`relative h-6 w-11 shrink-0 rounded-full transition-colors disabled:opacity-50 ${
-            enabled ? "bg-[#6744FF]" : "bg-white/15"
+            enabled ? "bg-[#3B82F6]" : "bg-white/15"
           }`}
         >
           <span
@@ -100,7 +100,7 @@ export function ShareProfileToggle({
         >
           <span className="truncate font-mono text-xs text-neutral-300">{url}</span>
           {copied ? (
-            <Check size={14} className="shrink-0 text-[#8b74ff]" />
+            <Check size={14} className="shrink-0 text-[#60A5FA]" />
           ) : (
             <Copy size={14} className="shrink-0 text-neutral-500" />
           )}

@@ -14,7 +14,7 @@ interface TwinResponse {
 }
 
 const TONE_STYLE: Record<TwinInsight["tone"], { icon: typeof TrendingUp; className: string; label: string }> = {
-  strength: { icon: TrendingUp, className: "text-[#8b74ff]", label: "Strength" },
+  strength: { icon: TrendingUp, className: "text-[#60A5FA]", label: "Strength" },
   weakness: { icon: TrendingDown, className: "text-amber-400", label: "Worth fixing" },
   pattern: { icon: Minus, className: "text-[#A1A1AA]", label: "Pattern" },
 };
@@ -58,7 +58,7 @@ export function DeveloperTwin() {
   if (!data) {
     return (
       <div className="flex items-center gap-2.5 rounded-2xl border border-white/10 bg-[#0e0f14] p-6">
-        <Loader2 size={16} className="animate-spin text-[#8b74ff]" />
+        <Loader2 size={16} className="animate-spin text-[#60A5FA]" />
         <span className="font-inter text-sm text-[#A1A1AA]">Reading your commit history…</span>
       </div>
     );

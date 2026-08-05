@@ -13,7 +13,9 @@ import { z } from "zod";
 import {
   abandonSession,
   getActiveSession,
+  getAmbientToolSummary,
   getImpactLedgerSummary,
+  getProfile,
   getRecentCommits,
   getToolUsageSummary,
   listProjects,
@@ -372,6 +374,38 @@ server.tool(
           tool: u.appName,
           minutes: Math.round(u.totalSeconds / 60),
           isAiCodingAssistant: isAiAssistedTool(u.appName),
+        }))
+      )
+    );
+  }
+);
+
+server.tool(
+  "get_profile",
+  "Get the signed-in user's profile — display name, email, notification preferences. Read-only. " +
+    "Use this when the user asks about their account, settings, or who they're signed in as.",
+  {},
+  async () => {
+    const profile = await getProfile(supabase);
+    return text(JSON.stringify(profile));
+  }
+);
+
+server.tool(
+  "get_daily_screen_time",
+  "Get today's screen-time breakdown — which apps and tools the user has been in so far today " +
+    "(including time tracked outside of focus sessions via ambient monitoring). Returns per-app " +
+    "totals sorted most-used-first, each tagged as AI-assisted or not.",
+  {},
+  async () => {
+    const summary = await getAmbientToolSummary(supabase);
+    if (summary.length === 0) return text("No ambient activity recorded today yet.");
+    return text(
+      JSON.stringify(
+        summary.map((s) => ({
+          app: s.appName,
+          minutes: Math.round(s.totalSeconds / 60),
+          isAiAssisted: s.isAiAssisted,
         }))
       )
     );

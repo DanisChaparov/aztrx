@@ -11,12 +11,15 @@ create table if not exists public.profiles (
 
 alter table public.profiles enable row level security;
 
+drop policy if exists "profiles_owner_select" on public.profiles;
 create policy "profiles_owner_select" on public.profiles
   for select using (auth.uid() = id);
 
+drop policy if exists "profiles_owner_upsert" on public.profiles;
 create policy "profiles_owner_upsert" on public.profiles
   for insert with check (auth.uid() = id);
 
+drop policy if exists "profiles_owner_update" on public.profiles;
 create policy "profiles_owner_update" on public.profiles
   for update using (auth.uid() = id) with check (auth.uid() = id);
 

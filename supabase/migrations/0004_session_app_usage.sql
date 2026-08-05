@@ -11,6 +11,7 @@ create index if not exists session_app_usage_session_id_idx on public.session_ap
 
 alter table public.session_app_usage enable row level security;
 
+drop policy if exists session_app_usage_owner_all on public.session_app_usage;
 create policy session_app_usage_owner_all on public.session_app_usage
   for all
   using (exists (select 1 from public.focus_sessions fs where fs.id = session_id and fs.user_id = auth.uid()))
