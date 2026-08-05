@@ -95,17 +95,14 @@ export function ApiKeyInput() {
       </div>
 
       <p className="font-inter text-sm leading-relaxed text-[#A1A1AA]">
-        Free users can bring their own AI key — Anthropic, OpenAI, or Gemini.
-        If you have{" "}
-        <a
-          href="https://claude.ai/claude-code"
-          target="_blank"
-          rel="noopener noreferrer"
-          className="text-[#60A5FA] underline underline-offset-2"
-        >
-          Claude Code
-        </a>{" "}
-        installed, the desktop app uses your existing subscription automatically — no key needed.
+        <strong className="text-white">Desktop app users don't need a key at all</strong> — it uses your
+        local Claude Code installation and nothing leaves your machine.
+      </p>
+      <p className="font-inter text-xs leading-relaxed text-neutral-500">
+        Keys are only for using AI features from the web dashboard. Pick your
+        provider, paste the key, and it's stored in your profile — used only
+        for AI calls you initiate.{" "}
+        <strong className="text-white">We never see your chats, never log your prompts, never share your key.</strong>
       </p>
 
       {/* Provider selector */}

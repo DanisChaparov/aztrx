@@ -95,14 +95,16 @@ export function SettingsForm({ profile }: { profile: ProfileData }) {
 
       {/* Privacy notice */}
       <div className="rounded-2xl border border-white/[0.06] bg-[#0e0f14] p-6">
-        <h2 className="font-manrope text-sm font-medium text-white mb-3">Privacy</h2>
+        <h2 className="font-manrope text-sm font-medium text-white mb-3">Privacy &amp; Security</h2>
         <ul className="flex flex-col gap-2 font-inter text-sm text-[#A1A1AA] leading-relaxed">
+          <li>• <strong className="text-white">Passwords are hashed with bcrypt</strong> — nobody, not even us, can see your password. If the database leaked, passwords would still be unreadable.</li>
+          <li>• <strong className="text-white">Desktop app needs zero API keys</strong> — it uses your local Claude Code installation. Nothing leaves your machine.</li>
           <li>• Your activity data is computed <strong className="text-white">locally on your device</strong> — only anonymized hourly buckets leave your machine.</li>
           <li>• Session verification checks GitHub for commits you made — we <strong className="text-white">never ask for write access</strong> to your repos.</li>
           <li>• Your developer twin is <strong className="text-white">opt-in only</strong>. Nothing is public unless you explicitly enable it.</li>
           <li>• Source code is <strong className="text-white">fully open source</strong> — audit what the app does at{" "}
             <a href="https://github.com/DanisChaparov/upstream-app" target="_blank" rel="noopener" className="text-[#60A5FA] underline">github.com/DanisChaparov/upstream-app</a>.</li>
-          <li>• <strong className="text-white">Never any ads, never any data selling.</strong> Upstream is funded by Pro subscriptions.</li>
+          <li>• <strong className="text-white">Never any ads, never any data selling.</strong> Funded by Pro subscriptions.</li>
         </ul>
       </div>
 

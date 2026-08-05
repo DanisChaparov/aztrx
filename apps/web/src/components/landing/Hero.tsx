@@ -159,12 +159,12 @@ export function Hero() {
         >
           <span className="flex items-center gap-1.5">
             <span className="w-1.5 h-1.5 rounded-full bg-[#28c840]" />
-            Activity processed on your device
+            Activity processed locally
           </span>
           <span className="text-neutral-700">·</span>
           <span>Open source</span>
           <span className="text-neutral-700">·</span>
-          <span>Never sells data</span>
+          <span>Passwords hashed</span>
           <span className="text-neutral-700">·</span>
           <span>GitHub read-only</span>
         </motion.div>
