@@ -112,12 +112,7 @@ function updateTray(): void {
 function createTrayIcon(): Tray {
   // Minimal 16x16 tray icon drawn as a filled circle — the Upstream brand mark.
   const { nativeImage } = require("electron");
-  const icon = nativeImage.createEmpty();
-  // Use a simple colored square; on most platforms the tray renders this small.
-  // A proper .ico file should replace this for production.
-  const img = nativeImage.createFromDataURL(
-    "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAAAXNSR0IArs4c6QAAAIRJREFUWEftlcENwjAQBPcVSAdIB9AB0AF0AHQA/FMClEAL0AF0AF+N5BhHCRxngweRfDmtdz27OjIZk4mNscgCKvQHULQBbYBHW4hv4O+9owUoFPoDqHMDbdtuPc9nKeVyGIYrEV0AMBH5NhERfN/vL6X8KKWOiD4RuQE4j+P4MBMr3B3bAL9fvQq+28HzizYmwM97AAAAAElFTkSuQmCC"
-  );
+  const iconPath = join(__dirname, "..", "public", "icon-16.png"); const img = nativeImage.createFromPath(iconPath);
   const t = new Tray(img);
   t.setToolTip("Upstream");
 

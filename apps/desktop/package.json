@@ -19,12 +19,12 @@
     "files": ["dist/**/*", "public/**/*"],
     "win": {
       "target": "portable",
-      "icon": null,
+      "icon": "public/icon-256.png",
       "signAndEditExecutable": false
     },
     "mac": {
       "target": "dmg",
-      "icon": null
+      "icon": "public/icon-256.png"
     },
     "npmRebuild": false,
     "nodeGypRebuild": false
