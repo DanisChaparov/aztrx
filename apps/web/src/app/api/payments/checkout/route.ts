@@ -3,8 +3,13 @@ import { getServerSupabaseClient } from "@/lib/supabase/server";
 
 /**
  * POST /api/payments/checkout
- * Creates a Lemon Squeezy checkout for Upstream Pro.
- * Lemon Squeezy works worldwide — no country restrictions.
+ *
+ * Returns Paddle price IDs + client token so the frontend can open
+ * a Paddle Checkout overlay. No server-side redirect — Paddle handles
+ * the entire payment flow in an overlay (works worldwide, MoR included).
+ *
+ * Paddle environment is determined by PADDLE_ENVIRONMENT env var
+ * ("sandbox" or "production", defaults to "sandbox").
  */
 export async function POST(request: Request) {
   const supabase = await getServerSupabaseClient();
@@ -13,52 +18,25 @@ export async function POST(request: Request) {
 
   const { variant = "monthly" } = (await request.json().catch(() => ({}))) as { variant?: string };
 
-  // Lemon Squeezy variant IDs — set in env vars
-  const variantId = variant === "yearly"
-    ? process.env.LEMONSQUEEZY_PRO_YEARLY_VARIANT_ID
-    : process.env.LEMONSQUEEZY_PRO_MONTHLY_VARIANT_ID;
+  const monthlyPriceId = process.env.PADDLE_PRO_MONTHLY_PRICE_ID;
+  const yearlyPriceId = process.env.PADDLE_PRO_YEARLY_PRICE_ID;
+  const clientToken = process.env.NEXT_PUBLIC_PADDLE_CLIENT_TOKEN;
+  const environment = process.env.PADDLE_ENVIRONMENT || "sandbox";
 
-  if (!variantId) {
-    return NextResponse.json({ error: "Payment not configured yet" }, { status: 500 });
-  }
+  const priceId = variant === "yearly" ? yearlyPriceId : monthlyPriceId;
 
-  try {
-    const res = await fetch("https://api.lemonsqueezy.com/v1/checkouts", {
-      method: "POST",
-      headers: {
-        "Accept": "application/json",
-        "Content-Type": "application/vnd.api+json",
-        "Authorization": `Bearer ${process.env.LEMONSQUEEZY_API_KEY}`,
-      },
-      body: JSON.stringify({
-        data: {
-          type: "checkouts",
-          attributes: {
-            checkout_data: {
-              email: user.email,
-              custom: { user_id: user.id },
-            },
-            product_options: {
-              redirect_url: `${process.env.NEXT_PUBLIC_SITE_URL || "https://stt-opal.vercel.app"}/plans?trial=started`,
-            },
-          },
-          relationships: {
-            store: { data: { type: "stores", id: process.env.LEMONSQUEEZY_STORE_ID || "" } },
-            variant: { data: { type: "variants", id: variantId } },
-          },
-        },
-      }),
+  if (!clientToken || !priceId) {
+    return NextResponse.json({
+      configured: false,
+      message: "Payment is not configured yet — check PADDLE_* env vars on Vercel.",
     });
-
-    const json = await res.json();
-    const checkoutUrl = json?.data?.attributes?.url;
-
-    if (!checkoutUrl) {
-      return NextResponse.json({ error: "Could not create checkout", detail: json }, { status: 500 });
-    }
-
-    return NextResponse.json({ url: checkoutUrl });
-  } catch (err: any) {
-    return NextResponse.json({ error: err.message }, { status: 500 });
   }
+
+  return NextResponse.json({
+    configured: true,
+    clientToken,
+    environment,
+    priceId,
+    email: user.email,
+  });
 }

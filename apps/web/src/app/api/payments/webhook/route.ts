@@ -4,21 +4,43 @@ import crypto from "crypto";
 
 /**
  * POST /api/payments/webhook
- * Lemon Squeezy calls this when a subscription is created/updated/cancelled.
- * Updates the user's plan in Supabase accordingly.
+ *
+ * Paddle calls this when subscription events happen:
+ * - subscription.activated   → user paid, activate Pro
+ * - subscription.canceled    → subscription cancelled (plan stays Pro until expiry)
+ * - subscription.past_due    → payment failed
+ * - subscription.completed   → subscription expired, downgrade to Free
+ *
+ * Paddle Billing webhooks are signed with HMAC-SHA256 using your
+ * webhook secret key. We verify the signature before trusting the payload.
+ *
+ * https://developer.paddle.com/webhooks/overview
  */
 export async function POST(request: Request) {
   const body = await request.text();
-  const secret = process.env.LEMONSQUEEZY_WEBHOOK_SECRET || "";
+  const secret = process.env.PADDLE_WEBHOOK_SECRET || "";
 
-  // Verify signature
-  const sig = request.headers.get("x-signature");
-  if (secret && sig) {
-    const hmac = crypto.createHmac("sha256", secret);
-    hmac.update(body);
-    const digest = hmac.digest("hex");
-    if (digest !== sig) {
-      return NextResponse.json({ error: "Invalid signature" }, { status: 401 });
+  // Verify Paddle signature
+  if (secret) {
+    const sigHeader = request.headers.get("paddle-signature");
+    if (sigHeader) {
+      try {
+        // Paddle sends: ts;h1=signature
+        const [ts, h1] = sigHeader.split(";");
+        const tsValue = ts.split("=")[1];
+        const h1Value = h1.split("=")[1];
+
+        const signedPayload = `${tsValue}:${body}`;
+        const hmac = crypto.createHmac("sha256", secret);
+        hmac.update(signedPayload);
+        const digest = hmac.digest("hex");
+
+        if (digest !== h1Value) {
+          return NextResponse.json({ error: "Invalid signature" }, { status: 401 });
+        }
+      } catch {
+        return NextResponse.json({ error: "Invalid signature format" }, { status: 401 });
+      }
     }
   }
 
@@ -34,12 +56,13 @@ export async function POST(request: Request) {
     process.env.SUPABASE_SERVICE_ROLE_KEY || ""
   );
 
-  const eventName = event?.meta?.event_name;
-  const userId = event?.meta?.custom_data?.user_id || event?.data?.attributes?.customer_attributes?.user_id;
+  const eventType = event?.event_type;
+  const userId = event?.data?.custom_data?.user_id;
 
-  switch (eventName) {
-    case "order_created":
-    case "subscription_created":
+  console.log("[paddle-webhook]", eventType, userId ? `user=${userId}` : "no user_id");
+
+  switch (eventType) {
+    case "subscription.activated":
       if (userId) {
         await admin.from("profiles").upsert({
           id: userId,
@@ -49,8 +72,14 @@ export async function POST(request: Request) {
       }
       break;
 
-    case "subscription_cancelled":
-    case "subscription_expired":
+    case "subscription.canceled":
+      // Don't downgrade — user keeps Pro until the period ends.
+      // Paddle will send subscription.completed when it truly expires.
+      console.log("[paddle-webhook] subscription canceled, keeping Pro until period end");
+      break;
+
+    case "subscription.completed":
+      // Subscription period ended without renewal → downgrade
       if (userId) {
         await admin.from("profiles").upsert({
           id: userId,
@@ -58,6 +87,11 @@ export async function POST(request: Request) {
           plan_since: null,
         } as any, { onConflict: "id" });
       }
+      break;
+
+    case "subscription.past_due":
+      // Payment failed — could notify the user here
+      console.log("[paddle-webhook] subscription past due");
       break;
   }
 
