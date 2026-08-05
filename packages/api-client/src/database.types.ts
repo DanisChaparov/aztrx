@@ -118,8 +118,10 @@ export type ProfileRow = {
   id: string;
   github_access_token: string | null;
   github_username: string | null;
-  /** User-provided Anthropic API key for free-tier AI features. */
+  /** User-provided AI API keys for free-tier AI features — one per provider. */
   anthropic_api_key: string | null;
+  openai_api_key: string | null;
+  gemini_api_key: string | null;
   /** Mirrors migration 0010. Only the service role can change it. */
   plan: "free" | "pro";
   plan_since: string | null;
