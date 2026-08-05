@@ -127,10 +127,11 @@ export function AssistantPanel() {
                   {/* API key prompt */}
                   <div className="rounded-xl border border-amber-400/20 bg-amber-400/[0.04] p-3">
                     <p className="font-manrope text-xs font-medium text-amber-400 mb-1">
-                      Connect your Claude account
+                      Enable unlimited AI
                     </p>
                     <p className="font-inter text-[11px] leading-relaxed text-neutral-400 mb-2">
-                      Add your Anthropic API key for instant responses. You{"'"}re billed directly — Upstream pays nothing.
+                      Add your own OpenAI, Anthropic, or Gemini key for unlimited questions. Stored in your browser only — we never see it.
+                      Or use the desktop app for free unlimited AI via Claude Code.
                     </p>
                     <button
                       type="button"

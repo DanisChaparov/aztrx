@@ -60,7 +60,7 @@ export async function POST(request: Request) {
     // Nothing available — tell user how to connect.
     return NextResponse.json({
       chatId: "offline",
-      reply: "To use Upstream AI, connect your Claude account:\n\n1. Add your Anthropic API key in Settings → API Key — works instantly, costs ~$0.01 per conversation.\n\n2. Or install the Upstream desktop app — it uses your Claude Code subscription at no extra cost.",
+      reply: "To unlock unlimited AI:\n\n1. Add your OpenAI, Anthropic, or Gemini API key in Settings — stored in your browser only, never on our servers.\n\n2. Or install the Upstream desktop app — it uses your local Claude Code installation at no extra cost.",
       mode: "offline",
     });
   }
