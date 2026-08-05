@@ -19,7 +19,11 @@ import { detectLocalActivity } from "./localVerification";
 import { startTtsRunner, warmTtsModel } from "./ttsRunner";
 import { createDesktopSupabaseClient } from "./supabaseClient";
 
-const WEB_APP_URL = "http://localhost:3000";
+// In development, load from the local Next.js dev server.
+// In production (packaged app), load from the deployed URL.
+const WEB_APP_URL = app.isPackaged
+  ? "https://stt-opal.vercel.app"
+  : "http://localhost:3000";
 const PROTOCOL = "upstream";
 
 // ── error resilience ──────────────────────────────────────────────────────
@@ -278,6 +282,11 @@ ipcMain.handle("abandon-session", async (_event, sessionId: string) => {
 // ── app lifecycle ─────────────────────────────────────────────────────────
 
 app.whenReady().then(() => {
+  // Remove the default Electron menu bar (File, Edit, View, Window, Help) —
+  // this is a single-window app, not a document editor. All navigation is
+  // in-app via the Next.js shell.
+  Menu.setApplicationMenu(null);
+
   // Protocol handler registration.
   if (process.defaultApp) {
     if (process.argv.length >= 2) {
