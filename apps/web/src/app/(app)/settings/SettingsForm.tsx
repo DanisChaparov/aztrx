@@ -4,6 +4,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { updateProfile } from "@focus-forge/api-client";
 import { getBrowserSupabaseClient } from "@/lib/supabase/browser";
+import { ApiKeyInput } from "@/components/ApiKeyInput";
 
 const NAME_KEY = "upstream-display-name";
 const EMAIL_KEY = "upstream-email";
@@ -87,6 +88,22 @@ export function SettingsForm({ profile }: { profile: ProfileData }) {
             </button>
           </div>
         ))}
+      </div>
+
+      {/* API key — lets free users bring their own Anthropic key */}
+      <ApiKeyInput />
+
+      {/* Privacy notice */}
+      <div className="rounded-2xl border border-white/[0.06] bg-[#0e0f14] p-6">
+        <h2 className="font-manrope text-sm font-medium text-white mb-3">Privacy</h2>
+        <ul className="flex flex-col gap-2 font-inter text-sm text-[#A1A1AA] leading-relaxed">
+          <li>• Your activity data is computed <strong className="text-white">locally on your device</strong> — only anonymized hourly buckets leave your machine.</li>
+          <li>• Session verification checks GitHub for commits you made — we <strong className="text-white">never ask for write access</strong> to your repos.</li>
+          <li>• Your developer twin is <strong className="text-white">opt-in only</strong>. Nothing is public unless you explicitly enable it.</li>
+          <li>• Source code is <strong className="text-white">fully open source</strong> — audit what the app does at{" "}
+            <a href="https://github.com/DanisChaparov/upstream-app" target="_blank" rel="noopener" className="text-[#60A5FA] underline">github.com/DanisChaparov/upstream-app</a>.</li>
+          <li>• <strong className="text-white">Never any ads, never any data selling.</strong> Upstream is funded by Pro subscriptions.</li>
+        </ul>
       </div>
 
       <button type="submit" disabled={saving}

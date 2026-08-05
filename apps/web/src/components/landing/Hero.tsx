@@ -150,6 +150,25 @@ export function Hero() {
           </a>
         </motion.div>
 
+        {/* Trust bar */}
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 0.5, delay: 1.0 }}
+          className="mt-8 flex flex-wrap items-center gap-3 text-[#A1A1AA]/70 font-inter text-[13px]"
+        >
+          <span className="flex items-center gap-1.5">
+            <span className="w-1.5 h-1.5 rounded-full bg-[#28c840]" />
+            Activity processed on your device
+          </span>
+          <span className="text-neutral-700">·</span>
+          <span>Open source</span>
+          <span className="text-neutral-700">·</span>
+          <span>Never sells data</span>
+          <span className="text-neutral-700">·</span>
+          <span>GitHub read-only</span>
+        </motion.div>
+
         {/* Dashboard preview window with macOS traffic lights */}
         <motion.div
           initial={{ opacity: 0, y: 30 }}
