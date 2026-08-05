@@ -1,17 +1,14 @@
 "use client";
 
-import { useState } from "react";
-import { Key, Check, Eye, EyeOff } from "lucide-react";
-import { getBrowserSupabaseClient } from "@/lib/supabase/browser";
-
-type Provider = "anthropic" | "openai" | "gemini";
+import { useState, useEffect } from "react";
+import { Key, Check, Eye, EyeOff, Trash2 } from "lucide-react";
+import { saveKey, deleteKey, getSavedKey, type AiProvider } from "@/lib/ai-client";
 
 interface ProviderInfo {
-  id: Provider;
+  id: AiProvider;
   name: string;
   placeholder: string;
   signUpUrl: string;
-  keyPrefix: string;
   color: string;
 }
 
@@ -21,7 +18,6 @@ const PROVIDERS: ProviderInfo[] = [
     name: "Anthropic",
     placeholder: "sk-ant-api03-...",
     signUpUrl: "https://console.anthropic.com/",
-    keyPrefix: "sk-ant-",
     color: "#60A5FA",
   },
   {
@@ -29,7 +25,6 @@ const PROVIDERS: ProviderInfo[] = [
     name: "OpenAI",
     placeholder: "sk-proj-...",
     signUpUrl: "https://platform.openai.com/api-keys",
-    keyPrefix: "sk-",
     color: "#10A37F",
   },
   {
@@ -37,54 +32,58 @@ const PROVIDERS: ProviderInfo[] = [
     name: "Google Gemini",
     placeholder: "AIza...",
     signUpUrl: "https://aistudio.google.com/apikey",
-    keyPrefix: "AIza",
     color: "#8E7CC3",
   },
 ];
 
-const DB_COLUMNS: Record<Provider, string> = {
-  anthropic: "anthropic_api_key",
-  openai: "openai_api_key",
-  gemini: "gemini_api_key",
-};
-
 /**
- * Lets free-tier users provide their own AI API key to unlock the full
- * AI mentor without upgrading to Pro. Supports Anthropic, OpenAI, and Gemini.
+ * Lets free-tier users provide their own AI API key for unlimited usage.
  *
- * No key is required if the user has Claude Code installed — the desktop app
- * already uses their local Claude Code subscription for AI features.
+ * 🔒 KEY NEVER LEAVES THE BROWSER. Stored in localStorage, sent directly
+ * to the AI provider from the browser. Upstream's servers never see it,
+ * never log it, never store it. You can verify this in the Network tab
+ * and in the source code (github.com/DanisChaparov/upstream-app).
  */
 export function ApiKeyInput() {
-  const [provider, setProvider] = useState<Provider>("anthropic");
+  const [provider, setProvider] = useState<AiProvider>("anthropic");
   const [key, setKey] = useState("");
   const [saved, setSaved] = useState(false);
   const [show, setShow] = useState(false);
-  const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [hasExisting, setHasExisting] = useState(false);
+
+  // Load existing key from localStorage on mount
+  useEffect(() => {
+    const existing = getSavedKey(provider);
+    if (existing) {
+      setKey(existing);
+      setHasExisting(true);
+    } else {
+      setKey("");
+      setHasExisting(false);
+    }
+  }, [provider]);
 
   const p = PROVIDERS.find((p) => p.id === provider)!;
 
-  async function save() {
+  function handleSave() {
     if (!key.trim()) return;
-    setBusy(true);
     setError(null);
     try {
-      const supabase = getBrowserSupabaseClient();
-      const userId = (await supabase.auth.getUser()).data.user?.id ?? "";
-      const column = DB_COLUMNS[provider];
-      const { error: saveError } = await supabase
-        .from("profiles")
-        .update({ [column]: key.trim() } as any)
-        .eq("id", userId);
-      if (saveError) throw saveError;
+      saveKey(provider, key.trim());
       setSaved(true);
+      setHasExisting(true);
       setTimeout(() => setSaved(false), 2000);
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Could not save API key");
-    } finally {
-      setBusy(false);
+      setError(err instanceof Error ? err.message : "Could not save key");
     }
+  }
+
+  function handleDelete() {
+    deleteKey(provider);
+    setKey("");
+    setHasExisting(false);
+    setSaved(false);
   }
 
   return (
@@ -97,7 +96,8 @@ export function ApiKeyInput() {
         </span>
       </div>
 
-      <div className="rounded-xl border border-[#3B82F6]/15 bg-[#3B82F6]/[0.04] p-4">
+      {/* Privacy-first notice */}
+      <div className="rounded-xl border border-green-400/15 bg-green-400/[0.04] p-4">
         <p className="font-inter text-sm leading-relaxed text-white/90">
           <strong>You don't need to set this up.</strong> Upstream includes{" "}
           <strong className="text-[#60A5FA]">5 free AI questions per day</strong> built in,
@@ -106,10 +106,23 @@ export function ApiKeyInput() {
         </p>
       </div>
 
-      <p className="font-inter text-xs leading-relaxed text-neutral-500">
-        If you do add one: stored in your profile, used only for your own
-        AI calls, never logged or shared. Delete it anytime.
-      </p>
+      {/* Security notice */}
+      <div className="flex items-start gap-2 rounded-xl bg-white/[0.02] p-3">
+        <span className="mt-0.5 text-[11px]">🔒</span>
+        <p className="font-inter text-[11px] leading-relaxed text-neutral-400">
+          <strong className="text-white">Your key never leaves this browser.</strong>{" "}
+          Stored in localStorage, sent directly to {p.name} from your browser.
+          Upstream's servers never see it.{" "}
+          <a
+            href="https://github.com/DanisChaparov/upstream-app/blob/master/apps/web/src/lib/ai-client.ts"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-neutral-500 underline underline-offset-2 hover:text-neutral-400"
+          >
+            Verify in source →
+          </a>
+        </p>
+      </div>
 
       {/* Provider selector */}
       <div className="flex gap-1.5">
@@ -117,7 +130,7 @@ export function ApiKeyInput() {
           <button
             key={prov.id}
             type="button"
-            onClick={() => { setProvider(prov.id); setKey(""); setSaved(false); setError(null); }}
+            onClick={() => setProvider(prov.id)}
             className={`flex-1 rounded-lg py-1.5 font-inter text-xs font-medium transition-colors ${
               provider === prov.id
                 ? "bg-white/10 text-white"
@@ -149,19 +162,30 @@ export function ApiKeyInput() {
         </div>
         <button
           type="button"
-          onClick={save}
-          disabled={busy || !key.trim()}
+          onClick={handleSave}
+          disabled={!key.trim()}
           className="shrink-0 rounded-lg border border-white/10 bg-[#1c1d22] px-4 py-2 font-inter text-sm text-white transition-colors hover:bg-[#26272e] disabled:opacity-50"
         >
-          {saved ? <Check size={14} className="text-[#60A5FA]" /> : busy ? "Saving…" : "Save"}
+          {saved ? <Check size={14} className="text-[#60A5FA]" /> : "Save"}
         </button>
+        {hasExisting && (
+          <button
+            type="button"
+            onClick={handleDelete}
+            className="shrink-0 rounded-lg border border-red-400/15 bg-red-400/[0.04] px-3 py-2 text-red-400 hover:bg-red-400/[0.08] transition-colors"
+            title="Remove saved key"
+          >
+            <Trash2 size={14} />
+          </button>
+        )}
       </div>
 
       {error && <p className="font-inter text-xs text-red-400">{error}</p>}
 
       <p className="font-inter text-[11px] leading-relaxed text-neutral-600">
-        Your key is stored in your profile and only used for AI calls you initiate.
-        Never shared or logged. Remove it at any time.{" "}
+        {hasExisting
+          ? `✓ ${p.name} key saved in this browser.`
+          : "Key is stored locally in your browser only."}{" "}
         <a
           href={p.signUpUrl}
           target="_blank"
