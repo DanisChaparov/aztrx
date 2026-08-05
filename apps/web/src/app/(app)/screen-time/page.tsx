@@ -11,12 +11,24 @@ function startOfToday(): Date {
   return d;
 }
 
+declare global {
+  interface Window {
+    upstream?: { isDesktop: boolean };
+  }
+}
+
+function isRunningInDesktop(): boolean {
+  if (typeof window === "undefined") return false;
+  return window.upstream?.isDesktop === true;
+}
+
 export default function ScreenTimePage() {
   const supabase = getBrowserSupabaseClient();
   const [selectedDate, setSelectedDate] = useState<Date>(startOfToday);
   const [hours, setHours] = useState<HourlyBucketItem[]>([]);
   const [dateLabel, setDateLabel] = useState("");
   const [loading, setLoading] = useState(true);
+  const inDesktop = isRunningInDesktop();
 
   const fetchDay = useCallback(
     async (date: Date) => {
@@ -75,26 +87,30 @@ export default function ScreenTimePage() {
             See which tools you used each hour — IDE, terminal, browser. Powered by the desktop app.
           </p>
         </div>
-        <a
-          href="https://github.com/DanisChaparov/upstream-app/releases"
-          target="_blank"
-          rel="noopener noreferrer"
-          className="hidden sm:flex items-center gap-2 rounded-full bg-white text-black font-medium text-sm px-5 py-2.5 transition-all hover:bg-white/90 active:scale-[0.98]"
-        >
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
-          Download Desktop App
-        </a>
+        {!inDesktop && (
+          <a
+            href="https://github.com/DanisChaparov/upstream-app/releases"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="hidden sm:flex items-center gap-2 rounded-full bg-white text-black font-medium text-sm px-5 py-2.5 transition-all hover:bg-white/90 active:scale-[0.98]"
+          >
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+            Download Desktop App
+          </a>
+        )}
       </div>
 
-      <div className="rounded-2xl border border-[#3B82F6]/20 bg-[#3B82F6]/[0.04] p-5">
-        <p className="font-inter text-sm text-white/80">
-          <strong className="text-white">Screen time tracking requires our desktop app.</strong>{" "}
-          Browsers can't see what programs you use — that's an OS-level security restriction.
-          Our native macOS & Windows app tracks your real tools (VS Code, terminal, browser tabs)
-          and syncs to your dashboard.{" "}
-          <a href="https://github.com/DanisChaparov/upstream-app/releases" target="_blank" rel="noopener" className="text-[#3B82F6] underline">Download it here</a>.
-        </p>
-      </div>
+      {!inDesktop && (
+        <div className="rounded-2xl border border-[#3B82F6]/20 bg-[#3B82F6]/[0.04] p-5">
+          <p className="font-inter text-sm text-white/80">
+            <strong className="text-white">Screen time tracking requires our desktop app.</strong>{" "}
+            Browsers can't see what programs you use — that's an OS-level security restriction.
+            Our native macOS & Windows app tracks your real tools (VS Code, terminal, browser tabs)
+            and syncs to your dashboard.{" "}
+            <a href="https://github.com/DanisChaparov/upstream-app/releases" target="_blank" rel="noopener" className="text-[#3B82F6] underline">Download it here</a>.
+          </p>
+        </div>
+      )}
       </div>
 
       {loading ? (

@@ -110,10 +110,12 @@ function updateTray(): void {
 }
 
 function createTrayIcon(): Tray {
-  // Minimal 16x16 tray icon drawn as a filled circle — the Upstream brand mark.
   const { nativeImage } = require("electron");
-  const iconPath = join(__dirname, "..", "public", "icon-16.png"); const img = nativeImage.createFromPath(iconPath);
-  const t = new Tray(img);
+  const iconPath = join(__dirname, "..", "public", "icon.ico");
+  const img = nativeImage.createFromPath(iconPath);
+  // Tray wants 16x16 — the .ico has that size embedded, but resize just in case.
+  const trayIcon = img.resize({ width: 16, height: 16 });
+  const t = new Tray(trayIcon);
   t.setToolTip("Upstream");
 
   const contextMenu = Menu.buildFromTemplate([
@@ -148,12 +150,15 @@ function createTrayIcon(): Tray {
 // ── window ────────────────────────────────────────────────────────────────
 
 function createWindow(): void {
+  const iconPath = join(__dirname, "..", "public", "icon.ico");
+
   mainWindow = new BrowserWindow({
     width: 1200,
     height: 800,
     minWidth: 800,
     minHeight: 600,
     title: "Upstream",
+    icon: iconPath,
     backgroundColor: "#0b0c10",
     show: false, // show after ready-to-show to avoid white flash
     webPreferences: {
@@ -191,6 +196,12 @@ function createWindow(): void {
 }
 
 // ── single instance + protocol ────────────────────────────────────────────
+
+// Set the Windows App User Model ID so the taskbar icon groups correctly
+// and shows our icon (not a generic "electron" icon).
+if (process.platform === "win32") {
+  app.setAppUserModelId("app.upstream.desktop");
+}
 
 const gotLock = app.requestSingleInstanceLock();
 if (!gotLock) {

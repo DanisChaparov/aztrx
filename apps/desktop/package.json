@@ -19,7 +19,7 @@
     "files": ["dist/**/*", "public/**/*"],
     "win": {
       "target": "portable",
-      "icon": "public/icon-256.png",
+      "icon": "public/icon.ico",
       "signAndEditExecutable": false
     },
     "mac": {
