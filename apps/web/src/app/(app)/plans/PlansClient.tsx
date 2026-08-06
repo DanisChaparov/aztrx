@@ -5,7 +5,7 @@ import { Check, Minus, Clock } from "lucide-react";
 import { FEATURE_STATUS } from "@focus-forge/core";
 import { FeatureTutorial } from "./FeatureTutorial";
 import { PlanCard } from "./PlanCard";
-import { PaddleSubscribeButton } from "@/components/PaddleSubscribeButton";
+import { LemonSqueezyButton } from "@/components/LemonSqueezyButton";
 import type { ReactNode } from "react";
 
 interface Feature {
@@ -189,7 +189,7 @@ export function PlanCards({
         />
       </div>
 
-      {/* Direct subscribe — Paddle overlay, works worldwide */}
+      {/* Direct subscribe — Lemon Squeezy hosted checkout, works worldwide */}
       {!isPro && (
         <div className="mt-6 flex flex-col items-center gap-4 rounded-2xl border border-white/[0.06] bg-white/[0.01] p-6">
           <div className="text-center">
@@ -199,19 +199,19 @@ export function PlanCards({
             </p>
           </div>
           <div className="flex gap-3 w-full max-w-sm">
-            <PaddleSubscribeButton
+            <LemonSqueezyButton
               variant="monthly"
               label="Subscribe Monthly — $8"
               className="flex-1"
             />
-            <PaddleSubscribeButton
+            <LemonSqueezyButton
               variant="yearly"
               label="Subscribe Yearly — $72"
               className="flex-1"
             />
           </div>
           <p className="font-inter text-[11px] text-neutral-600">
-            Payments handled by Paddle — VAT included, no country restrictions.
+            Payments handled by Lemon Squeezy — VAT included, no country restrictions.
           </p>
         </div>
       )}

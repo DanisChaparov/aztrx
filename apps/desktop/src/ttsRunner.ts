@@ -2,7 +2,11 @@ import { getPendingTtsRequests, updateTtsStatus, type Database } from "@focus-fo
 import type { SupabaseClient } from "@supabase/supabase-js";
 import type { KokoroTTS as KokoroTTSType } from "kokoro-js";
 
-const POLL_INTERVAL_MS = 1000;
+const POLL_INTERVAL_MS = 5000;
+// Was 1000ms (1s) — same reasoning as chatRunner: TTS generation takes
+// multiple seconds, so polling 5× less often adds negligible latency
+// (user won't perceive ~4s extra when generation itself takes seconds)
+// while meaningfully reducing churn.
 const MODEL_ID = "onnx-community/Kokoro-82M-ONNX";
 // Calm British male, the register people mean when they say "Jarvis". The
 // other three in the pack are bm_lewis, bm_daniel and bm_fable — swap the

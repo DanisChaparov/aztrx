@@ -2,6 +2,7 @@ import { redirect } from "next/navigation";
 import { AssistantPanel } from "@/components/AssistantPanel";
 import { VideoBackground } from "@/components/VideoBackground";
 import { SiteBackground } from "@/components/SiteBackground";
+import { DesktopBridge } from "@/components/DesktopBridge";
 import { ExtensionBridge } from "@/components/ExtensionBridge";
 import { Nav } from "@/components/Nav";
 import { getServerSupabaseClient } from "@/lib/supabase/server";
@@ -19,6 +20,7 @@ export default async function AppLayout({ children }: { children: React.ReactNod
       <div className="fixed inset-0">
         <VideoBackground />
       </div>
+      <DesktopBridge />
       <ExtensionBridge />
       <div className="relative">
         <Nav />

@@ -60,7 +60,7 @@ export default async function PlansPage({
   const hasActiveTrial = trialEndsAt !== null;
   const billingNote = BILLING_LIVE
     ? undefined
-    : "Billing isn't live yet — everyone has Pro features for now. When payment launches, you'll keep your current plan.";
+    : "Billing isn't live yet — everyone has Pro features for now. When payment goes live (Lemon Squeezy), you'll keep your current plan.";
 
   return (
     <div className="flex flex-col gap-10 pt-8">

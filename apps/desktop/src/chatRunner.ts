@@ -12,7 +12,11 @@ import { app } from "electron";
 import { getPendingChats, updateChatStatus, type ChatTurn, type Database } from "@focus-forge/api-client";
 import type { SupabaseClient } from "@supabase/supabase-js";
 
-const POLL_INTERVAL_MS = 1000;
+const POLL_INTERVAL_MS = 5000;
+// Was 1000ms (1s) — hammering Supabase every second for a service whose
+// round-trip takes 30-90s is unnecessary. 5s keeps latency reasonable
+// (user won't notice an extra 4s when the total is 30s+) while cutting
+// Supabase polling traffic by 5×.
 // A real request round-trips through a freshly-spawned MCP server subprocess
 // (stdio handshake + tool discovery) plus however many Supabase-backed tool
 // calls the model decides to make — a two-tool question measured well over

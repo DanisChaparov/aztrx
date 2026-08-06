@@ -47,6 +47,11 @@ let isQuitting = false;
 let currentStreak = 0;
 let sessionRemainingMin: number | null = null;
 let isSignedIn = false;
+let pushStateInterval: ReturnType<typeof setInterval> | null = null;
+let stopChatRunner: (() => void) | null = null;
+let stopTtsRunner: (() => void) | null = null;
+let stopIdleNudge: (() => void) | null = null;
+let stopSessionEndWatcher: (() => void) | null = null;
 
 // ── activity monitor sync ─────────────────────────────────────────────────
 
@@ -178,9 +183,12 @@ function createWindow(): void {
 
   mainWindow.on("close", (event) => {
     if (isQuitting) return;
-    // Close → hide to tray. The background services keep running.
-    event.preventDefault();
-    mainWindow?.hide();
+    // Close → actually quit. Letting the app linger in the tray was
+    // preventing other apps (Spotify, Claude) from opening — the
+    // constant active-win polling, PowerShell EnumWindows spawns,
+    // and Claude CLI child processes were holding system resources.
+    isQuitting = true;
+    app.quit();
   });
 
   mainWindow.on("page-title-updated", (event) => {
@@ -238,6 +246,17 @@ async function handleAuthCallback(url: string): Promise<void> {
 
 ipcMain.handle("open-sign-in", () => {
   shell.openExternal(`${WEB_APP_URL}/login?desktop=1`);
+});
+
+ipcMain.handle("set-session", async (_event, accessToken: string, refreshToken: string) => {
+  try {
+    await supabase.auth.setSession({ access_token: accessToken, refresh_token: refreshToken });
+    await pushState();
+    return { ok: true };
+  } catch (err) {
+    console.error("[main] set-session failed:", err);
+    return { ok: false };
+  }
 });
 
 ipcMain.handle("get-state", async () => {
@@ -306,14 +325,14 @@ app.whenReady().then(() => {
   tray = createTrayIcon();
 
   // State polling — keeps the tray tooltip and background monitors in sync.
-  setInterval(pushState, 8_000);
+  pushStateInterval = setInterval(pushState, 8_000);
 
   // Background services.
   ambientMonitor.start();
-  startChatRunner(supabase);
-  startTtsRunner(supabase);
-  startIdleNudge(supabase);
-  startSessionEndWatcher(supabase);
+  stopChatRunner = startChatRunner(supabase);
+  stopTtsRunner = startTtsRunner(supabase);
+  stopIdleNudge = startIdleNudge(supabase);
+  stopSessionEndWatcher = startSessionEndWatcher(supabase);
   warmTtsModel();
 
   app.on("activate", () => {
@@ -324,11 +343,13 @@ app.whenReady().then(() => {
 
 app.on("before-quit", () => {
   isQuitting = true;
+  if (pushStateInterval) { clearInterval(pushStateInterval); pushStateInterval = null; }
   ambientMonitor.stop();
-});
-
-app.on("window-all-closed", () => {
-  // Don't quit — background services keep running, tray keeps living.
+  if (stopChatRunner) { stopChatRunner(); stopChatRunner = null; }
+  if (stopTtsRunner) { stopTtsRunner(); stopTtsRunner = null; }
+  if (stopIdleNudge) { stopIdleNudge(); stopIdleNudge = null; }
+  if (stopSessionEndWatcher) { stopSessionEndWatcher(); stopSessionEndWatcher = null; }
+  activityMonitor.stop();
 });
 
 app.on("render-process-gone", (_event, _webContents, details) => {

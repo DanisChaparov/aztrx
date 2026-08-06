@@ -25,16 +25,37 @@ export const DEFAULT_APP_BLOCKLIST = [
   "EADesktop",
   "RobloxPlayer",
   "Minecraft",
-  // Chat and social
+  // Chat and social (Discord is tracked for productivity but also flagged
+  // as a distraction — it depends on context, and a false flag is cheaper
+  // than missing a real distraction).
   "Discord",
   "Telegram",
   "WhatsApp",
+  "Signal",
+  "Messenger",
+  // Social media
+  "TikTok",
+  "Instagram",
+  "Snapchat",
+  "Twitter",
+  "Pinterest",
   // Media. Deliberately no Spotify: music while coding is normal, and one bad
   // flag costs more trust than a missed one gains.
   "Netflix",
   "Twitch",
-  "TikTok",
-  "Instagram",
+  "Hulu",
+  "Disney",
+  "Prime Video",
+  "HBO",
+  "Plex",
+  // Gaming — specific games (launchers already caught above)
+  "Valorant",
+  "Fortnite",
+  "Among Us",
+  "League of Legends",
+  "World of Warcraft",
+  "Counter-Strike",
+  "Call of Duty",
 ];
 
 /** Sites, matched against the browser tab's hostname (extension) or the
@@ -49,6 +70,17 @@ export const DEFAULT_SITE_BLOCKLIST = [
   "twitch.tv",
   "netflix.com",
   "facebook.com",
+  "hulu.com",
+  "disneyplus.com",
+  "hbomax.com",
+  "max.com",
+  "primevideo.com",
+  "pinterest.com",
+  "snapchat.com",
+  "9gag.com",
+  "imgur.com",
+  "buzzfeed.com",
+  "tmz.com",
 ];
 
 /**

@@ -84,6 +84,9 @@ export function featuresFor(plan: Plan): PlanFeatures {
  * this rather than against `featuresFor` directly, so the whole app can be
  * opened up or closed down with one flag instead of a release-wide edit — and
  * so no half-built paywall can accidentally lock out a real user.
+ *
+ * Set to true once LEMONSQUEEZY_* env vars are configured on Vercel and the
+ * webhook endpoint has been tested end-to-end.
  */
 export const BILLING_LIVE = false;
 

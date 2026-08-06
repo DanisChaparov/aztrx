@@ -13,6 +13,11 @@ contextBridge.exposeInMainWorld("upstream", {
   isDesktop: true,
 
   openSignIn: () => ipcRenderer.invoke("open-sign-in"),
+  /** Forward the browser-side Supabase session to the main process so
+   *  ambientMonitor, chatRunner, TTS, and other background services can
+   *  authenticate — they use fileStorageAdapter, not the renderer's cookies. */
+  setSession: (accessToken: string, refreshToken: string) =>
+    ipcRenderer.invoke("set-session", accessToken, refreshToken),
   getState: () => ipcRenderer.invoke("get-state"),
   startSession: (plannedDurationMin: number) =>
     ipcRenderer.invoke("start-session", plannedDurationMin),

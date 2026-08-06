@@ -5,43 +5,63 @@ import crypto from "crypto";
 /**
  * POST /api/payments/webhook
  *
- * Paddle calls this when subscription events happen:
- * - subscription.activated   → user paid, activate Pro
- * - subscription.canceled    → subscription cancelled (plan stays Pro until expiry)
- * - subscription.past_due    → payment failed
- * - subscription.completed   → subscription expired, downgrade to Free
+ * Lemon Squeezy calls this when subscription events happen.
+ * Webhooks are signed with HMAC-SHA256 using your webhook signing secret.
  *
- * Paddle Billing webhooks are signed with HMAC-SHA256 using your
- * webhook secret key. We verify the signature before trusting the payload.
+ * Events handled:
+ *   subscription_payment_success  → payment received, activate Pro
+ *   subscription_cancelled        → user cancelled (keep Pro until expiry)
+ *   subscription_expired          → subscription ended, downgrade to Free
+ *   order_created                 → one-time purchase (not used for subs)
  *
- * https://developer.paddle.com/webhooks/overview
+ * Setup: In Lemon Squeezy dashboard → Settings → Webhooks, set:
+ *   - URL: https://stt-opal.vercel.app/api/payments/webhook
+ *   - Events: subscription_payment_success, subscription_cancelled,
+ *             subscription_expired
+ *   - Secret: copy to LEMONSQUEEZY_WEBHOOK_SECRET on Vercel
+ *
+ * https://docs.lemonsqueezy.com/api/webhooks
  */
+
+function verifySignature(payload: string, signature: string): boolean {
+  const secret = process.env.LEMONSQUEEZY_WEBHOOK_SECRET || "";
+  if (!secret) {
+    console.warn("[lemonsqueezy-webhook] no webhook secret set — accepting unsigned request");
+    return true;
+  }
+  try {
+    const hmac = crypto.createHmac("sha256", secret);
+    hmac.update(payload);
+    const digest = hmac.digest("hex");
+    return crypto.timingSafeEqual(
+      Buffer.from(digest, "utf8"),
+      Buffer.from(signature, "utf8")
+    );
+  } catch {
+    return false;
+  }
+}
+
+/**
+ * We need the service role client to bypass both RLS and the
+ * prevent_self_plan_change() trigger — those are deliberate guards
+ * against normal (anon/authenticated) clients upgrading their own plan.
+ */
+function serviceClient() {
+  return createClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.SUPABASE_SERVICE_ROLE_KEY || ""
+  );
+}
+
 export async function POST(request: Request) {
   const body = await request.text();
-  const secret = process.env.PADDLE_WEBHOOK_SECRET || "";
 
-  // Verify Paddle signature
-  if (secret) {
-    const sigHeader = request.headers.get("paddle-signature");
-    if (sigHeader) {
-      try {
-        // Paddle sends: ts;h1=signature
-        const [ts, h1] = sigHeader.split(";");
-        const tsValue = ts.split("=")[1];
-        const h1Value = h1.split("=")[1];
-
-        const signedPayload = `${tsValue}:${body}`;
-        const hmac = crypto.createHmac("sha256", secret);
-        hmac.update(signedPayload);
-        const digest = hmac.digest("hex");
-
-        if (digest !== h1Value) {
-          return NextResponse.json({ error: "Invalid signature" }, { status: 401 });
-        }
-      } catch {
-        return NextResponse.json({ error: "Invalid signature format" }, { status: 401 });
-      }
-    }
+  // Verify webhook signature
+  const signature = request.headers.get("x-signature");
+  if (signature && !verifySignature(body, signature)) {
+    console.error("[lemonsqueezy-webhook] invalid signature");
+    return NextResponse.json({ error: "Invalid signature" }, { status: 401 });
   }
 
   let event: any;
@@ -51,48 +71,110 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: "Invalid JSON" }, { status: 400 });
   }
 
-  const admin = createClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.SUPABASE_SERVICE_ROLE_KEY || ""
+  const admin = serviceClient();
+  const eventName = event?.meta?.event_name as string | undefined;
+  const customData = event?.meta?.custom_data as
+    | { user_id?: string }
+    | undefined;
+  const userId = customData?.user_id;
+
+  console.log(
+    "[lemonsqueezy-webhook]",
+    eventName ?? "unknown",
+    userId ? `user=${userId}` : "no user_id"
   );
 
-  const eventType = event?.event_type;
-  const userId = event?.data?.custom_data?.user_id;
+  // Pull subscription status from the event payload shape.
+  // For subscription events: event.data.attributes is the subscription object.
+  const subscriptionStatus =
+    event?.data?.attributes?.status as string | undefined;
 
-  console.log("[paddle-webhook]", eventType, userId ? `user=${userId}` : "no user_id");
-
-  switch (eventType) {
-    case "subscription.activated":
+  switch (eventName) {
+    case "subscription_payment_success": {
+      // A payment succeeded — the subscription is active.
       if (userId) {
-        await admin.from("profiles").upsert({
-          id: userId,
-          plan: "pro",
-          plan_since: new Date().toISOString(),
-        } as any, { onConflict: "id" });
+        await admin
+          .from("profiles")
+          .upsert(
+            {
+              id: userId,
+              plan: "pro",
+              plan_since: new Date().toISOString(),
+            } as any,
+            { onConflict: "id" }
+          );
+        console.log(
+          "[lemonsqueezy-webhook] activated Pro for",
+          userId
+        );
       }
       break;
+    }
 
-    case "subscription.canceled":
+    case "subscription_cancelled": {
       // Don't downgrade — user keeps Pro until the period ends.
-      // Paddle will send subscription.completed when it truly expires.
-      console.log("[paddle-webhook] subscription canceled, keeping Pro until period end");
+      // subscription_expired fires when the period actually ends.
+      console.log(
+        "[lemonsqueezy-webhook] subscription cancelled, keeping Pro until period end"
+      );
       break;
+    }
 
-    case "subscription.completed":
-      // Subscription period ended without renewal → downgrade
+    case "subscription_expired": {
+      // The subscription period ended without renewal → downgrade.
       if (userId) {
-        await admin.from("profiles").upsert({
-          id: userId,
-          plan: "free",
-          plan_since: null,
-        } as any, { onConflict: "id" });
+        await admin
+          .from("profiles")
+          .upsert(
+            {
+              id: userId,
+              plan: "free",
+              plan_since: null,
+            } as any,
+            { onConflict: "id" }
+          );
+        console.log(
+          "[lemonsqueezy-webhook] downgraded to Free for",
+          userId
+        );
       }
       break;
+    }
 
-    case "subscription.past_due":
-      // Payment failed — could notify the user here
-      console.log("[paddle-webhook] subscription past due");
+    case "subscription_updated": {
+      // subscription status can change (e.g. on_hold, past_due).
+      // Only downgrade if the subscription is definitively not active.
+      if (
+        userId &&
+        subscriptionStatus &&
+        subscriptionStatus !== "active" &&
+        subscriptionStatus !== "on_trial"
+      ) {
+        console.log(
+          "[lemonsqueezy-webhook] subscription status =",
+          subscriptionStatus,
+          "— checking if downgrade needed"
+        );
+        // For past_due / unpaid / paused — leave Pro for now, they're
+        // still within their paid period. Only expired (handled above)
+        // or cancelled (already handled) should downgrade.
+      }
       break;
+    }
+
+    case "order_created": {
+      // One-time orders. Not relevant for subscription billing, but
+      // logged for completeness.
+      console.log("[lemonsqueezy-webhook] order created (non-subscription)");
+      break;
+    }
+
+    default: {
+      console.log(
+        "[lemonsqueezy-webhook] unhandled event:",
+        eventName ?? "(unknown)"
+      );
+    }
   }
 
   return NextResponse.json({ received: true });

@@ -36,6 +36,7 @@ export const TRACKED_TOOLS: TrackedTool[] = [
   // by-name-only lookups (e.g. summarizing already-aggregated usage, where
   // the original window title is long gone) still resolve correctly.
   { name: "Claude Code", aiAssisted: true },
+  { name: "Claude", aiAssisted: true },
   { name: "Codex CLI", aiAssisted: true },
   { name: "Gemini CLI", aiAssisted: true },
   { name: "Aider", aiAssisted: true },
@@ -44,6 +45,14 @@ export const TRACKED_TOOLS: TrackedTool[] = [
   { name: "Continue", aiAssisted: true },
   { name: "Cody", aiAssisted: true },
   { name: "GitHub Copilot", aiAssisted: true },
+  // Browsers — tracked so screen-time breakdowns show where web work happens.
+  { name: "Google Chrome", aiAssisted: false },
+  { name: "Firefox", aiAssisted: false },
+  { name: "Microsoft Edge", aiAssisted: false },
+  { name: "Brave", aiAssisted: false },
+  { name: "Arc", aiAssisted: false },
+  { name: "Opera", aiAssisted: false },
+  { name: "Safari", aiAssisted: false },
   // Productivity tools that devs spend real time in — tracked for
   // richer tool-usage breakdowns even though they aren't IDEs.
   { name: "Notion", aiAssisted: false },
@@ -51,6 +60,25 @@ export const TRACKED_TOOLS: TrackedTool[] = [
   { name: "Figma", aiAssisted: false },
   { name: "Slack", aiAssisted: false },
   { name: "Discord", aiAssisted: false },
+  // Dev infrastructure & collaboration
+  { name: "Docker Desktop", aiAssisted: false },
+  { name: "Postman", aiAssisted: false },
+  { name: "GitHub Desktop", aiAssisted: false },
+  { name: "GitKraken", aiAssisted: false },
+  { name: "Sourcetree", aiAssisted: false },
+  { name: "Zoom", aiAssisted: false },
+  { name: "Microsoft Teams", aiAssisted: false },
+  { name: "Google Meet", aiAssisted: false },
+  // Creative & design tools
+  { name: "Adobe", aiAssisted: false },
+  { name: "Photoshop", aiAssisted: false },
+  { name: "Illustrator", aiAssisted: false },
+  { name: "Blender", aiAssisted: false },
+  { name: "Canva", aiAssisted: false },
+  // Music — tracked so the AI knows you had music on, but never blocked.
+  { name: "Spotify", aiAssisted: false },
+  { name: "Apple Music", aiAssisted: false },
+  { name: "YouTube Music", aiAssisted: false },
 ];
 
 // Terminal apps whose window *title* (not just process name) is where AI-CLI
@@ -130,4 +158,22 @@ export const TRACKED_TOOL_PROCESS_NAMES: Record<string, string> = {
   Figma: "Figma.exe",
   Slack: "Slack.exe",
   Discord: "Discord.exe",
+  Claude: "Claude.exe",
+  // Browsers
+  "Google Chrome": "chrome.exe",
+  Firefox: "firefox.exe",
+  "Microsoft Edge": "msedge.exe",
+  Brave: "brave.exe",
+  Opera: "opera.exe",
+  Safari: "Safari.exe",
+  // Dev tools
+  "Docker Desktop": "Docker Desktop.exe",
+  Postman: "Postman.exe",
+  "GitHub Desktop": "GitHubDesktop.exe",
+  GitKraken: "GitKraken.exe",
+  Sourcetree: "Sourcetree.exe",
+  Zoom: "Zoom.exe",
+  "Microsoft Teams": "Teams.exe",
+  // Music
+  Spotify: "Spotify.exe",
 };
