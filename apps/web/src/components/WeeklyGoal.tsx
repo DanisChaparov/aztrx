@@ -20,36 +20,51 @@ export function WeeklyGoal({ plan }: { plan: "free" | "pro" }) {
   useEffect(() => {
     let cancelled = false;
     async function load() {
-      const supabase = getBrowserSupabaseClient();
-      const { data: { user } } = await supabase.auth.getUser();
-      if (!user || cancelled) return;
+      try {
+        const supabase = getBrowserSupabaseClient();
+        const { data: { user } } = await supabase.auth.getUser();
+        if (!user || cancelled) { setLoading(false); return; }
 
-      // Load goal from profile
-      const { data: profile } = await supabase
-        .from("profiles")
-        .select("weekly_goal_sessions")
-        .eq("id", user.id)
-        .single();
-
-      // Count this week's completed sessions
-      const monday = new Date();
-      monday.setDate(monday.getDate() - monday.getDay() + (monday.getDay() === 0 ? -6 : 1));
-      monday.setHours(0, 0, 0, 0);
-
-      const { count } = await supabase
-        .from("focus_sessions")
-        .select("*", { count: "exact", head: true })
-        .eq("user_id", user.id)
-        .eq("status", "completed")
-        .gte("started_at", monday.toISOString());
-
-      if (!cancelled) {
-        setGoal(profile?.weekly_goal_sessions ?? null);
-        setCompleted(count ?? 0);
-        if (profile?.weekly_goal_sessions) {
-          setDraftGoal(String(profile.weekly_goal_sessions));
+        // Load goal from profile — column may not exist yet (migration 0019).
+        let profileGoal: number | null = null;
+        try {
+          const { data: profile } = await supabase
+            .from("profiles")
+            .select("weekly_goal_sessions")
+            .eq("id", user.id)
+            .single();
+          profileGoal = profile?.weekly_goal_sessions ?? null;
+        } catch {
+          // Column missing — degrade gracefully.
+          profileGoal = null;
         }
-        setLoading(false);
+
+        // Count this week's completed sessions
+        const monday = new Date();
+        monday.setDate(monday.getDate() - monday.getDay() + (monday.getDay() === 0 ? -6 : 1));
+        monday.setHours(0, 0, 0, 0);
+
+        let sessionCount = 0;
+        try {
+          const { count } = await supabase
+            .from("focus_sessions")
+            .select("*", { count: "exact", head: true })
+            .eq("user_id", user.id)
+            .eq("status", "completed")
+            .gte("started_at", monday.toISOString());
+          sessionCount = count ?? 0;
+        } catch {
+          sessionCount = 0;
+        }
+
+        if (!cancelled) {
+          setGoal(profileGoal);
+          setCompleted(sessionCount);
+          if (profileGoal) setDraftGoal(String(profileGoal));
+          setLoading(false);
+        }
+      } catch {
+        if (!cancelled) setLoading(false);
       }
     }
     load();

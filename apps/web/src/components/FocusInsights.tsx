@@ -25,14 +25,21 @@ export function FocusInsights({ sessions }: { sessions: any[] }) {
 
   useEffect(() => {
     const items: FocusInsight[] = [];
+    const completed = sessions.filter((s: any) => s.status === "completed");
+    const verified = sessions.filter((s: any) => s.verified);
 
     if (sessions.length === 0) {
       setInsights([]);
       return;
     }
 
-    const completed = sessions.filter((s: any) => s.status === "completed");
-    const verified = sessions.filter((s: any) => s.verified);
+    // Always show total session count (works even with 1 session).
+    items.push({
+      icon: Target,
+      label: "Total sessions",
+      value: `${verified.length} completed`,
+      color: "text-[#60A5FA]",
+    });
 
     // Completion rate
     if (sessions.length >= 3) {
