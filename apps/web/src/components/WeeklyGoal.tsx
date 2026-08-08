@@ -1,7 +1,6 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { motion } from "framer-motion";
 import { Target, Check } from "lucide-react";
 import { getBrowserSupabaseClient } from "@/lib/supabase/browser";
 
@@ -9,6 +8,10 @@ import { getBrowserSupabaseClient } from "@/lib/supabase/browser";
  * Weekly goal tracker shown on the dashboard.
  * User sets a target (number of sessions this week), sees progress.
  * Resets every Monday. Simple but gives free users a reason to come back.
+ *
+ * IMPORTANT: Always renders the container — never returns null or a separate
+ * skeleton element. The content inside changes based on state, but the outer
+ * container is always present in the DOM during SSR and hydration.
  */
 export function WeeklyGoal({ plan }: { plan: "free" | "pro" }) {
   const [goal, setGoal] = useState<number | null>(null);
@@ -84,21 +87,22 @@ export function WeeklyGoal({ plan }: { plan: "free" | "pro" }) {
     setEditing(false);
   }
 
-  if (loading) {
-    return (
-      <div className="rounded-2xl border border-white/10 bg-[#0e0f14] p-5">
-        <div className="h-4 w-32 animate-pulse rounded bg-white/5" />
-      </div>
-    );
-  }
-
-  const hasGoal = goal !== null;
-  const percent = hasGoal ? Math.min(100, Math.round((completed / goal) * 100)) : 0;
-  const done = hasGoal && completed >= goal;
+  const hasGoal = goal !== null && !loading;
+  const percent = hasGoal ? Math.min(100, Math.round((completed / goal!) * 100)) : 0;
+  const done = hasGoal && completed >= goal!;
 
   return (
     <div className="rounded-2xl border border-white/10 bg-[#0e0f14] p-5">
-      {!hasGoal && !editing ? (
+      {loading ? (
+        /* Loading state — keep inside the main container */
+        <div className="flex items-center gap-3">
+          <div className="h-9 w-9 shrink-0 animate-pulse rounded-full bg-white/5" />
+          <div className="flex flex-col gap-1">
+            <div className="h-4 w-32 animate-pulse rounded bg-white/5" />
+            <div className="h-3 w-20 animate-pulse rounded bg-white/5" />
+          </div>
+        </div>
+      ) : !hasGoal && !editing ? (
         /* No goal set — prompt to set one */
         <button
           type="button"
@@ -162,13 +166,11 @@ export function WeeklyGoal({ plan }: { plan: "free" | "pro" }) {
               Edit
             </button>
           </div>
-          {/* Progress bar */}
+          {/* Progress bar — plain div, no framer-motion */}
           <div className="h-1.5 w-full overflow-hidden rounded-full bg-white/[0.06]">
-            <motion.div
-              className={`h-full rounded-full ${done ? "bg-green-400" : "bg-[#3B82F6]"}`}
-              initial={{ width: 0 }}
-              animate={{ width: `${percent}%` }}
-              transition={{ duration: 0.6, ease: "easeOut" }}
+            <div
+              className={`h-full rounded-full transition-all duration-500 ${done ? "bg-green-400" : "bg-[#3B82F6]"}`}
+              style={{ width: `${percent}%` }}
             />
           </div>
           <p className="font-inter text-[11px] text-neutral-500">

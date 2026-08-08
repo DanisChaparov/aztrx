@@ -1,7 +1,6 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { motion } from "framer-motion";
 import { TrendingUp, Clock, Zap, Calendar, Target } from "lucide-react";
 
 interface FocusInsight {
@@ -19,6 +18,9 @@ interface FocusInsight {
  * - Best day of the week
  * - Current streak vs average
  * - Tool diversity
+ *
+ * IMPORTANT: Always renders the container — never returns null.
+ * If no sessions, shows a prompt to complete a session.
  */
 export function FocusInsights({ sessions }: { sessions: any[] }) {
   const [insights, setInsights] = useState<FocusInsight[]>([]);
@@ -112,33 +114,42 @@ export function FocusInsights({ sessions }: { sessions: any[] }) {
     setInsights(items);
   }, [sessions]);
 
-  if (insights.length === 0) return null;
-
   return (
     <div className="flex flex-col gap-3 rounded-2xl border border-white/10 bg-[#0e0f14] p-5">
       <h3 className="font-manrope text-xs font-semibold uppercase tracking-wider text-neutral-500">
         Your focus profile
       </h3>
-      <div className="grid gap-2 sm:grid-cols-2">
-        {insights.map((item, i) => {
-          const Icon = item.icon;
-          return (
-            <motion.div
-              key={item.label}
-              initial={{ opacity: 0, y: 8 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: i * 0.08, duration: 0.3 }}
-              className="flex items-center gap-3 rounded-xl border border-white/[0.06] bg-white/[0.01] p-3"
-            >
-              <Icon size={14} className={`shrink-0 ${item.color}`} />
-              <div className="min-w-0">
-                <p className="font-inter text-[11px] text-neutral-500">{item.label}</p>
-                <p className="font-manrope text-sm font-medium text-white truncate">{item.value}</p>
+
+      {insights.length === 0 ? (
+        /* Always show something — never return null */
+        <div className="flex items-center gap-3 rounded-xl border border-white/[0.06] bg-white/[0.01] p-4">
+          <Target size={14} className="shrink-0 text-neutral-600" />
+          <div className="min-w-0">
+            <p className="font-inter text-[11px] text-neutral-500">No insights yet</p>
+            <p className="font-manrope text-sm font-medium text-neutral-400">
+              Complete a session to unlock your focus profile
+            </p>
+          </div>
+        </div>
+      ) : (
+        <div className="grid gap-2 sm:grid-cols-2">
+          {insights.map((item, i) => {
+            const Icon = item.icon;
+            return (
+              <div
+                key={item.label}
+                className="flex items-center gap-3 rounded-xl border border-white/[0.06] bg-white/[0.01] p-3"
+              >
+                <Icon size={14} className={`shrink-0 ${item.color}`} />
+                <div className="min-w-0">
+                  <p className="font-inter text-[11px] text-neutral-500">{item.label}</p>
+                  <p className="font-manrope text-sm font-medium text-white truncate">{item.value}</p>
+                </div>
               </div>
-            </motion.div>
-          );
-        })}
-      </div>
+            );
+          })}
+        </div>
+      )}
     </div>
   );
 }
