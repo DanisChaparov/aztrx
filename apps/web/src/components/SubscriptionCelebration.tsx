@@ -53,8 +53,14 @@ export function SubscriptionCelebration({
 }: {
   onDismiss: () => void;
 }) {
-  const [particles] = useState(() => generateParticles(40));
+  // Start with empty particles during SSR to avoid hydration mismatch.
+  // Math.random() produces different values on server vs client.
+  const [particles, setParticles] = useState<Particle[]>([]);
   const [visible, setVisible] = useState(true);
+
+  useEffect(() => {
+    setParticles(generateParticles(40));
+  }, []);
 
   const dismiss = useCallback(() => {
     setVisible(false);
