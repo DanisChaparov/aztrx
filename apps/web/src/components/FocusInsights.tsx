@@ -54,7 +54,7 @@ export function FocusInsights({ sessions }: { sessions: any[] }) {
     }
 
     // Peak hour
-    const hours = completed.map((s: any) => new Date(s.started_at).getHours());
+    const hours = completed.map((s: any) => new Date(s.startedAt).getHours());
     if (hours.length >= 3) {
       const hourCounts: Record<number, number> = {};
       hours.forEach((h: number) => { hourCounts[h] = (hourCounts[h] || 0) + 1; });
@@ -77,7 +77,7 @@ export function FocusInsights({ sessions }: { sessions: any[] }) {
       const days = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
       const dayCounts: Record<number, number> = {};
       completed.forEach((s: any) => {
-        const d = new Date(s.started_at).getDay();
+        const d = new Date(s.startedAt).getDay();
         dayCounts[d] = (dayCounts[d] || 0) + 1;
       });
       let bestDay = 1;
@@ -94,7 +94,7 @@ export function FocusInsights({ sessions }: { sessions: any[] }) {
     }
 
     // Total focus time
-    const totalMin = completed.reduce((sum: number, s: any) => sum + (s.planned_duration_min || 0), 0);
+    const totalMin = completed.reduce((sum: number, s: any) => sum + (s.plannedDurationMin || 0), 0);
     if (totalMin >= 60) {
       const hours_ = Math.floor(totalMin / 60);
       const mins = totalMin % 60;
