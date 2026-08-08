@@ -3,7 +3,7 @@ import { NextResponse, type NextRequest } from "next/server";
 
 // "/u" is the shared developer twin — the whole point is that someone who has
 // never heard of Upstream can open the link, so it must not require a session.
-const PUBLIC_PATHS = ["/login", "/signup", "/auth/callback", "/u/", "/api/og/share", "/download", "/privacy"];
+const PUBLIC_PATHS = ["/login", "/signup", "/auth/callback", "/u/", "/api/og/share", "/download", "/privacy", "/api/payments/webhook"];
 
 export async function middleware(request: NextRequest) {
   let response = NextResponse.next({ request });

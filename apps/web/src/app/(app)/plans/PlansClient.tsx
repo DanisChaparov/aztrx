@@ -5,7 +5,7 @@ import { Check, Minus, Clock } from "lucide-react";
 import { FEATURE_STATUS } from "@focus-forge/core";
 import { FeatureTutorial } from "./FeatureTutorial";
 import { PlanCard } from "./PlanCard";
-import { LemonSqueezyButton } from "@/components/LemonSqueezyButton";
+import { PolarButton } from "@/components/PolarButton";
 import type { ReactNode } from "react";
 
 interface Feature {
@@ -199,19 +199,19 @@ export function PlanCards({
             </p>
           </div>
           <div className="flex gap-3 w-full max-w-sm">
-            <LemonSqueezyButton
+            <PolarButton
               variant="monthly"
               label="Subscribe Monthly — $8"
               className="flex-1"
             />
-            <LemonSqueezyButton
+            <PolarButton
               variant="yearly"
               label="Subscribe Yearly — $72"
               className="flex-1"
             />
           </div>
           <p className="font-inter text-[11px] text-neutral-600">
-            Payments handled by Lemon Squeezy — VAT included, no country restrictions.
+            Payments handled by Polar.sh — VAT included, no country restrictions.
           </p>
         </div>
       )}

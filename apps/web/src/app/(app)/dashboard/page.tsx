@@ -17,6 +17,8 @@ import { ShareProfileToggle } from "@/components/ShareProfileToggle";
 import { EnableNotificationsButton } from "@/components/EnableNotificationsButton";
 import { LiveActivityFeed } from "@/components/LiveActivityFeed";
 import { WaterButton } from "@/components/WaterButton";
+import { WeeklyGoal } from "@/components/WeeklyGoal";
+import { FocusInsights } from "@/components/FocusInsights";
 import { getServerSupabaseClient } from "@/lib/supabase/server";
 
 /**
@@ -95,6 +97,12 @@ export default async function DashboardPage() {
         <PlanBadge plan={plan} />
         <EnableNotificationsButton />
       </div>
+
+      {/* ── weekly goal ────────────────────────────────────── */}
+      <WeeklyGoal plan={plan} />
+
+      {/* ── focus insights ─────────────────────────────────── */}
+      <FocusInsights sessions={sessions} />
 
       {/* ── developer profile + twin ───────────────────────── */}
       <RevealSection>

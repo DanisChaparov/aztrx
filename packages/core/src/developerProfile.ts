@@ -52,6 +52,11 @@ export interface ProfileInput {
   detectedLanguages: string[];
   /** Plan tier — affects what growth steps are appropriate. */
   plan: "free" | "pro";
+  /**
+   * User's timezone offset in minutes. Positive = east of UTC.
+   * Used for accurate streak calculation. Defaults to 0 (UTC).
+   */
+  timezoneOffset?: number;
 }
 
 // ── rules ────────────────────────────────────────────────────────────────────
@@ -61,8 +66,9 @@ export function buildDeveloperProfile(input: ProfileInput): DeveloperProfile {
   const weaknesses: Weakness[] = [];
   const growthPath: GrowthStep[] = [];
 
+  const tz = input.timezoneOffset ?? 0;
   const verified = input.sessions.filter((s) => s.verified);
-  const streak = calculateStreak(input.sessions);
+  const streak = calculateStreak(input.sessions, new Date(), tz);
   const xp = calculateXp(input.sessions);
   const level = getLevelInfo(xp);
   const t = input.twin;

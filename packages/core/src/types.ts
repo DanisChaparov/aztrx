@@ -11,6 +11,7 @@ export interface Project {
   localPath: string | null;
   archived: boolean;
   createdAt: string;
+  deadlineNotifiedAt: string | null;
 }
 
 export interface FocusSession {
@@ -22,6 +23,8 @@ export interface FocusSession {
   plannedDurationMin: number;
   status: SessionStatus;
   verified: boolean;
+  notes: string | null;
+  tags: string[] | null;
 }
 
 export interface DistractionEvent {

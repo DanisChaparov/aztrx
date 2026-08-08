@@ -4,20 +4,20 @@ import { useState } from "react";
 import { Sparkles } from "lucide-react";
 
 /**
- * Opens a Lemon Squeezy hosted checkout for subscribing to Upstream Pro.
+ * Opens a Polar.sh hosted checkout for subscribing to Upstream Pro.
  *
- * Lemon Squeezy is a Merchant of Record — handles tax/VAT/GST, fraud,
+ * Polar.sh is a Merchant of Record — handles tax/VAT/GST, fraud,
  * compliance, and works worldwide. The flow:
- *   1. Call /api/payments/checkout to create a checkout via Lemon Squeezy API
- *   2. Redirect the user to the checkout URL (hosted by Lemon Squeezy)
+ *   1. Call /api/payments/checkout to create a checkout via Polar.sh API
+ *   2. Redirect the user to the checkout URL (hosted by Polar.sh)
  *   3. After payment, the user lands back on /plans?subscribed=1
  *   4. The webhook at /api/payments/webhook activates the Pro plan
  *
  * Environment variables (set on Vercel):
- *   LEMONSQUEEZY_API_KEY, LEMONSQUEEZY_STORE_ID,
- *   LEMONSQUEEZY_PRO_MONTHLY_VARIANT_ID, LEMONSQUEEZY_PRO_YEARLY_VARIANT_ID
+ *   POLAR_ACCESS_TOKEN, POLAR_PRO_MONTHLY_PRODUCT_ID,
+ *   POLAR_PRO_YEARLY_PRODUCT_ID
  */
-export function LemonSqueezyButton({
+export function PolarButton({
   variant = "monthly",
   label = "Subscribe to Pro",
   className = "",
@@ -55,7 +55,7 @@ export function LemonSqueezyButton({
         return;
       }
 
-      // Redirect to Lemon Squeezy hosted checkout
+      // Redirect to Polar.sh hosted checkout
       if (data.url) {
         window.location.href = data.url;
       } else {

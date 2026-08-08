@@ -4,6 +4,7 @@ import { useState } from "react";
 import { CheckCircle2, CircleDashed, XCircle, ChevronDown } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import type { FocusSession } from "@focus-forge/core";
+import { SESSION_TAGS } from "@focus-forge/core";
 import { CommitList, type CommitListItem } from "./CommitList";
 import { ToolUsageList, type ToolUsageItem } from "./ToolUsageList";
 
@@ -76,6 +77,30 @@ export function SessionCard({
         )}
       </div>
       {commits.length > 0 && <CommitList commits={commits} />}
+
+      {/* Session notes */}
+      {session.notes && (
+        <p className="font-inter text-sm leading-relaxed text-[#A1A1AA] border-l-2 border-[#3B82F6]/30 pl-3 italic">
+          {session.notes}
+        </p>
+      )}
+
+      {/* Session tags */}
+      {session.tags && session.tags.length > 0 && (
+        <div className="flex flex-wrap gap-1">
+          {session.tags.map((tag) => {
+            const def = SESSION_TAGS.find((t) => t.value === tag);
+            return (
+              <span
+                key={tag}
+                className="inline-flex items-center gap-0.5 rounded-full border border-white/[0.08] bg-white/[0.02] px-2 py-0.5 font-inter text-[10px] text-neutral-500"
+              >
+                {def?.emoji} {def?.label ?? tag}
+              </span>
+            );
+          })}
+        </div>
+      )}
 
       {/* Per-session tool usage */}
       {hasTools && (

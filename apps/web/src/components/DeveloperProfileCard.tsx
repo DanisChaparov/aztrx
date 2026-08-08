@@ -36,14 +36,39 @@ export function DeveloperProfileCard({ plan }: { plan: "free" | "pro" }) {
 
   if (failed || !profile) return null;
 
+  // Free users see a locked preview, not the full data.
+  if (plan !== "pro") {
+    return (
+      <div className="flex flex-col gap-4 rounded-2xl border border-white/10 bg-[#0e0f14] p-6">
+        <div className="flex items-center justify-between">
+          <div>
+            <h2 className="font-manrope text-lg font-medium text-white">Your developer profile</h2>
+            <p className="mt-1 font-inter text-sm text-[#A1A1AA]">
+              See your strengths, weaknesses, and personalized growth path — computed from your real coding history.
+            </p>
+          </div>
+          <ProUpsell feature="Developer Profile" />
+        </div>
+        {/* Blurred preview — shows there's something here without giving it away */}
+        <div className="relative overflow-hidden rounded-xl border border-white/[0.06] bg-white/[0.01] p-4 blur-sm select-none pointer-events-none">
+          <div className="flex flex-col gap-2">
+            <div className="h-3 w-24 rounded bg-white/10" />
+            <div className="h-2 w-full rounded bg-white/5" />
+            <div className="h-2 w-3/4 rounded bg-white/5" />
+          </div>
+        </div>
+        <p className="font-inter text-xs text-neutral-600 text-center">
+          Upgrade to Pro to unlock your full developer profile.
+        </p>
+      </div>
+    );
+  }
+
   return (
     <div className="flex flex-col gap-5 rounded-2xl border border-white/10 bg-[#0e0f14] p-6">
-      <div className="flex items-center justify-between">
-        <div>
-          <h2 className="font-manrope text-lg font-medium text-white">Your developer profile</h2>
-          <p className="mt-1 font-inter text-sm text-[#A1A1AA]">{profile.summary}</p>
-        </div>
-        {plan !== "pro" && <ProUpsell feature="Developer Profile" />}
+      <div>
+        <h2 className="font-manrope text-lg font-medium text-white">Your developer profile</h2>
+        <p className="mt-1 font-inter text-sm text-[#A1A1AA]">{profile.summary}</p>
       </div>
 
       {profile.strengths.length > 0 && (

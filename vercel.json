@@ -2,5 +2,11 @@
   "buildCommand": "npm run build",
   "outputDirectory": "apps/web/.next",
   "installCommand": "npm install",
-  "framework": "nextjs"
+  "framework": "nextjs",
+  "crons": [
+    {
+      "path": "/api/cron/deadline-check",
+      "schedule": "*/30 * * * *"
+    }
+  ]
 }

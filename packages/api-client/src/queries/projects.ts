@@ -16,6 +16,7 @@ function toProject(row: any): Project {
     localPath: row.local_path,
     archived: row.archived ?? false,
     createdAt: row.created_at,
+    deadlineNotifiedAt: row.deadline_notified_at ?? null,
   };
 }
 

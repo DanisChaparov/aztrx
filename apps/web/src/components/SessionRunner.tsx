@@ -18,6 +18,7 @@ import { Select } from "@/components/Select";
 import { WaterButton } from "@/components/WaterButton";
 import { notifySessionEnd, playChime } from "@/lib/chime";
 import { LiveActivityFeed } from "@/components/LiveActivityFeed";
+import { SessionJournal } from "@/components/SessionJournal";
 
 const DURATION_PRESETS = [
   { minutes: 25, label: "a pomodoro" },
@@ -51,6 +52,8 @@ export function SessionRunner({
   const [distractions, setDistractions] = useState<{ domainOrApp: string; source: string }[]>([]);
   const [completedDurationMin, setCompletedDurationMin] = useState(0);
   const [error, setError] = useState<string | null>(null);
+  const [journalSaved, setJournalSaved] = useState(false);
+  const [lastSessionId, setLastSessionId] = useState<string | null>(null);
   const timeUpAlertedRef = useRef(false);
 
   useEffect(() => {
@@ -124,6 +127,8 @@ export function SessionRunner({
       setResult(verifyResult);
       setDistractions(await listDistractions(supabase, session.id).catch(() => []));
       setCompletedDurationMin(session.plannedDurationMin);
+      setLastSessionId(session.id);
+      setJournalSaved(false);
       setSession(null);
       router.refresh();
       if (verifyResult.verified) {
@@ -215,7 +220,28 @@ export function SessionRunner({
             <CommitList commits={result.commits} />
           </div>
         )}
-        <WaterButton onClick={() => setResult(null)} variant="primary">
+
+        {/* Session journal — notes + tags */}
+        {lastSessionId && !journalSaved && (
+          <div className="w-full max-w-sm">
+            <SessionJournal
+              sessionId={lastSessionId}
+              onSave={() => setJournalSaved(true)}
+            />
+          </div>
+        )}
+
+        {journalSaved && (
+          <motion.p
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            className="font-inter text-xs text-neutral-500"
+          >
+            Note saved — find it in your session history.
+          </motion.p>
+        )}
+
+        <WaterButton onClick={() => { setResult(null); setJournalSaved(false); setLastSessionId(null); }} variant="primary">
           Start another session
         </WaterButton>
       </div>

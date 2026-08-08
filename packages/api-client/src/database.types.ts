@@ -15,6 +15,7 @@ export type ProjectRow = {
   local_path: string | null;
   archived: boolean;
   created_at: string;
+  deadline_notified_at: string | null;
 };
 
 export type FocusSessionRow = {
@@ -26,6 +27,8 @@ export type FocusSessionRow = {
   planned_duration_min: number;
   status: "active" | "completed" | "broken";
   verified: boolean;
+  notes: string | null;
+  tags: string[] | null;
 };
 
 export type DistractionEventRow = {
@@ -131,6 +134,8 @@ export type ProfileRow = {
   trial_ends_at: string | null;
   /** Whether the user has already used their trial (prevents second trial). */
   trial_used: boolean;
+  /** Weekly target: number of focus sessions the user wants to complete. */
+  weekly_goal_sessions: number | null;
   /** User's preferred display name. */
   display_name: string | null;
   /** Phone number for SMS notifications. */

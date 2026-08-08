@@ -3,6 +3,7 @@ import { getPlan } from "@focus-forge/api-client";
 import { BILLING_LIVE } from "@focus-forge/core";
 import { TrialBanner } from "./TrialBanner";
 import { SocialExtend } from "./SocialExtend";
+import { SubscriptionSuccess } from "./SubscriptionSuccess";
 import { FeatureComparisonTable, PlanCards } from "./PlansClient";
 import { getServerSupabaseClient } from "@/lib/supabase/server";
 
@@ -30,11 +31,11 @@ const FREE_FEATURES = [
 export default async function PlansPage({
   searchParams,
 }: {
-  searchParams: Promise<{ error?: string; trial?: string }>;
+  searchParams: Promise<{ error?: string; trial?: string; subscribed?: string }>;
 }) {
   const supabase = await getServerSupabaseClient();
   const plan = await getPlan(supabase);
-  const { error: errorMsg, trial } = await searchParams;
+  const { error: errorMsg, trial, subscribed } = await searchParams;
 
   // Check trial eligibility from the profiles table
   const { data: userData } = await supabase.auth.getUser();
@@ -60,7 +61,7 @@ export default async function PlansPage({
   const hasActiveTrial = trialEndsAt !== null;
   const billingNote = BILLING_LIVE
     ? undefined
-    : "Billing isn't live yet — everyone has Pro features for now. When payment goes live (Lemon Squeezy), you'll keep your current plan.";
+    : "Billing isn't live yet — everyone has Pro features for now. When payment goes live (Polar.sh), you'll keep your current plan.";
 
   return (
     <div className="flex flex-col gap-10 pt-8">
@@ -106,6 +107,8 @@ export default async function PlansPage({
           </p>
         </div>
       )}
+
+      {subscribed === "1" && <SubscriptionSuccess show={true} />}
 
       {hasActiveTrial && (
         <TrialBanner endsAt={trialEndsAt!} />

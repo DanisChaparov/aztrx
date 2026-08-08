@@ -12,6 +12,8 @@ function toSession(row: FocusSessionRow): FocusSession {
     plannedDurationMin: row.planned_duration_min,
     status: row.status,
     verified: row.verified,
+    notes: row.notes ?? null,
+    tags: row.tags ?? null,
   };
 }
 

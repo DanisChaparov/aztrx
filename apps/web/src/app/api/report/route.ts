@@ -70,6 +70,8 @@ export async function GET(request: NextRequest) {
       plannedDurationMin: s.planned_duration_min,
       status: s.status as "active" | "completed" | "broken",
       verified: s.verified,
+      notes: (s as any).notes ?? null,
+      tags: (s as any).tags ?? null,
     })),
     languages: detectedLanguages,
     period,

@@ -134,5 +134,7 @@ function mapSession(s: any) {
     plannedDurationMin: s.planned_duration_min,
     status: s.status as "active" | "completed" | "broken",
     verified: s.verified,
+    notes: s.notes ?? null,
+    tags: s.tags ?? null,
   };
 }

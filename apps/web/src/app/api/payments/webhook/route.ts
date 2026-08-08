@@ -1,51 +1,28 @@
 import { NextResponse } from "next/server";
 import { createClient } from "@supabase/supabase-js";
-import crypto from "crypto";
+import { validateEvent, WebhookVerificationError } from "@polar-sh/sdk/webhooks";
 
 /**
  * POST /api/payments/webhook
  *
- * Lemon Squeezy calls this when subscription events happen.
- * Webhooks are signed with HMAC-SHA256 using your webhook signing secret.
+ * Polar.sh calls this when subscription events happen.
+ * Uses @polar-sh/sdk for Standard Webhooks signature verification.
  *
  * Events handled:
- *   subscription_payment_success  → payment received, activate Pro
- *   subscription_cancelled        → user cancelled (keep Pro until expiry)
- *   subscription_expired          → subscription ended, downgrade to Free
- *   order_created                 → one-time purchase (not used for subs)
+ *   order.paid                   → payment received, activate Pro
+ *   subscription.revoked          → subscription ended, downgrade to Free
  *
- * Setup: In Lemon Squeezy dashboard → Settings → Webhooks, set:
+ * Setup: In Polar.sh dashboard → Settings → Webhooks, set:
  *   - URL: https://stt-opal.vercel.app/api/payments/webhook
- *   - Events: subscription_payment_success, subscription_cancelled,
- *             subscription_expired
- *   - Secret: copy to LEMONSQUEEZY_WEBHOOK_SECRET on Vercel
+ *   - Events: order.paid, subscription.revoked, subscription.canceled
+ *   - Secret: copy to POLAR_WEBHOOK_SECRET on Vercel
  *
- * https://docs.lemonsqueezy.com/api/webhooks
+ * https://polar.sh/docs/integrate/webhooks
  */
 
-function verifySignature(payload: string, signature: string): boolean {
-  const secret = process.env.LEMONSQUEEZY_WEBHOOK_SECRET || "";
-  if (!secret) {
-    console.warn("[lemonsqueezy-webhook] no webhook secret set — accepting unsigned request");
-    return true;
-  }
-  try {
-    const hmac = crypto.createHmac("sha256", secret);
-    hmac.update(payload);
-    const digest = hmac.digest("hex");
-    return crypto.timingSafeEqual(
-      Buffer.from(digest, "utf8"),
-      Buffer.from(signature, "utf8")
-    );
-  } catch {
-    return false;
-  }
-}
-
 /**
- * We need the service role client to bypass both RLS and the
- * prevent_self_plan_change() trigger — those are deliberate guards
- * against normal (anon/authenticated) clients upgrading their own plan.
+ * Service-role client — bypasses RLS and the prevent_self_plan_change() trigger
+ * so the webhook can modify any user's plan.
  */
 function serviceClient() {
   return createClient(
@@ -54,44 +31,78 @@ function serviceClient() {
   );
 }
 
+/**
+ * Extract user_id from a validated Polar.sh event payload.
+ * We pass external_customer_id at checkout, which Polar.sh stores as
+ * customer.external_id on the order.
+ */
+function extractUserId(event: any): string | null {
+  // Primary: customer.external_id (set via external_customer_id at checkout)
+  const externalId = event?.data?.customer?.external_id
+    ?? event?.data?.customer?.externalId;
+  if (externalId) return externalId;
+
+  // Fallback: metadata.user_id from checkout
+  const metaUserId = event?.data?.metadata?.user_id;
+  if (metaUserId) return metaUserId;
+
+  return null;
+}
+
 export async function POST(request: Request) {
   const body = await request.text();
+  const secret = process.env.POLAR_WEBHOOK_SECRET || "";
 
-  // Verify webhook signature
-  const signature = request.headers.get("x-signature");
-  if (signature && !verifySignature(body, signature)) {
-    console.error("[lemonsqueezy-webhook] invalid signature");
-    return NextResponse.json({ error: "Invalid signature" }, { status: 401 });
-  }
-
+  // Verify signature using Polar.sh SDK
   let event: any;
-  try {
-    event = JSON.parse(body);
-  } catch {
-    return NextResponse.json({ error: "Invalid JSON" }, { status: 400 });
+  if (secret) {
+    try {
+      // Build headers record for validateEvent
+      const headers: Record<string, string> = {};
+      request.headers.forEach((value, key) => {
+        headers[key] = value;
+      });
+
+      event = validateEvent(body, headers, secret);
+    } catch (err) {
+      if (err instanceof WebhookVerificationError) {
+        console.error("[polar-webhook] invalid signature");
+        return NextResponse.json({ error: "Invalid signature" }, { status: 401 });
+      }
+      console.error("[polar-webhook] verification error:", err);
+      return NextResponse.json({ error: "Verification failed" }, { status: 400 });
+    }
+  } else {
+    // No secret configured — accept unsigned (dev only)
+    console.warn("[polar-webhook] no webhook secret set — accepting unsigned request");
+    try {
+      event = JSON.parse(body);
+    } catch {
+      return NextResponse.json({ error: "Invalid JSON" }, { status: 400 });
+    }
   }
 
   const admin = serviceClient();
-  const eventName = event?.meta?.event_name as string | undefined;
-  const customData = event?.meta?.custom_data as
-    | { user_id?: string }
-    | undefined;
-  const userId = customData?.user_id;
+  const eventType = event?.type as string | undefined;
+  const userId = extractUserId(event);
 
   console.log(
-    "[lemonsqueezy-webhook]",
-    eventName ?? "unknown",
-    userId ? `user=${userId}` : "no user_id"
+    "[polar-webhook]",
+    eventType ?? "unknown",
+    userId ? `user=${userId}` : "no user_id found"
   );
 
-  // Pull subscription status from the event payload shape.
-  // For subscription events: event.data.attributes is the subscription object.
-  const subscriptionStatus =
-    event?.data?.attributes?.status as string | undefined;
+  if (!userId) {
+    console.log(
+      "[polar-webhook] full payload (no user_id):",
+      JSON.stringify(event).slice(0, 1000)
+    );
+  }
 
-  switch (eventName) {
-    case "subscription_payment_success": {
-      // A payment succeeded — the subscription is active.
+  switch (eventType) {
+    case "order.paid": {
+      // Payment succeeded — activate Pro.
+      // Fires on initial purchase AND each subscription renewal.
       if (userId) {
         await admin
           .from("profiles")
@@ -103,25 +114,13 @@ export async function POST(request: Request) {
             } as any,
             { onConflict: "id" }
           );
-        console.log(
-          "[lemonsqueezy-webhook] activated Pro for",
-          userId
-        );
+        console.log("[polar-webhook] activated Pro for", userId);
       }
       break;
     }
 
-    case "subscription_cancelled": {
-      // Don't downgrade — user keeps Pro until the period ends.
-      // subscription_expired fires when the period actually ends.
-      console.log(
-        "[lemonsqueezy-webhook] subscription cancelled, keeping Pro until period end"
-      );
-      break;
-    }
-
-    case "subscription_expired": {
-      // The subscription period ended without renewal → downgrade.
+    case "subscription.revoked": {
+      // Access definitively removed — downgrade to Free.
       if (userId) {
         await admin
           .from("profiles")
@@ -133,46 +132,24 @@ export async function POST(request: Request) {
             } as any,
             { onConflict: "id" }
           );
-        console.log(
-          "[lemonsqueezy-webhook] downgraded to Free for",
-          userId
-        );
+        console.log("[polar-webhook] downgraded to Free for", userId);
       }
       break;
     }
 
-    case "subscription_updated": {
-      // subscription status can change (e.g. on_hold, past_due).
-      // Only downgrade if the subscription is definitively not active.
-      if (
-        userId &&
-        subscriptionStatus &&
-        subscriptionStatus !== "active" &&
-        subscriptionStatus !== "on_trial"
-      ) {
-        console.log(
-          "[lemonsqueezy-webhook] subscription status =",
-          subscriptionStatus,
-          "— checking if downgrade needed"
-        );
-        // For past_due / unpaid / paused — leave Pro for now, they're
-        // still within their paid period. Only expired (handled above)
-        // or cancelled (already handled) should downgrade.
-      }
-      break;
-    }
-
-    case "order_created": {
-      // One-time orders. Not relevant for subscription billing, but
-      // logged for completeness.
-      console.log("[lemonsqueezy-webhook] order created (non-subscription)");
+    case "subscription.canceled": {
+      // User cancelled but keeps Pro until period end.
+      // subscription.revoked handles the actual downgrade.
+      console.log(
+        "[polar-webhook] subscription canceled, keeping Pro until period end"
+      );
       break;
     }
 
     default: {
       console.log(
-        "[lemonsqueezy-webhook] unhandled event:",
-        eventName ?? "(unknown)"
+        "[polar-webhook] unhandled event:",
+        eventType ?? "(unknown)"
       );
     }
   }

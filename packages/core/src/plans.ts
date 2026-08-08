@@ -85,10 +85,10 @@ export function featuresFor(plan: Plan): PlanFeatures {
  * opened up or closed down with one flag instead of a release-wide edit — and
  * so no half-built paywall can accidentally lock out a real user.
  *
- * Set to true once LEMONSQUEEZY_* env vars are configured on Vercel and the
+ * Set to true once POLAR_ACCESS_TOKEN is configured on Vercel and the
  * webhook endpoint has been tested end-to-end.
  */
-export const BILLING_LIVE = false;
+export const BILLING_LIVE = true;
 
 export function can(plan: Plan, feature: keyof PlanFeatures): boolean {
   if (!BILLING_LIVE) {

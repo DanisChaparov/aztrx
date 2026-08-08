@@ -2,6 +2,9 @@ import { NextResponse } from "next/server";
 import { queueAssistantChat, type ChatTurn } from "@focus-forge/api-client";
 import { getServerSupabaseClient } from "@/lib/supabase/server";
 import { getPlan } from "@focus-forge/api-client";
+import { getLocalDayStart } from "@focus-forge/core";
+
+const FREE_DAILY_LIMIT = 5;
 
 /**
  * POST /api/assistant
@@ -13,13 +16,20 @@ import { getPlan } from "@focus-forge/api-client";
  * 2. Direct Anthropic API (fallback — works without desktop app installed)
  *
  * If neither is available, returns a helpful message.
+ *
+ * Free users get 5 interactions/day. Pro users get 15/day.
+ * Users who bring their own API key bypass the limit entirely.
  */
 export async function POST(request: Request) {
   const supabase = await getServerSupabaseClient();
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
-  const { message, history } = (await request.json()) as { message: string; history?: ChatTurn[] };
+  const { message, history, timezoneOffset } = (await request.json()) as {
+    message: string;
+    history?: ChatTurn[];
+    timezoneOffset?: number;
+  };
   if (!message || typeof message !== "string") {
     return NextResponse.json({ error: "message is required" }, { status: 400 });
   }
@@ -27,7 +37,7 @@ export async function POST(request: Request) {
   // Check if user provided their own API key.
   const { data: profile } = await supabase
     .from("profiles")
-    .select("anthropic_api_key")
+    .select("anthropic_api_key, plan")
     .eq("id", user.id)
     .single();
   const userApiKey = profile?.anthropic_api_key;
@@ -47,7 +57,27 @@ export async function POST(request: Request) {
     }
   }
 
-  // No API key — try desktop Claude CLI (user's Claude Code subscription).
+  // No API key — check daily limit for free users.
+  const plan = await getPlan(supabase);
+  if (plan === "free") {
+    const tz = timezoneOffset ?? 0;
+    const dayStart = getLocalDayStart(new Date(), tz);
+    const { count } = await supabase
+      .from("assistant_chats")
+      .select("*", { count: "exact", head: true })
+      .eq("user_id", user.id)
+      .gte("created_at", dayStart.toISOString());
+
+    if ((count ?? 0) >= FREE_DAILY_LIMIT) {
+      return NextResponse.json({
+        chatId: "limit",
+        reply: `You've used all ${FREE_DAILY_LIMIT} free AI interactions today. Upgrade to Pro for 15/day, or add your own Anthropic API key in Settings for unlimited use.`,
+        mode: "offline",
+      });
+    }
+  }
+
+  // Try desktop Claude CLI (user's Claude Code subscription).
   try {
     const chat = await queueAssistantChat(supabase, {
       userId: user.id,

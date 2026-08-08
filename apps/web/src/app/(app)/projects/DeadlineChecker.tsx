@@ -24,7 +24,7 @@ export function DeadlineChecker({ projects }: { projects: Project[] }) {
       // Notify if within 24 hours and not past due.
       if (remaining > 0 && remaining <= DAY_MS) {
         const hoursLeft = Math.ceil(remaining / HOUR_MS);
-        notifyDeadline(project.name, project.deadline, hoursLeft)
+        notifyDeadline(project.id, project.name, project.deadline, hoursLeft)
           .then(() => setNotified((prev) => new Set(prev).add(project.id)))
           .catch(() => {});
       }
@@ -34,13 +34,18 @@ export function DeadlineChecker({ projects }: { projects: Project[] }) {
   return null;
 }
 
-async function notifyDeadline(name: string, deadline: string, hoursLeft: number): Promise<void> {
+async function notifyDeadline(
+  projectId: string,
+  name: string,
+  deadline: string,
+  hoursLeft: number
+): Promise<void> {
   // Email notification (primary).
   try {
     await fetch("/api/notify/deadline", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ projectName: name, deadline, hoursLeft }),
+      body: JSON.stringify({ projectId, projectName: name, deadline, hoursLeft }),
     });
   } catch {
     // Best effort.

@@ -78,10 +78,24 @@ export interface ReportInput {
   anchor?: string;
   /** Peak coding hour from the developer twin. */
   peakHour?: number | null;
+  /**
+   * User's timezone offset in minutes. Positive = east of UTC
+   * (e.g. IST = +330, EST = -300). Defaults to 0 (UTC).
+   * Used for period boundaries — a "November 2025" report should cover
+   * Nov 1–30 in the user's timezone, not UTC.
+   */
+  timezoneOffset?: number;
 }
 
 export function buildReport(input: ReportInput): DeveloperReport {
-  const anchor = input.anchor ? new Date(input.anchor) : new Date();
+  const tz = input.timezoneOffset ?? 0;
+  const anchorRaw = input.anchor ? new Date(input.anchor) : new Date();
+
+  // Build a "local anchor" — a Date whose UTC fields represent the user's local
+  // date/time, so getUTC*() calls return local components.
+  const localMs = anchorRaw.getTime() + tz * 60_000;
+  const anchor = new Date(localMs);
+
   const verified = input.sessions.filter((s) => s.verified);
 
   let start: Date;
@@ -91,23 +105,27 @@ export function buildReport(input: ReportInput): DeveloperReport {
   switch (input.period) {
     case "weekly": {
       const day = anchor.getUTCDay();
-      start = new Date(anchor);
-      start.setUTCDate(anchor.getUTCDate() - day);
-      start.setUTCHours(0, 0, 0, 0);
-      end = new Date(start);
-      end.setUTCDate(start.getUTCDate() + 7);
+      // Build start as local Monday 00:00, then convert back to real UTC for
+      // timestamp comparisons.
+      const monLocal = Date.UTC(anchor.getUTCFullYear(), anchor.getUTCMonth(), anchor.getUTCDate() - day, 0, 0, 0, 0);
+      start = new Date(monLocal - tz * 60_000);
+      end = new Date(start.getTime() + 7 * 24 * 60 * 60_000);
       label = `Week of ${start.toLocaleDateString("en-US", { month: "short", day: "numeric" })}`;
       break;
     }
     case "monthly": {
-      start = new Date(anchor.getUTCFullYear(), anchor.getUTCMonth(), 1);
-      end = new Date(anchor.getUTCFullYear(), anchor.getUTCMonth() + 1, 1);
+      const monLocal = Date.UTC(anchor.getUTCFullYear(), anchor.getUTCMonth(), 1, 0, 0, 0, 0);
+      start = new Date(monLocal - tz * 60_000);
+      const endLocal = Date.UTC(anchor.getUTCFullYear(), anchor.getUTCMonth() + 1, 1, 0, 0, 0, 0);
+      end = new Date(endLocal - tz * 60_000);
       label = `${MONTHS[anchor.getUTCMonth()]} ${anchor.getUTCFullYear()}`;
       break;
     }
     case "yearly": {
-      start = new Date(anchor.getUTCFullYear(), 0, 1);
-      end = new Date(anchor.getUTCFullYear() + 1, 0, 1);
+      const yearLocal = Date.UTC(anchor.getUTCFullYear(), 0, 1, 0, 0, 0, 0);
+      start = new Date(yearLocal - tz * 60_000);
+      const endLocal = Date.UTC(anchor.getUTCFullYear() + 1, 0, 1, 0, 0, 0, 0);
+      end = new Date(endLocal - tz * 60_000);
       label = `${anchor.getUTCFullYear()}`;
       break;
     }
@@ -124,7 +142,7 @@ export function buildReport(input: ReportInput): DeveloperReport {
     return t >= start.getTime() && t < end.getTime();
   });
 
-  const streak = calculateStreak(input.sessions);
+  const streak = calculateStreak(input.sessions, new Date(), tz);
   const xp = calculateXp(input.sessions);
   const periodXp = calculateXp(inRange);
   const level = getLevelInfo(xp);
@@ -171,8 +189,10 @@ export function buildReport(input: ReportInput): DeveloperReport {
   let yearProgress: YearBar[] | undefined;
   if (input.period === "yearly") {
     yearProgress = MONTHS.map((month, i) => {
-      const monthStart = new Date(anchor.getUTCFullYear(), i, 1);
-      const monthEnd = new Date(anchor.getUTCFullYear(), i + 1, 1);
+      const monthLocal = Date.UTC(anchor.getUTCFullYear(), i, 1, 0, 0, 0, 0);
+      const monthStart = new Date(monthLocal - tz * 60_000);
+      const monthEndLocal = Date.UTC(anchor.getUTCFullYear(), i + 1, 1, 0, 0, 0, 0);
+      const monthEnd = new Date(monthEndLocal - tz * 60_000);
       const monthSessions = verified.filter((s) => {
         const t = new Date(s.startedAt).getTime();
         return t >= monthStart.getTime() && t < monthEnd.getTime();

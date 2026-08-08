@@ -1,0 +1,20 @@
+# Exclude from Vercel deployments — these have no bearing on the web build
+.git
+.gitignore
+node_modules
+.overnight
+.claude
+
+# Desktop app (not deployed to Vercel)
+apps/desktop
+apps/extension
+
+# Build artifacts
+*.tsbuildinfo
+.next
+
+# Scripts and docs
+scripts
+PRODUCT_REVIEW.md
+PRODUCTION_MIGRATIONS.sql
+UPGRADE_IDEAS.md

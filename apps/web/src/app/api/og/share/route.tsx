@@ -42,13 +42,13 @@ export async function GET(request: NextRequest) {
       id: s.id, userId: s.user_id, projectId: s.project_id,
       startedAt: s.started_at, endedAt: s.ended_at,
       plannedDurationMin: s.planned_duration_min,
-      status: s.status, verified: s.verified,
+      status: s.status, verified: s.verified, notes: (s as any).notes ?? null, tags: (s as any).tags ?? null,
     })));
     const xp = calculateXp(verified.map((s: any) => ({
       id: s.id, userId: s.user_id, projectId: s.project_id,
       startedAt: s.started_at, endedAt: s.ended_at,
       plannedDurationMin: s.planned_duration_min,
-      status: s.status, verified: s.verified,
+      status: s.status, verified: s.verified, notes: (s as any).notes ?? null, tags: (s as any).tags ?? null,
     })));
     const level = getLevelInfo(xp);
 
