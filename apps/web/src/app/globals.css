@@ -11,117 +11,104 @@ html, body {
   color: #ffffff;
 }
 
-/* ── Theme: light mode ─────────────────────────────────────── */
-/* When user explicitly picks Light */
-html[data-theme="light"] body {
-  background-color: #f5f5f7;
-  color: #1a1a2e;
-}
+/* ── Theme: light widgets on dark background ────────────────── */
+/* Page background stays dark. Only panels, cards, and modals lighten. */
+
+/* --- Explicit Light --- */
 html[data-theme="light"] .glass-panel {
-  background: rgba(255, 255, 255, 0.85);
-  border-color: rgba(0, 0, 0, 0.08);
+  background: rgba(255, 255, 255, 0.92);
+  border-color: rgba(0, 0, 0, 0.06);
 }
-html[data-theme="light"] .bg-\[\#0b0c10\],
-html[data-theme="light"] .bg-\[\#0c0c0c\] {
-  background-color: #f5f5f7;
-}
+/* Card surfaces — bg-[#0e0f14] is the main card/panel background */
 html[data-theme="light"] .bg-\[\#0e0f14\] {
   background-color: #ffffff;
 }
-html[data-theme="light"] .bg-white\/\[0\.02\] {
-  background-color: rgba(0, 0, 0, 0.02);
-}
-html[data-theme="light"] .bg-white\/\[0\.03\] {
+/* Transparent overlays switch to light tint */
+html[data-theme="light"] .bg-white\/\[0\.02\],
+html[data-theme="light"] .bg-white\/\[0\.03\],
+html[data-theme="light"] .bg-white\/\[0\.04\] {
   background-color: rgba(0, 0, 0, 0.03);
 }
-html[data-theme="light"] .bg-white\/\[0\.04\] {
+html[data-theme="light"] .bg-white\/5 {
   background-color: rgba(0, 0, 0, 0.04);
 }
-html[data-theme="light"] .bg-white\/5 {
-  background-color: rgba(0, 0, 0, 0.05);
+/* Borders flip to dark */
+html[data-theme="light"] .border-white\/10,
+html[data-theme="light"] .border-white\/\[0\.07\],
+html[data-theme="light"] .border-white\/\[0\.08\] {
+  border-color: rgba(0, 0, 0, 0.08);
 }
-html[data-theme="light"] .border-white\/10 {
-  border-color: rgba(0, 0, 0, 0.1);
-}
-html[data-theme="light"] .border-white\/\[0\.07\] {
-  border-color: rgba(0, 0, 0, 0.07);
-}
-html[data-theme="light"] .text-white {
+/* Text inside cards becomes dark */
+html[data-theme="light"] .bg-\[\#0e0f14\] .text-white,
+html[data-theme="light"] .glass-panel .text-white {
   color: #1a1a2e;
 }
-html[data-theme="light"] .text-neutral-100 {
-  color: #1a1a2e;
-}
-html[data-theme="light"] .text-neutral-300 {
+html[data-theme="light"] .bg-\[\#0e0f14\] .text-neutral-100,
+html[data-theme="light"] .glass-panel .text-neutral-100,
+html[data-theme="light"] .bg-\[\#0e0f14\] .text-neutral-300,
+html[data-theme="light"] .glass-panel .text-neutral-300 {
   color: #333344;
 }
-html[data-theme="light"] .text-neutral-400 {
+html[data-theme="light"] .bg-\[\#0e0f14\] .text-neutral-400,
+html[data-theme="light"] .glass-panel .text-neutral-400 {
   color: #555566;
 }
-html[data-theme="light"] .text-neutral-500 {
+html[data-theme="light"] .bg-\[\#0e0f14\] .text-neutral-500,
+html[data-theme="light"] .glass-panel .text-neutral-500,
+html[data-theme="light"] .bg-\[\#0e0f14\] .text-\[\#A1A1AA\],
+html[data-theme="light"] .glass-panel .text-\[\#A1A1AA\] {
   color: #666677;
 }
-html[data-theme="light"] .text-\[\#A1A1AA\] {
-  color: #555566;
-}
-html[data-theme="light"] .text-\[\#60A5FA\] {
+/* Accent blue stays readable on white */
+html[data-theme="light"] .bg-\[\#0e0f14\] .text-\[\#60A5FA\],
+html[data-theme="light"] .glass-panel .text-\[\#60A5FA\] {
   color: #2563EB;
 }
 
-/* Auto mode: follow OS preference, unless user explicitly picked dark */
+/* --- Auto mode (OS preference) --- */
 @media (prefers-color-scheme: light) {
-  html:not([data-theme="dark"]) body {
-    background-color: #f5f5f7;
-    color: #1a1a2e;
-  }
   html:not([data-theme="dark"]) .glass-panel {
-    background: rgba(255, 255, 255, 0.85);
-    border-color: rgba(0, 0, 0, 0.08);
-  }
-  html:not([data-theme="dark"]) .bg-\[\#0b0c10\],
-  html:not([data-theme="dark"]) .bg-\[\#0c0c0c\] {
-    background-color: #f5f5f7;
+    background: rgba(255, 255, 255, 0.92);
+    border-color: rgba(0, 0, 0, 0.06);
   }
   html:not([data-theme="dark"]) .bg-\[\#0e0f14\] {
     background-color: #ffffff;
   }
-  html:not([data-theme="dark"]) .bg-white\/\[0\.02\] {
-    background-color: rgba(0, 0, 0, 0.02);
-  }
-  html:not([data-theme="dark"]) .bg-white\/\[0\.03\] {
+  html:not([data-theme="dark"]) .bg-white\/\[0\.02\],
+  html:not([data-theme="dark"]) .bg-white\/\[0\.03\],
+  html:not([data-theme="dark"]) .bg-white\/\[0\.04\] {
     background-color: rgba(0, 0, 0, 0.03);
   }
-  html:not([data-theme="dark"]) .bg-white\/\[0\.04\] {
+  html:not([data-theme="dark"]) .bg-white\/5 {
     background-color: rgba(0, 0, 0, 0.04);
   }
-  html:not([data-theme="dark"]) .bg-white\/5 {
-    background-color: rgba(0, 0, 0, 0.05);
+  html:not([data-theme="dark"]) .border-white\/10,
+  html:not([data-theme="dark"]) .border-white\/\[0\.07\],
+  html:not([data-theme="dark"]) .border-white\/\[0\.08\] {
+    border-color: rgba(0, 0, 0, 0.08);
   }
-  html:not([data-theme="dark"]) .border-white\/10 {
-    border-color: rgba(0, 0, 0, 0.1);
-  }
-  html:not([data-theme="dark"]) .border-white\/\[0\.07\] {
-    border-color: rgba(0, 0, 0, 0.07);
-  }
-  html:not([data-theme="dark"]) .text-white {
+  html:not([data-theme="dark"]) .bg-\[\#0e0f14\] .text-white,
+  html:not([data-theme="dark"]) .glass-panel .text-white {
     color: #1a1a2e;
   }
-  html:not([data-theme="dark"]) .text-neutral-100 {
-    color: #1a1a2e;
-  }
-  html:not([data-theme="dark"]) .text-neutral-300 {
+  html:not([data-theme="dark"]) .bg-\[\#0e0f14\] .text-neutral-100,
+  html:not([data-theme="dark"]) .glass-panel .text-neutral-100,
+  html:not([data-theme="dark"]) .bg-\[\#0e0f14\] .text-neutral-300,
+  html:not([data-theme="dark"]) .glass-panel .text-neutral-300 {
     color: #333344;
   }
-  html:not([data-theme="dark"]) .text-neutral-400 {
+  html:not([data-theme="dark"]) .bg-\[\#0e0f14\] .text-neutral-400,
+  html:not([data-theme="dark"]) .glass-panel .text-neutral-400 {
     color: #555566;
   }
-  html:not([data-theme="dark"]) .text-neutral-500 {
+  html:not([data-theme="dark"]) .bg-\[\#0e0f14\] .text-neutral-500,
+  html:not([data-theme="dark"]) .glass-panel .text-neutral-500,
+  html:not([data-theme="dark"]) .bg-\[\#0e0f14\] .text-\[\#A1A1AA\],
+  html:not([data-theme="dark"]) .glass-panel .text-\[\#A1A1AA\] {
     color: #666677;
   }
-  html:not([data-theme="dark"]) .text-\[\#A1A1AA\] {
-    color: #555566;
-  }
-  html:not([data-theme="dark"]) .text-\[\#60A5FA\] {
+  html:not([data-theme="dark"]) .bg-\[\#0e0f14\] .text-\[\#60A5FA\],
+  html:not([data-theme="dark"]) .glass-panel .text-\[\#60A5FA\] {
     color: #2563EB;
   }
 }
