@@ -13,7 +13,7 @@ export default async function LoginPage({
   const isDesktop = desktop === "1";
 
   return (
-    <main className="relative flex min-h-screen flex-col items-center justify-center overflow-hidden px-6" data-build="2026-08-09-d1">
+    <main className="relative flex min-h-screen flex-col items-center justify-center overflow-hidden px-6" data-build="2026-08-09-r1">
       <VideoBackground />
       <div className="relative z-10 flex w-full max-w-sm flex-col items-center gap-6 rounded-3xl border border-white/10 bg-[#0e0f14]/90 px-8 py-10 text-center backdrop-blur-md">
         <Link href="/" className="flex items-center gap-2">

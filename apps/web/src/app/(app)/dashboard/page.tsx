@@ -99,37 +99,9 @@ export default async function DashboardPage() {
       </div>
 
       {/* ── weekly goal ────────────────────────────────────── */}
-      <div
-        style={{
-          background: "linear-gradient(135deg, #3B82F6, #8B5CF6)",
-          padding: "16px 20px",
-          borderRadius: "12px",
-          marginBottom: "12px",
-          fontFamily: "monospace",
-          fontSize: "13px",
-          color: "white",
-          fontWeight: "bold",
-        }}
-      >
-        DEBUG · Build: 2025-08-08-01 · WeeklyGoal below
-      </div>
       <WeeklyGoal plan={plan} />
 
       {/* ── focus insights ─────────────────────────────────── */}
-      <div
-        style={{
-          background: "linear-gradient(135deg, #F59E0B, #EF4444)",
-          padding: "16px 20px",
-          borderRadius: "12px",
-          marginBottom: "12px",
-          fontFamily: "monospace",
-          fontSize: "13px",
-          color: "white",
-          fontWeight: "bold",
-        }}
-      >
-        DEBUG · Build: 2025-08-08-01 · FocusInsights below
-      </div>
       <FocusInsights sessions={sessions} />
 
       {/* ── developer profile + twin ───────────────────────── */}
