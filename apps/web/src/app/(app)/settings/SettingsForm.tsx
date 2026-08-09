@@ -2,9 +2,13 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import { Download, Trash2 } from "lucide-react";
 import { updateProfile } from "@focus-forge/api-client";
 import { getBrowserSupabaseClient } from "@/lib/supabase/browser";
 import { ApiKeyInput } from "@/components/ApiKeyInput";
+import { ThemeToggle } from "@/components/ThemeToggle";
+import { PasswordChangeForm } from "@/components/PasswordChangeForm";
+import { DeleteAccountModal } from "@/components/DeleteAccountModal";
 
 const NAME_KEY = "upstream-display-name";
 const EMAIL_KEY = "upstream-email";
@@ -16,12 +20,19 @@ interface ProfileData {
   notifyDeadline: boolean;
   notifyAchievement: boolean;
   notifyStreakRisk: boolean;
+  themePreference: string | null;
+  website: string | null;
+  twitter: string | null;
 }
 
 export function SettingsForm({ profile }: { profile: ProfileData }) {
   const router = useRouter();
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [exporting, setExporting] = useState(false);
   const [name, setName] = useState(localStorage.getItem(NAME_KEY) || profile.displayName || "");
   const [email, setEmail] = useState(localStorage.getItem(EMAIL_KEY) || profile.email || "");
+  const [website, setWebsite] = useState(profile.website || "");
+  const [twitterHandle, setTwitterHandle] = useState(profile.twitter || "");
   const [notifySession, setNotifySession] = useState(profile.notifySessionComplete);
   const [notifyDeadline, setNotifyDeadline] = useState(profile.notifyDeadline);
   const [notifyAchievement, setNotifyAchievement] = useState(profile.notifyAchievement);
@@ -38,19 +49,65 @@ export function SettingsForm({ profile }: { profile: ProfileData }) {
     if (email.trim()) localStorage.setItem(EMAIL_KEY, email.trim());
 
     try {
-      await updateProfile(getBrowserSupabaseClient(), {
+      const supabase = getBrowserSupabaseClient();
+      const { data } = await supabase.auth.getUser();
+      await updateProfile(supabase, {
         displayName: name.trim() || undefined,
         notifySessionComplete: notifySession,
         notifyDeadline,
         notifyAchievement,
         notifyStreakRisk: notifyStreak,
       });
+      // Save website + twitter (may fail if columns don't exist yet — non-fatal)
+      if (data.user) {
+        await (supabase.from("profiles") as any).upsert({
+          id: data.user.id,
+          website: website.trim() || null,
+          twitter: twitterHandle.trim() || null,
+        }).catch(() => {});
+      }
     } catch { /* localStorage saved */ }
 
     setSaved(true);
     setSaving(false);
     router.refresh();
     setTimeout(() => setSaved(false), 2000);
+  }
+
+  async function handleExportData() {
+    setExporting(true);
+    try {
+      const supabase = getBrowserSupabaseClient();
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) return;
+
+      const [sessions, projects, profileData] = await Promise.all([
+        supabase.from("focus_sessions").select("*").eq("user_id", user.id).order("started_at", { ascending: false }).limit(5000),
+        supabase.from("projects").select("*").eq("user_id", user.id),
+        supabase.from("profiles").select("*").eq("id", user.id).single(),
+      ]);
+
+      const blob = new Blob(
+        [JSON.stringify({
+          exportedAt: new Date().toISOString(),
+          user: { email: user.email, id: user.id },
+          profile: profileData.data,
+          sessions: sessions.data,
+          projects: projects.data,
+        }, null, 2)],
+        { type: "application/json" }
+      );
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = `upstream-data-${new Date().toISOString().slice(0, 10)}.json`;
+      a.click();
+      URL.revokeObjectURL(url);
+    } catch (err) {
+      console.error("Export failed:", err);
+    } finally {
+      setExporting(false);
+    }
   }
 
   const inputClass =
@@ -70,6 +127,14 @@ export function SettingsForm({ profile }: { profile: ProfileData }) {
         <div className="flex flex-col gap-1.5">
           <label className="font-manrope text-xs text-neutral-400">Email</label>
           <input value={email} onChange={(e) => setEmail(e.target.value)} placeholder="you@gmail.com" className={inputClass} />
+        </div>
+        <div className="flex flex-col gap-1.5">
+          <label className="font-manrope text-xs text-neutral-400">Website</label>
+          <input value={website} onChange={(e) => setWebsite(e.target.value)} placeholder="https://your-site.com" className={inputClass} />
+        </div>
+        <div className="flex flex-col gap-1.5">
+          <label className="font-manrope text-xs text-neutral-400">X / Twitter handle</label>
+          <input value={twitterHandle} onChange={(e) => setTwitterHandle(e.target.value)} placeholder="yourhandle" className={inputClass} />
         </div>
       </div>
 
@@ -92,6 +157,55 @@ export function SettingsForm({ profile }: { profile: ProfileData }) {
 
       {/* API key — lets free users bring their own Anthropic key */}
       <ApiKeyInput />
+
+      {/* Display */}
+      <div className="flex flex-col gap-4 rounded-2xl border border-white/10 bg-[#0e0f14] p-6">
+        <h2 className="font-manrope text-sm font-medium text-white">Display</h2>
+        <ThemeToggle initialTheme={profile.themePreference} />
+      </div>
+
+      {/* Password */}
+      <div className="flex flex-col gap-4 rounded-2xl border border-white/10 bg-[#0e0f14] p-6">
+        <h2 className="font-manrope text-sm font-medium text-white">Password</h2>
+        <PasswordChangeForm />
+      </div>
+
+      {/* Data export */}
+      <div className="flex flex-col gap-4 rounded-2xl border border-white/10 bg-[#0e0f14] p-6">
+        <h2 className="font-manrope text-sm font-medium text-white">Export my data</h2>
+        <p className="font-inter text-sm text-[#A1A1AA]">
+          Download all your data as a JSON file — sessions, projects, profile, and settings.
+        </p>
+        <button
+          type="button"
+          onClick={handleExportData}
+          disabled={exporting}
+          className="flex items-center justify-center gap-2 self-start rounded-xl border border-white/10 bg-white/[0.03] px-5 py-2.5 font-manrope text-sm font-medium text-white transition-colors hover:bg-white/[0.08] disabled:opacity-50"
+        >
+          <Download size={14} />
+          {exporting ? "Exporting…" : "Download my data"}
+        </button>
+      </div>
+
+      {/* Delete account */}
+      <div className="flex flex-col gap-4 rounded-2xl border border-red-400/20 bg-[#0e0f14] p-6">
+        <h2 className="font-manrope text-sm font-medium text-red-400">Danger zone</h2>
+        <p className="font-inter text-sm text-[#A1A1AA]">
+          Permanently delete your account and all data. There is no undo.
+        </p>
+        <button
+          type="button"
+          onClick={() => setShowDeleteModal(true)}
+          className="flex items-center justify-center gap-2 self-start rounded-xl border border-red-400/30 bg-red-400/10 px-5 py-2.5 font-manrope text-sm font-medium text-red-400 transition-colors hover:bg-red-400/20"
+        >
+          <Trash2 size={14} />
+          Delete account
+        </button>
+      </div>
+
+      {showDeleteModal && (
+        <DeleteAccountModal onClose={() => setShowDeleteModal(false)} />
+      )}
 
       {/* Privacy notice */}
       <div className="rounded-2xl border border-white/[0.06] bg-[#0e0f14] p-6">
