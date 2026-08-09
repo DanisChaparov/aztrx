@@ -49,12 +49,73 @@ function getGmail() {
   return gmailTransport;
 }
 
-async function sendEmail(to: string, subject: string, text: string): Promise<"sent" | "error" | "not-configured"> {
-  // Try Resend first — sends from onboarding@resend.dev (neutral, not personal email).
+// ── HTML email wrapper ─────────────────────────────────────────
+
+export function wrapHtml(body: string): string {
+  return `<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+<body style="margin:0;padding:0;background-color:#0c0c0c;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif">
+  <table width="100%" cellpadding="0" cellspacing="0" style="background-color:#0c0c0c;padding:40px 0">
+    <tr>
+      <td align="center">
+        <table width="560" cellpadding="0" cellspacing="0" style="background:linear-gradient(135deg,#0e0f14 0%,#13151a 100%);border:1px solid rgba(255,255,255,0.08);border-radius:16px;overflow:hidden">
+          <!-- Header -->
+          <tr>
+            <td style="padding:32px 40px 0">
+              <div style="display:flex;align-items:center;gap:10px">
+                <span style="font-size:22px">⬆️</span>
+                <span style="color:#ffffff;font-size:18px;font-weight:700;letter-spacing:-0.3px">Upstream</span>
+              </div>
+            </td>
+          </tr>
+          <!-- Body -->
+          <tr>
+            <td style="padding:24px 40px 32px;color:#d4d4d8;font-size:15px;line-height:1.6">
+              ${body}
+            </td>
+          </tr>
+          <!-- Footer -->
+          <tr>
+            <td style="padding:20px 40px;border-top:1px solid rgba(255,255,255,0.06);color:#71717a;font-size:12px">
+              Sent by Upstream &mdash; your focus companion.
+            </td>
+          </tr>
+        </table>
+      </td>
+    </tr>
+  </table>
+</body>
+</html>`;
+}
+
+async function sendEmail(to: string, subject: string, text: string, html?: string): Promise<"sent" | "error" | "not-configured"> {
+  // Try Gmail SMTP first — shows the sender's real Gmail profile photo as avatar.
+  const gmail = getGmail();
+  if (gmail) {
+    try {
+      await gmail.sendMail({ from: `Upstream <${process.env.EMAIL_FROM}>`, to, subject, text, html });
+      console.log(`[notify] Gmail sent to ${to}`);
+      return "sent";
+    } catch (err: any) {
+      console.error("[notify] Gmail failed:", err.message);
+    }
+  }
+
+  // Fallback: Resend (free tier — 100/day, no custom avatar on free plan).
   const resend = getResend();
   if (resend) {
     try {
-      const response = await resend.emails.send({ from: "Upstream <onboarding@resend.dev>", to, subject, text });
+      const response = await resend.emails.send({
+        from: "Upstream <onboarding@resend.dev>",
+        to,
+        subject,
+        text,
+        html,
+      });
       if (response.error) {
         console.error("[notify] Resend error:", response.error.message);
       } else {
@@ -63,18 +124,6 @@ async function sendEmail(to: string, subject: string, text: string): Promise<"se
       }
     } catch (err: any) {
       console.error("[notify] Resend failed:", err.message);
-    }
-  }
-
-  // Fallback: Gmail SMTP.
-  const gmail = getGmail();
-  if (gmail) {
-    try {
-      await gmail.sendMail({ from: `Upstream <${process.env.EMAIL_FROM}>`, to, subject, text });
-      console.log(`[notify] Gmail sent to ${to}`);
-      return "sent";
-    } catch (err: any) {
-      console.error("[notify] Gmail failed:", err.message);
     }
   }
 
@@ -134,6 +183,7 @@ export interface NotificationPayload {
   toTelegram?: string;   // Telegram chat_id
   title: string;
   body: string;
+  html?: string;         // HTML email body (falls back to plain-text body)
 }
 
 export interface NotificationResult {
@@ -153,7 +203,7 @@ export async function sendNotification(payload: NotificationPayload): Promise<No
 
   // Email.
   if (payload.toEmail) {
-    result.email = await sendEmail(payload.toEmail, payload.title, payload.body);
+    result.email = await sendEmail(payload.toEmail, payload.title, payload.body, payload.html);
   }
 
   // WhatsApp (primary for phone numbers — free, 1,000/month).

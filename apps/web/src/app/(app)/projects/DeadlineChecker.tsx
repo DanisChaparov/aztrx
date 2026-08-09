@@ -13,7 +13,6 @@ export function DeadlineChecker({ projects }: { projects: Project[] }) {
   useEffect(() => {
     const now = Date.now();
     const DAY_MS = 24 * 60 * 60 * 1000;
-    const HOUR_MS = 60 * 60 * 1000;
 
     for (const project of projects) {
       if (!project.deadline || notified.has(project.id)) continue;
@@ -23,8 +22,7 @@ export function DeadlineChecker({ projects }: { projects: Project[] }) {
 
       // Notify if within 24 hours and not past due.
       if (remaining > 0 && remaining <= DAY_MS) {
-        const hoursLeft = Math.ceil(remaining / HOUR_MS);
-        notifyDeadline(project.id, project.name, project.deadline, hoursLeft)
+        notifyDeadline(project.id, project.name, project.deadline)
           .then(() => setNotified((prev) => new Set(prev).add(project.id)))
           .catch(() => {});
       }
@@ -38,14 +36,13 @@ async function notifyDeadline(
   projectId: string,
   name: string,
   deadline: string,
-  hoursLeft: number
 ): Promise<void> {
   // Email notification (primary).
   try {
     await fetch("/api/notify/deadline", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ projectId, projectName: name, deadline, hoursLeft }),
+      body: JSON.stringify({ projectId, projectName: name, deadline }),
     });
   } catch {
     // Best effort.
@@ -53,9 +50,14 @@ async function notifyDeadline(
 
   // Also try browser notification.
   if (typeof window !== "undefined" && "Notification" in window && Notification.permission === "granted") {
+    const remainingMs = new Date(deadline).getTime() - Date.now();
+    const totalMinutes = Math.max(1, Math.round(remainingMs / (60 * 1000)));
+    const label = totalMinutes < 60
+      ? `${totalMinutes} minute${totalMinutes === 1 ? "" : "s"}`
+      : `${Math.round(totalMinutes / 60)} hour${Math.round(totalMinutes / 60) === 1 ? "" : "s"}`;
     try {
       new Notification("Deadline approaching", {
-        body: `"${name}" is due in ${hoursLeft} ${hoursLeft === 1 ? "hour" : "hours"}. Check your email.`,
+        body: `"${name}" is due in ${label}. Check your email.`,
       });
     } catch { /* ignore */ }
   }

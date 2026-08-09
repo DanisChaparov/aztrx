@@ -1,6 +1,52 @@
 import { NextResponse } from "next/server";
 import { createClient } from "@supabase/supabase-js";
-import { sendNotification } from "@/lib/notify";
+import { sendNotification, wrapHtml } from "@/lib/notify";
+
+/** Format remaining time for humans. */
+function formatRemaining(ms: number): { label: string; urgency: "urgent" | "soon" | "normal" } {
+  const totalMinutes = Math.max(1, Math.round(ms / (60 * 1000)));
+  if (totalMinutes < 60) {
+    return {
+      label: `${totalMinutes} minute${totalMinutes === 1 ? "" : "s"}`,
+      urgency: totalMinutes <= 5 ? "urgent" : "soon",
+    };
+  }
+  const hours = Math.round(totalMinutes / 60);
+  return {
+    label: `${hours} hour${hours === 1 ? "" : "s"}`,
+    urgency: hours <= 2 ? "urgent" : hours <= 12 ? "soon" : "normal",
+  };
+}
+
+/** Pretty email HTML for a deadline notification. */
+function deadlineEmailHtml(projectName: string, label: string, urgency: string): string {
+  const accentColor = urgency === "urgent" ? "#EF4444" : "#3B82F6";
+  const emoji = urgency === "urgent" ? "🔴" : "⏰";
+
+  const appUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://stt-opal.vercel.app";
+
+  return wrapHtml(`
+    <h2 style="margin:0 0 12px;color:#ffffff;font-size:20px;font-weight:700">
+      ${emoji} Deadline approaching
+    </h2>
+    <p style="margin:0 0 8px;color:#d4d4d8;font-size:15px">
+      Your project <strong style="color:#ffffff">"${escapeHtml(projectName)}"</strong>
+      is due in
+      <span style="color:${accentColor};font-weight:600">${label}</span>.
+    </p>
+    <p style="margin:0 0 0;color:#a1a1aa;font-size:14px">
+      Open Upstream to check your progress or push the deadline back.
+    </p>
+    <a href="${appUrl}/projects"
+       style="display:inline-block;margin-top:20px;padding:12px 28px;background:${accentColor};color:#ffffff;border-radius:8px;text-decoration:none;font-weight:600;font-size:14px">
+      Open Upstream →
+    </a>
+  `);
+}
+
+function escapeHtml(s: string): string {
+  return s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
+}
 
 /**
  * GET /api/cron/deadline-check
@@ -85,26 +131,21 @@ export async function GET(request: Request) {
     }
 
     const deadlineDate = new Date(project.deadline);
-    const hoursLeft = Math.max(1, Math.ceil((deadlineDate.getTime() - now.getTime()) / (60 * 60 * 1000)));
-    const urgency =
-      hoursLeft <= 1
-        ? "URGENT: less than 1 hour remaining"
-        : hoursLeft <= 24
-          ? `${hoursLeft} hours remaining`
-          : `Due ${deadlineDate.toLocaleDateString("en-US", { month: "long", day: "numeric" })}`;
+    const remainingMs = deadlineDate.getTime() - now.getTime();
+    const { label, urgency } = formatRemaining(Math.max(0, remainingMs));
 
     const notificationResult = await sendNotification({
       toEmail: email,
-      title: `⏰ Deadline: "${project.name}" — ${urgency}`,
+      title: `⏰ "${project.name}" due in ${label}`,
       body: [
-        `Your project "${project.name}" is due ${deadlineDate.toLocaleDateString("en-US", { month: "long", day: "numeric" })}.`,
-        hoursLeft ? `Time remaining: about ${hoursLeft} hours.` : "",
+        `Your project "${project.name}" is due in ${label}.`,
         "",
-        "Open Upstream to check your progress or update the deadline.",
+        "Open Upstream to check your progress or update the deadline:",
+        `${process.env.NEXT_PUBLIC_SITE_URL || "https://stt-opal.vercel.app"}/projects`,
+        "",
         "— The Upstream team",
-      ]
-        .filter(Boolean)
-        .join("\n"),
+      ].join("\n"),
+      html: deadlineEmailHtml(project.name, label, urgency),
     });
 
     // Mark as notified so we don't spam.
