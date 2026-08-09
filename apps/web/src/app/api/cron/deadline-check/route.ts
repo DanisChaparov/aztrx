@@ -49,7 +49,7 @@ export async function GET(request: Request) {
     .gt("deadline", now.toISOString())
     .lte("deadline", in24h.toISOString())
     .or(
-      `deadline_notified_at.is.null,deadline_notified_at.lte.${new Date(now.getTime() - 23 * 60 * 60 * 1000).toISOString()}`
+      `deadline_notified_at.is.null,deadline_notified_at.lte.${new Date(now.getTime() - 5 * 60 * 60 * 1000).toISOString()}`
     );
 
   if (error) {
