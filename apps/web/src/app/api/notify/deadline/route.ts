@@ -34,7 +34,7 @@ export async function POST(request: Request) {
     if (existing?.deadline_notified_at) {
       const lastNotified = new Date(existing.deadline_notified_at).getTime();
       const hoursSinceLastNotify = (Date.now() - lastNotified) / (60 * 60 * 1000);
-      if (hoursSinceLastNotify < 23) {
+      if (hoursSinceLastNotify < 5) {
         return NextResponse.json({
           sent: false,
           to: user.user.email,
