@@ -6,6 +6,7 @@ import { motion } from "framer-motion";
 import {
   abandonSession,
   listDistractions,
+  listSessions,
   startSession,
   verifySession,
   type VerifySessionResult,
@@ -56,19 +57,28 @@ export function SessionRunner({
   const [lastSessionId, setLastSessionId] = useState<string | null>(null);
   const timeUpAlertedRef = useRef(false);
 
+  // Pause state
+  const [paused, setPaused] = useState(false);
+  const pausedAtRef = useRef<number | null>(null);
+  const totalPausedMsRef = useRef(0);
+
+  // Session history
+  const [recentSessions, setRecentSessions] = useState<FocusSession[]>([]);
+  const [historyLoaded, setHistoryLoaded] = useState(false);
+
   useEffect(() => {
-    if (!session) return;
+    if (!session || paused) return;
     setNow(Date.now());
     timeUpAlertedRef.current = false;
     const id = setInterval(() => setNow(Date.now()), 1000);
     return () => clearInterval(id);
-  }, [session]);
+  }, [session, paused]);
 
   const remainingSeconds = useMemo(() => {
     if (!session) return 0;
     const totalSeconds = session.plannedDurationMin * 60;
     if (now === null) return totalSeconds;
-    const elapsedMs = now - new Date(session.startedAt).getTime();
+    const elapsedMs = (now - new Date(session.startedAt).getTime()) - totalPausedMsRef.current;
     return Math.max(0, Math.round(totalSeconds - elapsedMs / 1000));
   }, [session, now]);
 
@@ -163,6 +173,8 @@ export function SessionRunner({
       const supabase = getBrowserSupabaseClient();
       await abandonSession(supabase, session.id);
       setSession(null);
+      setPaused(false);
+      totalPausedMsRef.current = 0;
       router.refresh();
     } catch (err) {
       setError(err instanceof Error ? err.message : "Could not end session");
@@ -170,6 +182,32 @@ export function SessionRunner({
       setBusy(false);
     }
   }
+
+  function handlePause() {
+    setPaused(true);
+    pausedAtRef.current = Date.now();
+  }
+
+  function handleResume() {
+    if (pausedAtRef.current) {
+      totalPausedMsRef.current += Date.now() - pausedAtRef.current;
+      pausedAtRef.current = null;
+    }
+    setPaused(false);
+  }
+
+  // Load recent sessions for history panel (on mount, only when showing setup)
+  useEffect(() => {
+    if (session || result) return;
+    if (historyLoaded) return;
+    const supabase = getBrowserSupabaseClient();
+    listSessions(supabase, { limit: 5 })
+      .then((sessions) => {
+        setRecentSessions(sessions);
+        setHistoryLoaded(true);
+      })
+      .catch(() => {});
+  }, [session, result, historyLoaded]);
 
   if (result) {
     return (
@@ -252,10 +290,33 @@ export function SessionRunner({
     const activeProject = projects.find((p) => p.id === session.projectId);
     return (
       <div className="flex flex-col gap-4">
-        <div className="glass-panel flex flex-col items-center gap-8 p-8">
+        <div className="glass-panel relative flex flex-col items-center gap-8 p-8">
+          {/* Pause overlay */}
+          {paused && (
+            <div className="absolute inset-0 z-10 flex flex-col items-center justify-center gap-3 rounded-2xl bg-[#0b0c10]/90 backdrop-blur-sm">
+              <span className="font-instrument-serif text-4xl text-amber-400">PAUSED</span>
+              <p className="font-inter text-sm text-neutral-400">Timer frozen — resume when you're back</p>
+              <button
+                onClick={handleResume}
+                className="mt-2 rounded-xl bg-amber-400/15 border border-amber-400/30 px-5 py-2 font-manrope text-sm font-semibold text-amber-400 transition-colors hover:bg-amber-400/25"
+              >
+                ▶ Resume
+              </button>
+            </div>
+          )}
+
           <Timer remainingSeconds={remainingSeconds} totalSeconds={session.plannedDurationMin * 60} />
           {error && <p className="font-inter text-xs text-red-400">{error}</p>}
           <div className="flex gap-3">
+            {!paused && (
+              <button
+                onClick={handlePause}
+                disabled={busy}
+                className="rounded-[10px] border border-amber-400/25 bg-amber-400/10 px-5 py-2.5 font-cabin text-sm font-medium text-amber-400 transition-colors hover:bg-amber-400/20 disabled:cursor-wait disabled:opacity-50"
+              >
+                ⏸ Pause
+              </button>
+            )}
             <button
               onClick={handleComplete}
               disabled={busy}
@@ -411,6 +472,47 @@ export function SessionRunner({
       <WaterButton onClick={handleStart} disabled={busy} variant="primary" className="self-start">
         {busy ? "Starting…" : "Start focus session"}
       </WaterButton>
+
+      {/* Session history */}
+      {recentSessions.length > 0 && (
+        <div className="mt-2 border-t border-white/[0.07] pt-5">
+          <h3 className="font-manrope text-xs font-medium uppercase tracking-wider text-neutral-500 mb-3">
+            Recent sessions
+          </h3>
+          <div className="flex flex-col gap-1.5">
+            {recentSessions.map((s) => {
+              const project = projects.find((p) => p.id === s.projectId);
+              const date = new Date(s.startedAt);
+              const durationMin = s.plannedDurationMin;
+              const isToday = date.toDateString() === new Date().toDateString();
+              const isYesterday = new Date(Date.now() - 86400000).toDateString() === date.toDateString();
+              const dateLabel = isToday ? "Today" : isYesterday ? "Yesterday" : date.toLocaleDateString("en-US", { month: "short", day: "numeric" });
+              return (
+                <div
+                  key={s.id}
+                  className="flex items-center justify-between rounded-lg px-3 py-2 hover:bg-white/[0.03] transition-colors"
+                >
+                  <div className="flex items-center gap-2.5 min-w-0">
+                    <span className={`shrink-0 h-2 w-2 rounded-full ${
+                      s.verified ? "bg-emerald-400" : s.status === "broken" ? "bg-red-400" : "bg-neutral-600"
+                    }`} />
+                    <span className="font-inter text-sm text-white truncate">
+                      {project?.name ?? "No project"}
+                    </span>
+                  </div>
+                  <div className="flex items-center gap-3 shrink-0">
+                    <span className="font-inter text-xs text-neutral-500">{dateLabel}</span>
+                    <span className="font-mono text-xs text-neutral-400">{durationMin}min</span>
+                    {s.verified && (
+                      <span className="font-inter text-[10px] text-emerald-400/70">✓</span>
+                    )}
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+      )}
     </div>
   );
 }
