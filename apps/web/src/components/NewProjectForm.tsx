@@ -6,6 +6,13 @@ import { createProject } from "@focus-forge/api-client";
 import { getBrowserSupabaseClient } from "@/lib/supabase/browser";
 import { WaterButton } from "@/components/WaterButton";
 
+/** Current local time formatted for datetime-local input min attribute. */
+function localNow(): string {
+  const d = new Date();
+  const pad = (n: number) => String(n).padStart(2, "0");
+  return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}T${pad(d.getHours())}:${pad(d.getMinutes())}`;
+}
+
 export function NewProjectForm() {
   const router = useRouter();
   const [name, setName] = useState("");
@@ -66,7 +73,7 @@ export function NewProjectForm() {
         <input
           type="datetime-local"
           value={deadline}
-          min={new Date().toISOString().slice(0, 16)}
+          min={localNow()}
           onChange={(e) => setDeadline(e.target.value)}
           className={inputClass}
         />

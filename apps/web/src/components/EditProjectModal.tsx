@@ -6,6 +6,13 @@ import { X, Save } from "lucide-react";
 import type { Project } from "@focus-forge/core";
 import { getBrowserSupabaseClient } from "@/lib/supabase/browser";
 
+/** Convert a UTC ISO string to a local datetime-local input value (YYYY-MM-DDTHH:MM). */
+function toLocalDatetimeInput(isoString: string): string {
+  const d = new Date(isoString);
+  const pad = (n: number) => String(n).padStart(2, "0");
+  return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}T${pad(d.getHours())}:${pad(d.getMinutes())}`;
+}
+
 /**
  * Modal for editing a project's name, deadline, GitHub URL, and local path.
  * Saves directly to Supabase and refreshes the page on success.
@@ -20,7 +27,7 @@ export function EditProjectModal({
   const router = useRouter();
   const [name, setName] = useState(project.name);
   const [deadline, setDeadline] = useState(
-    project.deadline ? project.deadline.slice(0, 16) : ""
+    project.deadline ? toLocalDatetimeInput(project.deadline) : ""
   );
   const [githubRepoUrl, setGithubRepoUrl] = useState(project.githubRepoUrl || "");
   const [localPath, setLocalPath] = useState(project.localPath || "");
