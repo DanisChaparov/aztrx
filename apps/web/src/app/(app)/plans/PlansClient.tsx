@@ -1,8 +1,9 @@
 "use client";
 
 import { useState } from "react";
-import { Check, Minus, Clock } from "lucide-react";
-import { FEATURE_STATUS } from "@focus-forge/core";
+import { Check, Minus, Clock, MessageCircle } from "lucide-react";
+import { FEATURE_STATUS, limitFor } from "@focus-forge/core";
+import { toFeatureKey } from "@/lib/plan-features";
 import { FeatureTutorial } from "./FeatureTutorial";
 import { PlanCard } from "./PlanCard";
 import { PolarButton } from "@/components/PolarButton";
@@ -11,31 +12,6 @@ import type { ReactNode } from "react";
 interface Feature {
   name: string;
   included: boolean;
-}
-
-/** Map plan feature names to PlanFeatures keys for status lookup */
-function toFeatureKey(name: string): string | null {
-  const map: Record<string, string> = {
-    "Focus sessions & verification": "aiMentorInteractionsPerDay",
-    "GitHub commit verification": "aiMentorInteractionsPerDay",
-    "Distraction blocking (desktop + extension)": "aiMentorInteractionsPerDay",
-    "Coding streaks & heatmap": "aiMentorInteractionsPerDay",
-    "Developer Twin (private + public share)": "aiMentorInteractionsPerDay",
-    "AI assistant via your Claude Code": "assistantFollowUps",
-    "5 built-in AI mentor interactions/day": "aiMentorInteractionsPerDay",
-    "3 active projects": "maxProjects",
-    "90-day history": "historyDays",
-    "Ambient activity tracking": "ambientTracking",
-    "Developer Profile (strengths/weaknesses)": "developerProfile",
-    'Monthly "Wrapped" reports': "monthlyReport",
-    "Yearly report with growth trajectory": "yearlyReport",
-    "Skill graph & learning path": "skillGraph",
-    "Private repo verification": "privateRepoVerification",
-    "15 AI mentor interactions/day": "aiMentorInteractionsPerDay",
-    "Exportable proof of hours": "exportableProof",
-    "Ambient timeline": "ambientTimeline",
-  };
-  return map[name] ?? null;
 }
 
 function isFeatureComingSoon(name: string): boolean {
@@ -132,6 +108,52 @@ export function useFeatureTutorial() {
 }
 
 /**
+ * Mini usage bar showing how many AI interactions the user has used today.
+ * Only shown when the user has no API key (i.e. they're using Upstream's quota).
+ */
+export function UsageDisplay({
+  usedToday,
+  dailyLimit,
+  hasApiKey,
+}: {
+  usedToday: number;
+  dailyLimit: number;
+  hasApiKey: boolean;
+}) {
+  if (hasApiKey) return null; // using their own key — unlimited
+
+  const pct = Math.min(100, Math.round((usedToday / dailyLimit) * 100));
+  const remaining = Math.max(0, dailyLimit - usedToday);
+
+  return (
+    <div className="rounded-2xl border border-white/10 bg-[#0e0f14] p-5">
+      <div className="flex items-center justify-between mb-3">
+        <div className="flex items-center gap-2">
+          <MessageCircle size={15} className="text-[#60A5FA]" />
+          <span className="font-manrope text-sm font-medium text-white">AI mentor usage today</span>
+        </div>
+        <span className="font-inter text-xs text-[#A1A1AA]">
+          {usedToday} / {dailyLimit} interactions
+        </span>
+      </div>
+      <div className="h-2 overflow-hidden rounded-full bg-white/5">
+        <div
+          className={`h-full rounded-full transition-all ${
+            pct >= 100 ? "bg-red-400" : pct >= 70 ? "bg-amber-400" : "bg-[#3B82F6]"
+          }`}
+          style={{ width: `${pct}%` }}
+        />
+      </div>
+      <p className="mt-2 font-inter text-xs text-neutral-500">
+        {remaining > 0
+          ? `${remaining} interaction${remaining !== 1 ? "s" : ""} remaining today.`
+          : "Limit reached — upgrade to Pro for 15/day or add your API key."}
+      </p>
+    </div>
+  );
+}
+
+/**
  * Client wrapper that renders the two PlanCard components with feature-click
  * handling and the FeatureTutorial modal.
  */
@@ -140,11 +162,15 @@ export function PlanCards({
   hasActiveTrial,
   isPro,
   features,
+  usageToday,
+  hasApiKey,
 }: {
   plan: string;
   hasActiveTrial: boolean;
   isPro: boolean;
   features: Feature[];
+  usageToday?: number;
+  hasApiKey?: boolean;
 }) {
   const [selectedFeature, setSelectedFeature] = useState<string | null>(null);
 

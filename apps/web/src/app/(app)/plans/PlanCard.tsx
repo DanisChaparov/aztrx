@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { Check, Minus, Crown, Sparkles, Clock } from "lucide-react";
 import { FEATURE_STATUS } from "@focus-forge/core";
+import { toFeatureKey } from "@/lib/plan-features";
 
 interface Feature {
   name: string;
@@ -13,31 +14,6 @@ interface PlanAction {
   label: string;
   href?: string;
   disabled?: boolean;
-}
-
-/** Map plan feature names in FREE_FEATURES to the PlanFeatures keys in plans.ts */
-function toFeatureKey(name: string): string | null {
-  const map: Record<string, string> = {
-    "Focus sessions & verification": "aiMentorInteractionsPerDay", // any live feature works
-    "GitHub commit verification": "aiMentorInteractionsPerDay",
-    "Distraction blocking (desktop + extension)": "aiMentorInteractionsPerDay",
-    "Coding streaks & heatmap": "aiMentorInteractionsPerDay",
-    "Developer Twin (private + public share)": "aiMentorInteractionsPerDay",
-    "AI assistant via your Claude Code": "assistantFollowUps",
-    "5 built-in AI mentor interactions/day": "aiMentorInteractionsPerDay",
-    "3 active projects": "maxProjects",
-    "90-day history": "historyDays",
-    "Ambient activity tracking": "ambientTracking",
-    "Developer Profile (strengths/weaknesses)": "developerProfile",
-    'Monthly "Wrapped" reports': "monthlyReport",
-    "Yearly report with growth trajectory": "yearlyReport",
-    "Skill graph & learning path": "skillGraph",
-    "Private repo verification": "privateRepoVerification",
-    "15 AI mentor interactions/day": "aiMentorInteractionsPerDay",
-    "Exportable proof of hours": "exportableProof",
-    "Ambient timeline": "ambientTimeline",
-  };
-  return map[name] ?? null;
 }
 
 function isFeatureComingSoon(name: string): boolean {

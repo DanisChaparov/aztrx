@@ -1,10 +1,10 @@
 import { Sparkles, AlertTriangle } from "lucide-react";
 import { getPlan } from "@focus-forge/api-client";
-import { BILLING_LIVE } from "@focus-forge/core";
+import { BILLING_LIVE, getLocalDayStart } from "@focus-forge/core";
 import { TrialBanner } from "./TrialBanner";
 import { SocialExtend } from "./SocialExtend";
 import { SubscriptionSuccess } from "./SubscriptionSuccess";
-import { FeatureComparisonTable, PlanCards } from "./PlansClient";
+import { FeatureComparisonTable, PlanCards, UsageDisplay } from "./PlansClient";
 import { getServerSupabaseClient } from "@/lib/supabase/server";
 
 const FREE_FEATURES = [
@@ -63,6 +63,28 @@ export default async function PlansPage({
     ? undefined
     : "Billing isn't live yet — everyone has Pro features for now. When payment goes live (Polar.sh), you'll keep your current plan.";
 
+  // Daily AI usage for the usage bar
+  let usageToday = 0;
+  let hasApiKey = false;
+  if (userData.user) {
+    const { data: profile } = await supabase
+      .from("profiles")
+      .select("anthropic_api_key")
+      .eq("id", userData.user.id)
+      .single();
+    hasApiKey = !!profile?.anthropic_api_key;
+
+    const dayStart = getLocalDayStart(new Date(), 0);
+    const { count } = await supabase
+      .from("assistant_chats")
+      .select("*", { count: "exact", head: true })
+      .eq("user_id", userData.user.id)
+      .gte("created_at", dayStart.toISOString());
+    usageToday = count ?? 0;
+  }
+
+  const dailyLimit = plan === "pro" ? 15 : 5;
+
   return (
     <div className="flex flex-col gap-10 pt-8">
       <div className="flex flex-col gap-2">
@@ -120,7 +142,18 @@ export default async function PlansPage({
         hasActiveTrial={hasActiveTrial}
         isPro={isPro}
         features={FREE_FEATURES}
+        usageToday={usageToday}
+        hasApiKey={hasApiKey}
       />
+
+      {/* Daily AI usage bar */}
+      {!hasApiKey && (
+        <UsageDisplay
+          usedToday={usageToday}
+          dailyLimit={dailyLimit}
+          hasApiKey={hasApiKey}
+        />
+      )}
 
       {/* Social extension for trial */}
       {!isPro && !hasActiveTrial && !trialUsed && (
