@@ -62,16 +62,16 @@ export function NewProjectForm() {
         />
       </div>
       <div className="flex flex-col gap-1.5">
-        <label className="font-manrope text-xs text-neutral-400">Deadline (optional)</label>
+        <label className="font-manrope text-xs text-neutral-400">Deadline (optional, date + time)</label>
         <input
-          type="date"
+          type="datetime-local"
           value={deadline}
-          min={new Date().toISOString().split("T")[0]}
+          min={new Date().toISOString().slice(0, 16)}
           onChange={(e) => setDeadline(e.target.value)}
           className={inputClass}
         />
-        {deadline && new Date(deadline) < new Date(new Date().toISOString().split("T")[0]) && (
-          <p className="font-inter text-xs text-red-400">Deadline must be today or in the future</p>
+        {deadline && new Date(deadline) < new Date() && (
+          <p className="font-inter text-xs text-red-400">Deadline must be in the future</p>
         )}
       </div>
       <div className="flex flex-col gap-1.5">
