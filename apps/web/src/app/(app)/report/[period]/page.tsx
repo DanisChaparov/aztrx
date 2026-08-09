@@ -30,11 +30,23 @@ export default async function ReportPage({
   const { data: projects } = await supabase.from("projects").select("name, github_repo_url").eq("user_id", user.id);
   const detectedLanguages: string[] = [];
   const langHints: Record<string, string[]> = {
-    typescript: ["ts", "typescript", "next", "react"],
-    python: ["py", "python"],
-    rust: ["rs", "rust"],
-    go: ["go", "golang"],
-    javascript: ["js", "javascript", "node"],
+    typescript: ["ts", "typescript", "next", "react", "angular", "vue", "svelte", "astro", "nuxt", "remix", "solid"],
+    javascript: ["js", "javascript", "node", "express", "npm", "bun"],
+    python: ["py", "python", "django", "flask", "fastapi", "pytorch", "tensorflow", "jupyter"],
+    rust: ["rs", "rust", "cargo", "actix", "axum", "tauri"],
+    go: ["go", "golang", "gin", "echo", "fiber"],
+    java: ["java", "spring", "maven", "gradle", "kotlin"],
+    csharp: ["cs", "csharp", "dotnet", "blazor", "unity", ".net"],
+    ruby: ["rb", "ruby", "rails", "jekyll"],
+    swift: ["swift", "ios", "xcode", "swiftui"],
+    kotlin: ["kt", "kotlin", "android", "compose", "jetpack"],
+    php: ["php", "laravel", "symfony", "wordpress"],
+    elixir: ["ex", "elixir", "phoenix"],
+    c: ["c", "makefile", "cmake", "embedded"],
+    cpp: ["cpp", "c++", "unreal", "qt", "boost"],
+    zig: ["zig", "bun"],
+    dart: ["dart", "flutter"],
+    r: ["r", "rstudio", "shiny", "tidyverse"],
   };
   for (const p of projects ?? []) {
     const n = p.name.toLowerCase();
