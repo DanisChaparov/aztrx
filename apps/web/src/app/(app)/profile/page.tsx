@@ -23,18 +23,24 @@ export default async function ProfilePage() {
   const level = getLevelInfo(xp);
   const verifiedCount = sessions.filter((s) => s.verified).length;
 
-  // Read the stored display_name from profiles (may not exist yet if migrations
-  // haven't been applied — degrade gracefully to OAuth metadata).
+  // Read profile fields (may not exist yet if migrations haven't been applied).
   let profilesDisplayName: string | undefined;
+  let bio: string | null = null;
+  let website: string | null = null;
+  let twitterHandle: string | null = null;
   try {
     const { data: profileRow } = await supabase
       .from("profiles")
-      .select("display_name")
+      .select("display_name, bio, website, twitter")
       .eq("id", user.id)
       .single();
-    profilesDisplayName = profileRow?.display_name ?? undefined;
+    const row = profileRow as Record<string, unknown> | null;
+    profilesDisplayName = (row?.display_name as string) ?? undefined;
+    bio = (row?.bio as string) ?? null;
+    website = (row?.website as string) ?? null;
+    twitterHandle = (row?.twitter as string) ?? null;
   } catch {
-    // Column or table missing — not fatal.
+    // Columns or table missing — not fatal.
   }
 
   // Avatar from GitHub or Gravatar fallback.
@@ -68,6 +74,10 @@ export default async function ProfilePage() {
         totalSessions={sessions.length}
         projectsCount={projects.length}
         publicUrl={publicUrl}
+        bio={bio}
+        website={website}
+        twitter={twitterHandle}
+        recentSessions={sessions.slice(0, 5)}
       />
 
       {/* Quick links */}

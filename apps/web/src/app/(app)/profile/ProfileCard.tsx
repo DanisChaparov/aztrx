@@ -1,7 +1,9 @@
 "use client";
 
-import { Github, Mail, Flame, Award, Target, ExternalLink } from "lucide-react";
-import type { Plan } from "@focus-forge/core";
+import { Github, Mail, Flame, Award, Target, ExternalLink, Globe, Twitter } from "lucide-react";
+import type { Plan, FocusSession } from "@focus-forge/core";
+import { EditableBio } from "@/components/EditableBio";
+import { getBrowserSupabaseClient } from "@/lib/supabase/browser";
 
 interface Props {
   avatarUrl: string;
@@ -16,12 +18,37 @@ interface Props {
   totalSessions: number;
   projectsCount: number;
   publicUrl: string | null;
+  bio: string | null;
+  website: string | null;
+  twitter: string | null;
+  recentSessions: FocusSession[];
 }
 
 export function ProfileCard({
   avatarUrl, displayName, email, githubUsername, plan,
   streak, level, verifiedSessions, totalSessions, projectsCount, publicUrl,
+  bio, website, twitter, recentSessions,
 }: Props) {
+  async function saveProfileField(field: string, value: string) {
+    const supabase = getBrowserSupabaseClient();
+    const { data } = await supabase.auth.getUser();
+    if (!data.user) return;
+    // Type assertion needed — Supabase types mark `id` as never for inserts,
+    // but upsert requires it for the conflict resolution.
+    await (supabase.from("profiles") as any).upsert({ id: data.user.id, [field]: value });
+  }
+
+  async function saveBio(newBio: string) {
+    await saveProfileField("bio", newBio);
+  }
+
+  async function saveWebsite(newWebsite: string) {
+    await saveProfileField("website", newWebsite);
+  }
+
+  async function saveTwitter(newTwitter: string) {
+    await saveProfileField("twitter", newTwitter);
+  }
   return (
     <div className="overflow-hidden rounded-2xl border border-white/10 bg-[#0e0f14]">
       {/* Banner */}
@@ -79,6 +106,75 @@ export function ProfileCard({
             />
           </div>
         </div>
+
+        {/* Bio */}
+        <div className="border-t border-white/[0.07] pt-4">
+          <EditableBio initialBio={bio} onSave={saveBio} />
+        </div>
+
+        {/* Social links */}
+        <div className="flex flex-wrap items-center gap-2">
+          {website && (
+            <a
+              href={website.startsWith("http") ? website : `https://${website}`}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-1.5 rounded-full border border-white/10 bg-white/[0.03] px-3 py-1 font-inter text-xs text-[#60A5FA] hover:border-[#3B82F6]/30 transition-colors"
+            >
+              <Globe size={11} />
+              {website.replace(/^https?:\/\//, "").replace(/\/$/, "").slice(0, 30)}
+            </a>
+          )}
+          {twitter && (
+            <a
+              href={`https://x.com/${twitter.replace(/^@/, "")}`}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-1.5 rounded-full border border-white/10 bg-white/[0.03] px-3 py-1 font-inter text-xs text-[#60A5FA] hover:border-[#3B82F6]/30 transition-colors"
+            >
+              <Twitter size={11} />
+              @{twitter.replace(/^@/, "")}
+            </a>
+          )}
+          {!website && !twitter && (
+            <p className="font-inter text-xs text-neutral-600">Add website or X handle from Settings</p>
+          )}
+        </div>
+
+        {/* Recent sessions */}
+        {recentSessions.length > 0 && (
+          <div className="border-t border-white/[0.07] pt-4">
+            <h3 className="font-manrope text-xs font-medium uppercase tracking-wider text-neutral-500 mb-3">
+              Recent sessions
+            </h3>
+            <div className="flex flex-col gap-1">
+              {recentSessions.slice(0, 5).map((s) => {
+                const date = new Date(s.startedAt);
+                const isToday = date.toDateString() === new Date().toDateString();
+                const isYesterday = new Date(Date.now() - 86400000).toDateString() === date.toDateString();
+                const dateLabel = isToday ? "Today" : isYesterday ? "Yesterday" : date.toLocaleDateString("en-US", { month: "short", day: "numeric" });
+                return (
+                  <div key={s.id} className="flex items-center justify-between rounded-lg px-3 py-2 hover:bg-white/[0.03] transition-colors">
+                    <div className="flex items-center gap-2.5 min-w-0">
+                      <span className={`shrink-0 h-2 w-2 rounded-full ${
+                        s.verified ? "bg-emerald-400" : s.status === "broken" ? "bg-red-400" : "bg-neutral-600"
+                      }`} />
+                      <span className="font-inter text-sm text-white truncate">
+                        {s.plannedDurationMin}min session
+                      </span>
+                    </div>
+                    <div className="flex items-center gap-2 shrink-0">
+                      <span className="font-inter text-xs text-neutral-500">{dateLabel}</span>
+                      {s.verified && (
+                        <span className="font-inter text-[10px] text-emerald-400/70">✓</span>
+                      )}
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+        )}
 
         {/* Public twin link */}
         {publicUrl && (
