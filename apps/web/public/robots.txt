@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://stt-opal.vercel.app/sitemap.xml
