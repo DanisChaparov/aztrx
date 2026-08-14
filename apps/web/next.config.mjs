@@ -17,7 +17,7 @@ const securityHeaders = [
 const nextConfig = {
   transpilePackages: ["@focus-forge/core", "@focus-forge/ui", "@focus-forge/api-client"],
   async headers() {
-    return [{ source: "/(.*)", headers: securityHeaders }];
+    return [{ source: "/:path*", headers: securityHeaders }];
   },
 };
 
