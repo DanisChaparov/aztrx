@@ -72,9 +72,14 @@ export async function POST(request: Request) {
       console.error("[polar-webhook] verification error:", err);
       return NextResponse.json({ error: "Verification failed" }, { status: 400 });
     }
+  } else if (process.env.NODE_ENV === "production") {
+    // Production must never accept unsigned webhooks — otherwise anyone could
+    // forge order.paid and self-upgrade to Pro via the service-role client below.
+    console.error("[polar-webhook] POLAR_WEBHOOK_SECRET missing in production — rejecting");
+    return NextResponse.json({ error: "Webhook not configured" }, { status: 503 });
   } else {
-    // No secret configured — accept unsigned (dev only)
-    console.warn("[polar-webhook] no webhook secret set — accepting unsigned request");
+    // No secret configured — accept unsigned (local dev only).
+    console.warn("[polar-webhook] no webhook secret set — accepting unsigned request (dev)");
     try {
       event = JSON.parse(body);
     } catch {

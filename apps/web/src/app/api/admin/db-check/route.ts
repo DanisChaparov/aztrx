@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { getServerSupabaseClient } from "@/lib/supabase/server";
+import { getAdminUser } from "@/lib/admin";
 
 const CHECKS = [
   { table: "profiles", column: "public_profile", migration: "0011" },
@@ -19,9 +20,10 @@ const CHECKS = [
 ];
 
 export async function POST() {
+  const user = await getAdminUser();
+  if (!user) return NextResponse.json({ error: "Forbidden" }, { status: 403 });
+
   const supabase = await getServerSupabaseClient();
-  const { data: user } = await supabase.auth.getUser();
-  if (!user.user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
   const results: Array<{ migration: string; table: string; column: string | null; exists: boolean; error?: string }> = [];
 

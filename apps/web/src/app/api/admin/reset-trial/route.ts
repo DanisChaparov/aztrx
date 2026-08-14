@@ -1,7 +1,11 @@
 import { NextResponse } from "next/server";
 import { createClient } from "@supabase/supabase-js";
+import { getAdminUser } from "@/lib/admin";
 
 export async function POST() {
+  const user = await getAdminUser();
+  if (!user) return NextResponse.json({ error: "Forbidden" }, { status: 403 });
+
   const serviceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
   if (!serviceRoleKey) {
     return NextResponse.json({ error: "SERVICE_ROLE_KEY not set" }, { status: 500 });

@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { getActiveSession, startSession, verifySession, abandonSession } from "@focus-forge/api-client";
 import { getServerSupabaseClient } from "@/lib/supabase/server";
+import { getAdminUser } from "@/lib/admin";
 
 /**
  * POST /api/admin/quick-session
@@ -10,9 +11,10 @@ import { getServerSupabaseClient } from "@/lib/supabase/server";
  * Creates a 5-minute session, then can complete it via query param.
  */
 export async function POST(request: Request) {
+  const user = await getAdminUser();
+  if (!user) return NextResponse.json({ error: "Forbidden" }, { status: 403 });
+
   const supabase = await getServerSupabaseClient();
-  const { data: user } = await supabase.auth.getUser();
-  if (!user.user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
   const url = new URL(request.url);
   const completeId = url.searchParams.get("complete");
@@ -30,7 +32,7 @@ export async function POST(request: Request) {
   // Start a new 5-minute session.
   try {
     const session = await startSession(supabase, {
-      userId: user.user.id,
+      userId: user.id,
       projectId: null,
       plannedDurationMin: 5,
     });

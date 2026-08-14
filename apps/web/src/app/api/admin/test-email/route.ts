@@ -1,13 +1,12 @@
 import { NextResponse } from "next/server";
 import { sendNotification } from "@/lib/notify";
-import { getServerSupabaseClient } from "@/lib/supabase/server";
+import { getAdminUser } from "@/lib/admin";
 
 export async function POST() {
-  const supabase = await getServerSupabaseClient();
-  const { data: user } = await supabase.auth.getUser();
-  if (!user.user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  const user = await getAdminUser();
+  if (!user) return NextResponse.json({ error: "Forbidden" }, { status: 403 });
 
-  const email = user.user.email;
+  const email = user.email;
   if (!email) return NextResponse.json({ error: "No email on account" }, { status: 400 });
 
   const emailConfigured = !!(process.env.EMAIL_FROM && process.env.EMAIL_APP_PASSWORD);

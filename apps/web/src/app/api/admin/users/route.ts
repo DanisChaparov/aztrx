@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { createClient } from "@supabase/supabase-js";
+import { getAdminUser } from "@/lib/admin";
 
 /**
  * GET /api/admin/users
@@ -7,6 +8,9 @@ import { createClient } from "@supabase/supabase-js";
  * Uses service_role key to bypass RLS.
  */
 export async function GET() {
+  const user = await getAdminUser();
+  if (!user) return NextResponse.json({ error: "Forbidden" }, { status: 403 });
+
   const serviceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
   if (!serviceRoleKey) {
     return NextResponse.json({ error: "SUPABASE_SERVICE_ROLE_KEY not set" }, { status: 500 });
