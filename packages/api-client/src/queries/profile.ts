@@ -1,4 +1,4 @@
-import type { Plan } from "@focus-forge/core";
+import type { Plan } from "@aztrx/core";
 import type { SupabaseClient } from "@supabase/supabase-js";
 import type { Database } from "../database.types";
 

@@ -1,5 +1,5 @@
 import type { SupabaseClient } from "@supabase/supabase-js";
-import type { Project } from "@focus-forge/core";
+import type { Project } from "@aztrx/core";
 import type { Database, ProjectRow } from "../database.types";
 
 function isMissingMigration(err: { code?: string }): boolean {

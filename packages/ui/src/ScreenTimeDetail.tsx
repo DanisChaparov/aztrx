@@ -10,7 +10,7 @@ import {
   Monitor,
   Smartphone,
 } from "lucide-react";
-import { isAiAssistedTool } from "@focus-forge/core";
+import { isAiAssistedTool } from "@aztrx/core";
 
 export interface HourlyBucketItem {
   hour: number;

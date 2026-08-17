@@ -33,11 +33,11 @@ function deadlineEmailHtml(projectName: string, label: string, urgency: string, 
       <span style="color:${accentColor};font-weight:600">${label}</span>.
     </p>
     <p style="margin:0 0 0;color:#a1a1aa;font-size:14px">
-      Open Upstream to check your progress or push the deadline back.
+      Open Aztrx to check your progress or push the deadline back.
     </p>
     <a href="${appUrl}/projects"
        style="display:inline-block;margin-top:20px;padding:12px 28px;background:${accentColor};color:#ffffff;border-radius:8px;text-decoration:none;font-weight:600;font-size:14px">
-      Open Upstream →
+      Open Aztrx →
     </a>
   `);
 }
@@ -94,7 +94,7 @@ export async function POST(request: Request) {
   const remainingMs = deadline ? new Date(deadline).getTime() - Date.now() : 0;
   const { label, urgency } = formatRemaining(Math.max(0, remainingMs));
 
-  const appUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://stt-opal.vercel.app";
+  const appUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://aztrx.app";
 
   const result = await sendNotification({
     toEmail: email,
@@ -102,10 +102,10 @@ export async function POST(request: Request) {
     body: [
       `Your project "${projectName}" is due in ${label}.`,
       "",
-      "Open Upstream to check your progress or update the deadline:",
+      "Open Aztrx to check your progress or update the deadline:",
       `${appUrl}/projects`,
       "",
-      "— The Upstream team",
+      "— The Aztrx team",
     ].join("\n"),
     html: deadlineEmailHtml(projectName, label, urgency, appUrl),
   });

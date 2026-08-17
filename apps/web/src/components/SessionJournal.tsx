@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { motion } from "framer-motion";
-import { SESSION_TAGS, type SessionTag } from "@focus-forge/core";
+import { SESSION_TAGS, type SessionTag } from "@aztrx/core";
 
 /**
  * Shown after a session completes — lets the user jot down what they built

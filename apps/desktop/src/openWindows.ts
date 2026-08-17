@@ -32,7 +32,7 @@ using System;
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
 using System.Text;
-public class UpstreamWindows {
+public class AztrxWindows {
   [DllImport("user32.dll")] static extern bool EnumWindows(EnumProc cb, IntPtr p);
   [DllImport("user32.dll")] static extern bool IsWindowVisible(IntPtr h);
   [DllImport("user32.dll", CharSet=CharSet.Unicode)] static extern int GetWindowTextW(IntPtr h, StringBuilder s, int n);
@@ -57,7 +57,7 @@ public class UpstreamWindows {
 "@
 $byPid = @{}
 Get-Process | ForEach-Object { $byPid[[uint32]$_.Id] = $_.ProcessName }
-[UpstreamWindows]::List() | ForEach-Object {
+[AztrxWindows]::List() | ForEach-Object {
   $parts = $_.Split('|', 2)
   [PSCustomObject]@{ ProcessName = $byPid[[uint32]$parts[0]]; Title = $parts[1] }
 } | Where-Object { $_.ProcessName } | ConvertTo-Json -Compress
@@ -70,7 +70,7 @@ export function listOpenWindows(): Promise<OpenWindow[]> {
       return;
     }
 
-    const dir = mkdtempSync(join(tmpdir(), "upstream-windows-"));
+    const dir = mkdtempSync(join(tmpdir(), "aztrx-windows-"));
     const scriptPath = join(dir, "list-windows.ps1");
     const cleanup = () => {
       try {

@@ -1,7 +1,7 @@
 "use client";
 
 import { motion } from "framer-motion";
-import type { HeatmapDay } from "@focus-forge/core";
+import type { HeatmapDay } from "@aztrx/core";
 
 function intensityClass(day: HeatmapDay): string {
   if (day.verifiedCount === 0) return "bg-white/5";

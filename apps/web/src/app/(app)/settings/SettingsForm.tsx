@@ -3,15 +3,15 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { Download, Trash2 } from "lucide-react";
-import { updateProfile } from "@focus-forge/api-client";
+import { updateProfile } from "@aztrx/api-client";
 import { getBrowserSupabaseClient } from "@/lib/supabase/browser";
 import { ApiKeyInput } from "@/components/ApiKeyInput";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import { PasswordChangeForm } from "@/components/PasswordChangeForm";
 import { DeleteAccountModal } from "@/components/DeleteAccountModal";
 
-const NAME_KEY = "upstream-display-name";
-const EMAIL_KEY = "upstream-email";
+const NAME_KEY = "aztrx-display-name";
+const EMAIL_KEY = "aztrx-email";
 
 interface ProfileData {
   displayName: string | null;
@@ -100,7 +100,7 @@ export function SettingsForm({ profile }: { profile: ProfileData }) {
       const url = URL.createObjectURL(blob);
       const a = document.createElement("a");
       a.href = url;
-      a.download = `upstream-data-${new Date().toISOString().slice(0, 10)}.json`;
+      a.download = `aztrx-data-${new Date().toISOString().slice(0, 10)}.json`;
       a.click();
       URL.revokeObjectURL(url);
     } catch (err) {

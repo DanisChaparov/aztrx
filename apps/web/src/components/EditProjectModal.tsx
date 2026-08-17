@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { X, Save } from "lucide-react";
-import type { Project } from "@focus-forge/core";
+import type { Project } from "@aztrx/core";
 import { getBrowserSupabaseClient } from "@/lib/supabase/browser";
 
 /** Convert a UTC ISO string to a local datetime-local input value (YYYY-MM-DDTHH:MM). */

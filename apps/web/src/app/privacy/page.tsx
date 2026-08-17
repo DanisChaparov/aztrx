@@ -1,18 +1,18 @@
 import Link from "next/link";
 import { Shield, Lock, Eye, Github, Server, Cpu } from "lucide-react";
 
-export const metadata = { title: "Privacy — Upstream", description: "How Upstream handles your data — transparent, local-first, and under your control." };
+export const metadata = { title: "Privacy — Aztrx", description: "How Aztrx handles your data — transparent, local-first, and under your control." };
 
 const SECTIONS = [
   {
     icon: Cpu,
     title: "Your data stays on your machine",
-    body: "Upstream's desktop app processes all activity data locally. App names, window titles, and focus time are computed on your device. Nothing is uploaded until it's anonymized and aggregated into hourly buckets.",
+    body: "Aztrx's desktop app processes all activity data locally. App names, window titles, and focus time are computed on your device. Nothing is uploaded until it's anonymized and aggregated into hourly buckets.",
   },
   {
     icon: Eye,
     title: "We never see your screen",
-    body: "Upstream does not take screenshots, record keystrokes, or capture any content from your windows. We only record which app you're using (e.g. 'VS Code') and whether you're focused — not what's inside it.",
+    body: "Aztrx does not take screenshots, record keystrokes, or capture any content from your windows. We only record which app you're using (e.g. 'VS Code') and whether you're focused — not what's inside it.",
   },
   {
     icon: Server,
@@ -22,7 +22,7 @@ const SECTIONS = [
   {
     icon: Github,
     title: "Open source, verifiable",
-    body: "The entire Upstream codebase is open source at github.com/DanisChaparov/upstream-app. You can audit exactly what the desktop app monitors, what data it sends, and how the backend processes it. No black boxes. No hidden telemetry.",
+    body: "The entire Aztrx codebase is open source at github.com/DanisChaparov/upstream-app. You can audit exactly what the desktop app monitors, what data it sends, and how the backend processes it. No black boxes. No hidden telemetry.",
   },
   {
     icon: Lock,
@@ -43,7 +43,7 @@ export default function PrivacyPage() {
         <div className="flex flex-col gap-3">
           <h1 className="font-inter text-3xl font-extrabold tracking-tight text-white sm:text-4xl">Privacy</h1>
           <p className="font-inter text-[17px] leading-relaxed text-[#A1A1AA] max-w-xl">
-            Upstream is a focus tracker, not a surveillance tool. Here's exactly what we collect, what we don't, and why you can trust us.
+            Aztrx is a focus tracker, not a surveillance tool. Here's exactly what we collect, what we don't, and why you can trust us.
           </p>
         </div>
 

@@ -2,7 +2,7 @@ import { createServerClient } from "@supabase/ssr";
 import { NextResponse, type NextRequest } from "next/server";
 
 // "/u" is the shared developer twin — the whole point is that someone who has
-// never heard of Upstream can open the link, so it must not require a session.
+// never heard of Aztrx can open the link, so it must not require a session.
 const PUBLIC_PATHS = ["/login", "/signup", "/auth/callback", "/u/", "/api/og/share", "/download", "/privacy", "/api/payments/webhook", "/api/cron/deadline-check"];
 
 export async function middleware(request: NextRequest) {

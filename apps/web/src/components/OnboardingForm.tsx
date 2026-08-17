@@ -2,11 +2,11 @@
 
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { getProfile, updateProfile } from "@focus-forge/api-client";
+import { getProfile, updateProfile } from "@aztrx/api-client";
 import { getBrowserSupabaseClient } from "@/lib/supabase/browser";
 
-const DONE_KEY = "upstream-onboarding-done";
-const NAME_KEY = "upstream-display-name";
+const DONE_KEY = "aztrx-onboarding-done";
+const NAME_KEY = "aztrx-display-name";
 
 export function OnboardingForm() {
   const router = useRouter();
@@ -62,7 +62,7 @@ export function OnboardingForm() {
   return (
     <div className="rounded-2xl border border-[#3B82F6]/20 bg-[#0e0f14] p-6">
       <div className="mb-4">
-        <h2 className="font-manrope text-lg font-medium text-white">Welcome to Upstream</h2>
+        <h2 className="font-manrope text-lg font-medium text-white">Welcome to Aztrx</h2>
         <p className="mt-1 font-inter text-sm text-[#A1A1AA]">
           Quick setup. What should we call you?
         </p>

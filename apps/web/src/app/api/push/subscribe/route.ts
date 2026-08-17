@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { savePushSubscription } from "@focus-forge/api-client";
+import { savePushSubscription } from "@aztrx/api-client";
 import { getServerSupabaseClient } from "@/lib/supabase/server";
 
 export async function POST(request: Request) {

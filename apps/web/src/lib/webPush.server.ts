@@ -1,5 +1,5 @@
 import webpush from "web-push";
-import type { PushSubscriptionRow } from "@focus-forge/api-client";
+import type { PushSubscriptionRow } from "@aztrx/api-client";
 
 let vapidReady = false;
 

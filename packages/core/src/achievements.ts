@@ -191,7 +191,7 @@ export const ACHIEVEMENTS: Achievement[] = [
     isUnlocked: (ctx) => ctx.dependenciesFunded >= 1,
     progress: (ctx) =>
       ctx.dependenciesFunded >= 1 ? null : { current: ctx.dependenciesFunded, target: 1, unit: "dependency" },
-    hint: () => "Link a GitHub repo to a project and complete a verified session on it. Upstream tracks the dependencies and funds them.",
+    hint: () => "Link a GitHub repo to a project and complete a verified session on it. Aztrx tracks the dependencies and funds them.",
   },
   {
     id: "patron",

@@ -1,4 +1,4 @@
-import { getProfile } from "@focus-forge/api-client";
+import { getProfile } from "@aztrx/api-client";
 import { getServerSupabaseClient } from "@/lib/supabase/server";
 import { SettingsForm } from "./SettingsForm";
 

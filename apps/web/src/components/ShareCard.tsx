@@ -18,7 +18,7 @@ export function ShareCard({ type = "stats" }: { type?: "stats" | "twin" | "repor
 
   const shareUrl = origin ? `${origin}/share` : "";
   const tweetUrl = shareUrl
-    ? `https://twitter.com/intent/tweet?text=${encodeURIComponent("My coding stats on Upstream 🚀")}&url=${encodeURIComponent(shareUrl)}`
+    ? `https://twitter.com/intent/tweet?text=${encodeURIComponent("My coding stats on Aztrx 🚀")}&url=${encodeURIComponent(shareUrl)}`
     : "";
 
   function copyLink() {

@@ -6,7 +6,7 @@ import {
   analyseProjectLifecycle,
   buildInsights,
   type TwinRepo,
-} from "@focus-forge/core";
+} from "@aztrx/core";
 import { getServerSupabaseClient } from "@/lib/supabase/server";
 
 /** Repos to inspect the file listing of. Each costs a request, and the pattern

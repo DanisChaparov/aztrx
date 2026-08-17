@@ -1,4 +1,4 @@
-import { getPendingTtsRequests, updateTtsStatus, type Database } from "@focus-forge/api-client";
+import { getPendingTtsRequests, updateTtsStatus, type Database } from "@aztrx/api-client";
 import type { SupabaseClient } from "@supabase/supabase-js";
 import type { KokoroTTS as KokoroTTSType } from "kokoro-js";
 

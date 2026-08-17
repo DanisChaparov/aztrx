@@ -1,6 +1,6 @@
-import { DEFAULT_SITE_BLOCKLIST } from "@focus-forge/core";
+import { DEFAULT_SITE_BLOCKLIST } from "@aztrx/core";
 
-const STORAGE_KEY = "upstream_blocklist";
+const STORAGE_KEY = "aztrx_blocklist";
 
 /** The user's site blocklist, falling back to the list shared with the desktop
  *  monitor. Stored in chrome.storage.sync so it follows them between machines. */

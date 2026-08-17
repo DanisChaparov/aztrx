@@ -1,7 +1,7 @@
 "use client";
 
 import { Github, Mail, Flame, Award, Target, ExternalLink, Globe, Twitter } from "lucide-react";
-import type { Plan, FocusSession } from "@focus-forge/core";
+import type { Plan, FocusSession } from "@aztrx/core";
 import { EditableBio } from "@/components/EditableBio";
 import { getBrowserSupabaseClient } from "@/lib/supabase/browser";
 

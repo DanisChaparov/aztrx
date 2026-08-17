@@ -1,6 +1,6 @@
 import { Notification } from "electron";
-import { breakSession, logDistraction, type Database } from "@focus-forge/api-client";
-import { matchDistraction, matchTrackedTool, type DistractionMatch } from "@focus-forge/core";
+import { breakSession, logDistraction, type Database } from "@aztrx/api-client";
+import { matchDistraction, matchTrackedTool, type DistractionMatch } from "@aztrx/core";
 import type { SupabaseClient } from "@supabase/supabase-js";
 import { listOpenWindows } from "./openWindows";
 

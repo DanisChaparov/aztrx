@@ -1,5 +1,5 @@
 import { Notification } from "electron";
-import { getActiveSession, type Database } from "@focus-forge/api-client";
+import { getActiveSession, type Database } from "@aztrx/api-client";
 import type { SupabaseClient } from "@supabase/supabase-js";
 
 const POLL_INTERVAL_MS = 5000;
@@ -36,7 +36,7 @@ export function startSessionEndWatcher(supabase: SupabaseClient<Database>): () =
       announced.add(session.id);
       new Notification({
         title: "Time's up",
-        body: `Your ${session.plannedDurationMin}-minute session finished. Open Upstream to verify it.`,
+        body: `Your ${session.plannedDurationMin}-minute session finished. Open Aztrx to verify it.`,
         // Explicit: this is the one moment the app has earned an audible alert.
         silent: false,
       }).show();

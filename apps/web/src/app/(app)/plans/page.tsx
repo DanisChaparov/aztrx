@@ -1,6 +1,6 @@
 import { Sparkles, AlertTriangle } from "lucide-react";
-import { getPlan } from "@focus-forge/api-client";
-import { BILLING_LIVE, getLocalDayStart } from "@focus-forge/core";
+import { getPlan } from "@aztrx/api-client";
+import { BILLING_LIVE, getLocalDayStart } from "@aztrx/core";
 import { TrialBanner } from "./TrialBanner";
 import { SocialExtend } from "./SocialExtend";
 import { SubscriptionSuccess } from "./SubscriptionSuccess";

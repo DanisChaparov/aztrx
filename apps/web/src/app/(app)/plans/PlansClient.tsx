@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { Check, Minus, Clock, MessageCircle } from "lucide-react";
-import { FEATURE_STATUS, limitFor } from "@focus-forge/core";
+import { FEATURE_STATUS, limitFor } from "@aztrx/core";
 import { toFeatureKey } from "@/lib/plan-features";
 import { FeatureTutorial } from "./FeatureTutorial";
 import { PlanCard } from "./PlanCard";
@@ -109,7 +109,7 @@ export function useFeatureTutorial() {
 
 /**
  * Mini usage bar showing how many AI interactions the user has used today.
- * Only shown when the user has no API key (i.e. they're using Upstream's quota).
+ * Only shown when the user has no API key (i.e. they're using Aztrx's quota).
  */
 export function UsageDisplay({
   usedToday,

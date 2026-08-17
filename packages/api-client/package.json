@@ -1,5 +1,5 @@
 {
-  "name": "@focus-forge/api-client",
+  "name": "@aztrx/api-client",
   "version": "0.1.0",
   "private": true,
   "type": "module",
@@ -12,7 +12,7 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
-    "@focus-forge/core": "*",
+    "@aztrx/core": "*",
     "@supabase/ssr": "^0.12.3",
     "@supabase/supabase-js": "^2.45.4"
   },

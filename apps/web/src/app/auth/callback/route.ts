@@ -98,13 +98,13 @@ export async function GET(request: NextRequest) {
 
     // Desktop widget pairing: hand the session off via a custom protocol
     // instead of landing in the browser dashboard. Requires the desktop app
-    // to have registered the upstream:// handler (i.e. been run at least once).
+    // to have registered the aztrx:// handler (i.e. been run at least once).
     if (isDesktop && !error && data.session) {
       const params = new URLSearchParams({
         access_token: data.session.access_token,
         refresh_token: data.session.refresh_token,
       });
-      return NextResponse.redirect(`upstream://auth?${params.toString()}`);
+      return NextResponse.redirect(`aztrx://auth?${params.toString()}`);
     }
   }
 

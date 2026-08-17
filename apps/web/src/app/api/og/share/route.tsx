@@ -1,7 +1,7 @@
 import { ImageResponse } from "next/og";
 import { NextRequest } from "next/server";
 import { getServerSupabaseClient } from "@/lib/supabase/server";
-import { calculateStreak, calculateXp, getLevelInfo } from "@focus-forge/core";
+import { calculateStreak, calculateXp, getLevelInfo } from "@aztrx/core";
 
 export const runtime = "edge";
 
@@ -78,7 +78,7 @@ export async function GET(request: NextRequest) {
           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start" }}>
             <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
               <span style={{ color: "#60A5FA", fontSize: 18, fontWeight: 700, fontFamily: "Manrope", letterSpacing: "0.15em", textTransform: "uppercase" }}>
-                Upstream
+                Aztrx
               </span>
               <span style={{ color: "#A1A1AA", fontSize: 24, fontFamily: "Manrope" }}>
                 {user.user.user_metadata?.user_name ?? "Developer"}
@@ -122,7 +122,7 @@ export async function GET(request: NextRequest) {
           {/* Watermark */}
           <div style={{ marginTop: "auto", display: "flex", justifyContent: "center" }}>
             <span style={{ color: "rgba(255,255,255,0.15)", fontSize: 14, fontFamily: "Manrope" }}>
-              upstream.dev · Productive Focus for Developers
+              aztrx.app · Productive Focus for Developers
             </span>
           </div>
         </div>
@@ -157,7 +157,7 @@ function statsFallback(bold: ArrayBuffer, reg: ArrayBuffer, inter: ArrayBuffer) 
         padding: 60, gap: 24,
       }}>
         <span style={{ color: "#60A5FA", fontSize: 48, fontWeight: 700, fontFamily: "Manrope" }}>
-          Upstream
+          Aztrx
         </span>
         <span style={{ color: "#A1A1AA", fontSize: 28, fontFamily: "Manrope" }}>
           Productive Focus for Developers

@@ -11,8 +11,8 @@
 // active, augments the session-tagged data with window-title detail.
 
 import type { SupabaseClient } from "@supabase/supabase-js";
-import { matchTrackedTool, isAiAssistedTool } from "@focus-forge/core";
-import type { Database } from "@focus-forge/api-client";
+import { matchTrackedTool, isAiAssistedTool } from "@aztrx/core";
+import type { Database } from "@aztrx/api-client";
 
 const POLL_INTERVAL_MS = 5_000;
 // Sync aggregated hourly buckets to Supabase every 60 seconds.

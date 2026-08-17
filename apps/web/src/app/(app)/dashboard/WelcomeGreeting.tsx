@@ -20,7 +20,7 @@ export function WelcomeGreeting({ name, streak }: { name: string; streak: number
   useEffect(() => {
     setG(greeting());
     // localStorage takes priority — it's what the user actually typed.
-    const local = localStorage.getItem("upstream-display-name");
+    const local = localStorage.getItem("aztrx-display-name");
     if (local) setDisplayName(local);
     else if (name && name !== "developer") setDisplayName(name);
     else setDisplayName(name || "developer");

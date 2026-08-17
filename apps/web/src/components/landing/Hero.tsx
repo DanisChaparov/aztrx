@@ -16,7 +16,7 @@ const NAV_LINKS = [
 const HEADLINE_LINE_ONE = "Prove your focus is real";
 const HEADLINE_LINE_TWO = "fund the code you build on.";
 const SUBHEAD =
-  "Upstream verifies every session against real commits and local activity, stays in sync across web, browser and desktop, and turns honest work into funding for the open source you depend on.";
+  "Aztrx verifies every session against real commits and local activity, stays in sync across web, browser and desktop, and turns honest work into funding for the open source you depend on.";
 
 const HEADLINE_ONE_WORDS = HEADLINE_LINE_ONE.split(" ").length;
 
@@ -42,8 +42,7 @@ export function Hero() {
       >
         <div className="mx-auto flex max-w-[1400px] items-center justify-between px-6 py-4 md:py-5">
           <Link href="#top" className="flex items-center gap-2.5">
-            <Logo size={26} />
-            <span className="font-inter text-[20px] font-bold tracking-tight text-white">Upstream</span>
+            <Logo size={20} className="font-inter font-bold text-white" />
           </Link>
 
           <nav className="hidden items-center gap-8 md:flex">
@@ -80,8 +79,7 @@ export function Hero() {
         <div className="fixed inset-0 z-50 flex flex-col bg-[#0b0c10] px-6 py-4 md:hidden">
           <div className="flex items-center justify-between">
             <span className="flex items-center gap-2.5">
-              <Logo size={26} />
-              <span className="font-inter text-[20px] font-bold text-white">Upstream</span>
+              <Logo size={20} className="font-inter font-bold text-white" />
             </span>
             <button type="button" onClick={() => setMobileMenuOpen(false)} aria-label="Close menu">
               <X size={24} className="text-white" />

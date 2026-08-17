@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { resolvePublicProfile } from "@focus-forge/api-client";
+import { resolvePublicProfile } from "@aztrx/api-client";
 import {
   analyseClock,
   analyseHabits,
@@ -9,8 +9,7 @@ import {
   analyseProjectLifecycle,
   buildInsights,
   type TwinRepo,
-} from "@focus-forge/core";
-import { Logo } from "@/components/Logo";
+} from "@aztrx/core";
 import { getServerSupabaseClient } from "@/lib/supabase/server";
 
 /** Kept in step with the private twin so a shared page says the same thing. */
@@ -46,7 +45,7 @@ export async function generateMetadata({
 }): Promise<Metadata> {
   const { username } = await params;
   return {
-    title: `${username} — Upstream`,
+    title: `${username} — Aztrx`,
     description: `How ${username} actually codes, read from their real GitHub history.`,
   };
 }
@@ -149,9 +148,8 @@ export default async function PublicProfilePage({ params }: { params: Promise<{ 
           href="/"
           className="flex items-center gap-2.5 rounded-2xl border border-white/10 bg-[#0e0f14] px-5 py-4 transition-colors hover:border-white/25"
         >
-          <Logo size={26} />
           <span className="font-inter text-sm text-[#A1A1AA]">
-            <span className="font-semibold text-white">Upstream</span> — see your own
+            <span className="font-semibold text-white">Aztrx</span> — see your own
           </span>
         </Link>
       </div>

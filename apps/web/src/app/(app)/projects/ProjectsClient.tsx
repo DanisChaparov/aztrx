@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { Github, Clock, AlertTriangle, FolderGit, Search, Edit, Archive } from "lucide-react";
-import type { Project } from "@focus-forge/core";
+import type { Project } from "@aztrx/core";
 import { DeadlineCountdown } from "@/components/DeadlineCountdown";
 import { GrantPrivateRepoAccessButton } from "@/components/GrantPrivateRepoAccessButton";
 import { NewProjectForm } from "@/components/NewProjectForm";

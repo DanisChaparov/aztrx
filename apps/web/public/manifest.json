@@ -1,6 +1,6 @@
 {
-  "name": "Upstream",
-  "short_name": "Upstream",
+  "name": "Aztrx",
+  "short_name": "Aztrx",
   "description": "Verified focus sessions for programmers.",
   "start_url": "/dashboard",
   "display": "standalone",

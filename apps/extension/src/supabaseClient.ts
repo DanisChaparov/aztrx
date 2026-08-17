@@ -1,5 +1,5 @@
 import { createClient } from "@supabase/supabase-js";
-import type { Database } from "@focus-forge/api-client";
+import type { Database } from "@aztrx/api-client";
 import { chromeStorageAdapter } from "./chromeStorageAdapter";
 
 declare const process: { env: { SUPABASE_URL: string; SUPABASE_ANON_KEY: string } };

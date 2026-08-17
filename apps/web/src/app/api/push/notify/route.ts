@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { listPushSubscriptionsForUser } from "@focus-forge/api-client";
+import { listPushSubscriptionsForUser } from "@aztrx/api-client";
 import { getServerSupabaseClient } from "@/lib/supabase/server";
 import { sendPushToSubscriptions } from "@/lib/webPush.server";
 

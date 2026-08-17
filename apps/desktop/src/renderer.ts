@@ -1,7 +1,7 @@
-import type { FocusSession } from "@focus-forge/core";
+import type { FocusSession } from "@aztrx/core";
 import { MASCOT_STYLES, mascotSvg, type MascotMood } from "./mascot";
 
-interface FocusForgeBridge {
+interface AztrxBridge {
   openSignIn: () => Promise<void>;
   getState: () => Promise<{ signedIn: boolean; session: FocusSession | null; streak: number }>;
   startSession: (plannedDurationMin: number) => Promise<{ session?: FocusSession; error?: string }>;
@@ -12,7 +12,7 @@ interface FocusForgeBridge {
 
 declare global {
   interface Window {
-    focusforge: FocusForgeBridge;
+    aztrx: AztrxBridge;
   }
 }
 
@@ -44,7 +44,7 @@ function renderSignedOut() {
     <p>Sign in from your browser to connect this widget.</p>
     <button class="action primary" id="signin">Sign in</button>
   `;
-  document.getElementById("signin")!.addEventListener("click", () => window.focusforge.openSignIn());
+  document.getElementById("signin")!.addEventListener("click", () => window.aztrx.openSignIn());
 }
 
 let countdownTimer: ReturnType<typeof setInterval> | undefined;
@@ -71,11 +71,11 @@ function renderActiveSession(session: FocusSession, streak: number) {
   countdownTimer = setInterval(tick, 1000);
 
   document.getElementById("complete")!.addEventListener("click", async () => {
-    const result = await window.focusforge.completeSession(session.id);
+    const result = await window.aztrx.completeSession(session.id);
     renderResult(result.verified);
   });
   document.getElementById("abandon")!.addEventListener("click", async () => {
-    await window.focusforge.abandonSession(session.id);
+    await window.aztrx.abandonSession(session.id);
     init();
   });
 }
@@ -110,7 +110,7 @@ function renderIdle(streak: number) {
   }
 
   document.getElementById("start")!.addEventListener("click", async () => {
-    const { session, error } = await window.focusforge.startSession(selected);
+    const { session, error } = await window.aztrx.startSession(selected);
     if (error || !session) return;
     renderActiveSession(session, streak);
   });
@@ -118,13 +118,13 @@ function renderIdle(streak: number) {
 
 async function init() {
   app.innerHTML = "<p>Loading…</p>";
-  const state = await window.focusforge.getState();
+  const state = await window.aztrx.getState();
   if (!state.signedIn) return renderSignedOut();
   if (state.session) return renderActiveSession(state.session, state.streak);
   return renderIdle(state.streak);
 }
 
-window.focusforge.onStateChanged((state) => {
+window.aztrx.onStateChanged((state) => {
   // Only refresh when idle/signed-out to avoid clobbering an in-progress countdown UI.
   if (!state.session) init();
 });

@@ -2,7 +2,7 @@ self.addEventListener("push", (event) => {
   if (!event.data) return;
   const payload = event.data.json();
   event.waitUntil(
-    self.registration.showNotification(payload.title ?? "Upstream", {
+    self.registration.showNotification(payload.title ?? "Aztrx", {
       body: payload.body,
       icon: "/icon.svg",
       badge: "/icon.svg",

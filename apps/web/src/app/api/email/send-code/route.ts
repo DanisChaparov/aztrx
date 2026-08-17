@@ -22,7 +22,7 @@ export async function POST(request: Request) {
 
   const result = await sendNotification({
     toEmail: email,
-    title: "Your Upstream verification code",
+    title: "Your Aztrx verification code",
     body: `Your verification code is: ${code}\n\nIt expires in 10 minutes.\n\nIf you didn't request this, ignore this email.`,
   });
 

@@ -8,8 +8,8 @@ import {
   recordSessionAppUsage,
   startSession,
   verifySession,
-} from "@focus-forge/api-client";
-import { calculateStreak } from "@focus-forge/core";
+} from "@aztrx/api-client";
+import { calculateStreak } from "@aztrx/core";
 import { AmbientMonitor } from "./ambientMonitor";
 import { DesktopActivityMonitor } from "./activityMonitor";
 import { startChatRunner } from "./chatRunner";
@@ -22,9 +22,9 @@ import { createDesktopSupabaseClient } from "./supabaseClient";
 // In development, load from the local Next.js dev server.
 // In production (packaged app), load from the deployed URL.
 const WEB_APP_URL = app.isPackaged
-  ? "https://stt-opal.vercel.app"
+  ? "https://aztrx.app"
   : "http://localhost:3000";
-const PROTOCOL = "upstream";
+const PROTOCOL = "aztrx";
 
 // ── error resilience ──────────────────────────────────────────────────────
 
@@ -101,7 +101,7 @@ async function pushState(): Promise<void> {
 function updateTray(): void {
   if (!tray) return;
   if (!isSignedIn) {
-    tray.setToolTip("Upstream — sign in from the app");
+    tray.setToolTip("Aztrx — sign in from the app");
     return;
   }
   const parts: string[] = [];
@@ -111,7 +111,7 @@ function updateTray(): void {
   if (currentStreak > 0) {
     parts.push(`${currentStreak} day streak`);
   }
-  tray.setToolTip(parts.length > 0 ? `Upstream — ${parts.join(" · ")}` : "Upstream");
+  tray.setToolTip(parts.length > 0 ? `Aztrx — ${parts.join(" · ")}` : "Aztrx");
 }
 
 function createTrayIcon(): Tray {
@@ -121,11 +121,11 @@ function createTrayIcon(): Tray {
   // Tray wants 16x16 — the .ico has that size embedded, but resize just in case.
   const trayIcon = img.resize({ width: 16, height: 16 });
   const t = new Tray(trayIcon);
-  t.setToolTip("Upstream");
+  t.setToolTip("Aztrx");
 
   const contextMenu = Menu.buildFromTemplate([
     {
-      label: "Open Upstream",
+      label: "Open Aztrx",
       click: () => {
         mainWindow?.show();
         mainWindow?.focus();
@@ -162,7 +162,7 @@ function createWindow(): void {
     height: 800,
     minWidth: 800,
     minHeight: 600,
-    title: "Upstream",
+    title: "Aztrx",
     icon: iconPath,
     backgroundColor: "#0b0c10",
     show: false, // show after ready-to-show to avoid white flash
@@ -192,7 +192,7 @@ function createWindow(): void {
   });
 
   mainWindow.on("page-title-updated", (event) => {
-    event.preventDefault(); // keep "Upstream" as the window title
+    event.preventDefault(); // keep "Aztrx" as the window title
   });
 
   // Open external links (GitHub OAuth, docs, etc.) in the default browser,
@@ -208,7 +208,7 @@ function createWindow(): void {
 // Set the Windows App User Model ID so the taskbar icon groups correctly
 // and shows our icon (not a generic "electron" icon).
 if (process.platform === "win32") {
-  app.setAppUserModelId("app.upstream.desktop");
+  app.setAppUserModelId("app.aztrx.desktop");
 }
 
 const gotLock = app.requestSingleInstanceLock();

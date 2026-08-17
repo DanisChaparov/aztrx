@@ -12,14 +12,14 @@ import { getBrowserSupabaseClient } from "@/lib/supabase/browser";
  * background services (ambientMonitor, chatRunner, TTS, idleNudge) running in
  * the main process remain unauthenticated and silently drop all their data.
  *
- * The `?desktop=1` OAuth flow already handles this via the upstream:// protocol
+ * The `?desktop=1` OAuth flow already handles this via the aztrx:// protocol
  * redirect, but a direct sign-in inside the Electron window does not. This
  * component catches both cases.
  */
 export function DesktopBridge() {
   useEffect(() => {
-    const upstream = (window as any).upstream;
-    if (!upstream?.isDesktop) return;
+    const aztrx = (window as any).aztrx;
+    if (!aztrx?.isDesktop) return;
 
     async function sendSession() {
       const supabase = getBrowserSupabaseClient();
@@ -28,7 +28,7 @@ export function DesktopBridge() {
       } = await supabase.auth.getSession();
       if (!session) return;
 
-      upstream.setSession(session.access_token, session.refresh_token).catch(
+      aztrx.setSession(session.access_token, session.refresh_token).catch(
         (err: unknown) => console.error("[DesktopBridge] Failed to set session:", err)
       );
     }

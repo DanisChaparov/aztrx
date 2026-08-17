@@ -2,7 +2,7 @@
 
 import { motion } from "framer-motion";
 import { Monitor, Smartphone, Clock, Code2, Sparkles, Terminal, BookOpen, AppWindow, type LucideIcon } from "lucide-react";
-import { isAiAssistedTool } from "@focus-forge/core";
+import { isAiAssistedTool } from "@aztrx/core";
 
 export interface DailyScreenTimeItem {
   appName: string;

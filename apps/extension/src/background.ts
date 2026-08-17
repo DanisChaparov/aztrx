@@ -5,14 +5,14 @@ import {
   logDistraction,
   startSession,
   verifySession,
-} from "@focus-forge/api-client";
-import { calculateStreak, type FocusSession } from "@focus-forge/core";
+} from "@aztrx/api-client";
+import { calculateStreak, type FocusSession } from "@aztrx/core";
 import { getBlocklist } from "./blocklist";
 import { createExtensionSupabaseClient } from "./supabaseClient";
 
 const supabase = createExtensionSupabaseClient();
 
-const ACTIVE_SESSION_KEY = "upstream_active_session";
+const ACTIVE_SESSION_KEY = "aztrx_active_session";
 
 async function getCachedActiveSession(): Promise<FocusSession | null> {
   const result = await chrome.storage.local.get(ACTIVE_SESSION_KEY);
@@ -67,12 +67,12 @@ async function syncFromServer(): Promise<FocusSession | null> {
 }
 
 chrome.runtime.onInstalled.addListener(() => {
-  chrome.alarms.create("focusforge-sync", { periodInMinutes: 0.5 });
+  chrome.alarms.create("aztrx-sync", { periodInMinutes: 0.5 });
   syncFromServer();
 });
 
 chrome.alarms.onAlarm.addListener((alarm) => {
-  if (alarm.name === "focusforge-sync") syncFromServer();
+  if (alarm.name === "aztrx-sync") syncFromServer();
 });
 
 // Web app -> extension: hands off the signed-in session so the extension

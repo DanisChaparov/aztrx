@@ -2,7 +2,7 @@
 // CLI (via --mcp-config) as a plain `node` child process during a headless
 // `claude -p` invocation from chatRunner.ts. It shares the desktop app's
 // already-authenticated Supabase session (read from the same session-store.json,
-// located via the UPSTREAM_USERDATA_DIR env var chatRunner passes in) so it
+// located via the AZTRX_USERDATA_DIR env var chatRunner passes in) so it
 // never needs its own separate login or API key.
 import { exec } from "node:child_process";
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
@@ -24,7 +24,7 @@ import {
   updateProject,
   verifySession,
   type Database,
-} from "@focus-forge/api-client";
+} from "@aztrx/api-client";
 import {
   calculateStreak,
   calculateXp,
@@ -32,7 +32,7 @@ import {
   isAiAssistedTool,
   matchTrackedTool,
   TRACKED_TOOL_PROCESS_NAMES,
-} from "@focus-forge/core";
+} from "@aztrx/core";
 import { createFileStorageAdapter } from "./store";
 
 /** Windows-only best-effort process list for "is this tool running right now"
@@ -118,11 +118,11 @@ function requiredEnv(name: string): string {
 }
 
 const supabase: SupabaseClient<Database> = createClient(
-  requiredEnv("UPSTREAM_SUPABASE_URL"),
-  requiredEnv("UPSTREAM_SUPABASE_ANON_KEY"),
+  requiredEnv("AZTRX_SUPABASE_URL"),
+  requiredEnv("AZTRX_SUPABASE_ANON_KEY"),
   {
     auth: {
-      storage: createFileStorageAdapter(requiredEnv("UPSTREAM_USERDATA_DIR")),
+      storage: createFileStorageAdapter(requiredEnv("AZTRX_USERDATA_DIR")),
       autoRefreshToken: true,
       persistSession: true,
       detectSessionInUrl: false,
@@ -135,7 +135,7 @@ async function currentUserId(): Promise<string> {
   const {
     data: { user },
   } = await supabase.auth.getUser();
-  if (!user) throw new Error("Not signed in to Upstream — open the desktop widget and sign in first.");
+  if (!user) throw new Error("Not signed in to Aztrx — open the desktop widget and sign in first.");
   return user.id;
 }
 
@@ -144,7 +144,7 @@ function text(value: string) {
   return { content: [{ type: "text" as const, text: value }] };
 }
 
-const server = new McpServer({ name: "upstream", version: "1.0.0" });
+const server = new McpServer({ name: "aztrx", version: "1.0.0" });
 
 server.tool(
   "get_active_session",

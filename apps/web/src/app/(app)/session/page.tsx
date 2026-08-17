@@ -1,4 +1,4 @@
-import { getActiveSession, listProjects } from "@focus-forge/api-client";
+import { getActiveSession, listProjects } from "@aztrx/api-client";
 import { SessionRunner } from "@/components/SessionRunner";
 import { getServerSupabaseClient } from "@/lib/supabase/server";
 

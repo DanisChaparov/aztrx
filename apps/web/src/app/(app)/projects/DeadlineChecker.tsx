@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import type { Project } from "@focus-forge/core";
+import type { Project } from "@aztrx/core";
 
 /**
  * Checks deadlines on mount. For projects due within 24h, sends an email

@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { getChatById } from "@focus-forge/api-client";
+import { getChatById } from "@aztrx/api-client";
 import { getServerSupabaseClient } from "@/lib/supabase/server";
 
 /** Polled from the chat panel while a chat request is being handled by the desktop widget. */

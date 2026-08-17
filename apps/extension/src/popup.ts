@@ -1,4 +1,4 @@
-import type { FocusSession } from "@focus-forge/core";
+import type { FocusSession } from "@aztrx/core";
 
 const app = document.getElementById("app")!;
 const WEB_APP_URL = "http://localhost:3000";
@@ -17,10 +17,10 @@ function formatClock(totalSeconds: number): string {
 
 function renderSignedOut() {
   app.innerHTML = `
-    <h1>Upstream</h1>
+    <h1>Aztrx</h1>
     <div class="card">
       <p>Sign in on the web app first, then reopen this popup — it connects automatically.</p>
-      <a href="${WEB_APP_URL}/login" target="_blank">Open Upstream →</a>
+      <a href="${WEB_APP_URL}/login" target="_blank">Open Aztrx →</a>
     </div>
   `;
 }
@@ -31,7 +31,7 @@ function renderActiveSession(session: FocusSession, streak: number) {
   if (countdownTimer) clearInterval(countdownTimer);
 
   app.innerHTML = `
-    <h1>Upstream</h1>
+    <h1>Aztrx</h1>
     <div class="card">
       <div class="timer active" id="timer">--:--</div>
       <div class="row">
@@ -65,7 +65,7 @@ function renderActiveSession(session: FocusSession, streak: number) {
 function renderResult(result: { verified: boolean }) {
   if (countdownTimer) clearInterval(countdownTimer);
   app.innerHTML = `
-    <h1>Upstream</h1>
+    <h1>Aztrx</h1>
     <div class="card">
       <p>${result.verified ? "Verified ✓ — nice work." : "Session completed, but not verified."}</p>
       <button class="primary" id="again">Start another</button>
@@ -78,7 +78,7 @@ function renderIdle(streak: number) {
   let selected = DURATIONS[0];
 
   app.innerHTML = `
-    <h1>Upstream</h1>
+    <h1>Aztrx</h1>
     <div class="card">
       <div class="row" id="durations">
         ${DURATIONS.map((d) => `<button data-d="${d}" class="${d === selected ? "selected" : ""}">${d}m</button>`).join("")}

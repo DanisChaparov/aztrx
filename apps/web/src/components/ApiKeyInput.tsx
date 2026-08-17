@@ -40,7 +40,7 @@ const PROVIDERS: ProviderInfo[] = [
  * Lets free-tier users provide their own AI API key for unlimited usage.
  *
  * 🔒 KEY NEVER LEAVES THE BROWSER. Stored in localStorage, sent directly
- * to the AI provider from the browser. Upstream's servers never see it,
+ * to the AI provider from the browser. Aztrx's servers never see it,
  * never log it, never store it. You can verify this in the Network tab
  * and in the source code (github.com/DanisChaparov/upstream-app).
  */
@@ -99,7 +99,7 @@ export function ApiKeyInput() {
       {/* Privacy-first notice */}
       <div className="rounded-xl border border-green-400/15 bg-green-400/[0.04] p-4">
         <p className="font-inter text-sm leading-relaxed text-white/90">
-          <strong>You don't need to set this up.</strong> Upstream includes{" "}
+          <strong>You don't need to set this up.</strong> Aztrx includes{" "}
           <strong className="text-[#60A5FA]">5 free AI questions per day</strong> built in,
           and the desktop app uses your local Claude Code at no cost.
           Only add a key if you want unlimited questions from the web dashboard.
@@ -112,7 +112,7 @@ export function ApiKeyInput() {
         <p className="font-inter text-[11px] leading-relaxed text-neutral-400">
           <strong className="text-white">Your key never leaves this browser.</strong>{" "}
           Stored in localStorage, sent directly to {p.name} from your browser.
-          Upstream's servers never see it.{" "}
+          Aztrx's servers never see it.{" "}
           <a
             href="https://github.com/DanisChaparov/upstream-app/blob/master/apps/web/src/lib/ai-client.ts"
             target="_blank"

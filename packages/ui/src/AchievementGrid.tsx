@@ -22,7 +22,7 @@ import {
   BookOpen,
   type LucideIcon,
 } from "lucide-react";
-import type { AchievementProgress } from "@focus-forge/core";
+import type { AchievementProgress } from "@aztrx/core";
 
 export interface AchievementSummary {
   id: string;

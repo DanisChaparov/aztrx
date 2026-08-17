@@ -23,7 +23,7 @@ function deadlineEmailHtml(projectName: string, label: string, urgency: string):
   const accentColor = urgency === "urgent" ? "#EF4444" : "#3B82F6";
   const emoji = urgency === "urgent" ? "🔴" : "⏰";
 
-  const appUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://stt-opal.vercel.app";
+  const appUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://aztrx.app";
 
   return wrapHtml(`
     <h2 style="margin:0 0 12px;color:#ffffff;font-size:20px;font-weight:700">
@@ -35,11 +35,11 @@ function deadlineEmailHtml(projectName: string, label: string, urgency: string):
       <span style="color:${accentColor};font-weight:600">${label}</span>.
     </p>
     <p style="margin:0 0 0;color:#a1a1aa;font-size:14px">
-      Open Upstream to check your progress or push the deadline back.
+      Open Aztrx to check your progress or push the deadline back.
     </p>
     <a href="${appUrl}/projects"
        style="display:inline-block;margin-top:20px;padding:12px 28px;background:${accentColor};color:#ffffff;border-radius:8px;text-decoration:none;font-weight:600;font-size:14px">
-      Open Upstream →
+      Open Aztrx →
     </a>
   `);
 }
@@ -140,10 +140,10 @@ export async function GET(request: Request) {
       body: [
         `Your project "${project.name}" is due in ${label}.`,
         "",
-        "Open Upstream to check your progress or update the deadline:",
-        `${process.env.NEXT_PUBLIC_SITE_URL || "https://stt-opal.vercel.app"}/projects`,
+        "Open Aztrx to check your progress or update the deadline:",
+        `${process.env.NEXT_PUBLIC_SITE_URL || "https://aztrx.app"}/projects`,
         "",
-        "— The Upstream team",
+        "— The Aztrx team",
       ].join("\n"),
       html: deadlineEmailHtml(project.name, label, urgency),
     });

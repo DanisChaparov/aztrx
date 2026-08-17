@@ -1,4 +1,4 @@
--- RLS verification for the Upstream external audit (F-2).
+-- RLS verification for the Aztrx external audit (F-2).
 -- Run in the Supabase SQL editor against the PRODUCTION project.
 -- Every query below should return the result noted in its comment.
 

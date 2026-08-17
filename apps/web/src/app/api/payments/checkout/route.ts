@@ -56,7 +56,7 @@ export async function POST(request: Request) {
         products: [productId],
         customer_email: user.email ?? undefined,
         external_customer_id: user.id,
-        success_url: `${process.env.NEXT_PUBLIC_SITE_URL ?? "https://stt-opal.vercel.app"}/plans?subscribed=1`,
+        success_url: `${process.env.NEXT_PUBLIC_SITE_URL ?? "https://aztrx.app"}/plans?subscribed=1`,
         metadata: {
           user_id: user.id,
         },

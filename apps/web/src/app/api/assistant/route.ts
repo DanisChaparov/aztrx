@@ -1,15 +1,15 @@
 import { NextResponse } from "next/server";
-import { queueAssistantChat, type ChatTurn } from "@focus-forge/api-client";
+import { queueAssistantChat, type ChatTurn } from "@aztrx/api-client";
 import { getServerSupabaseClient } from "@/lib/supabase/server";
-import { getPlan } from "@focus-forge/api-client";
-import { getLocalDayStart } from "@focus-forge/core";
+import { getPlan } from "@aztrx/api-client";
+import { getLocalDayStart } from "@aztrx/core";
 
 const FREE_DAILY_LIMIT = 5;
 
 /**
  * POST /api/assistant
  *
- * Upstream AI — your personal developer assistant.
+ * Aztrx AI — your personal developer assistant.
  *
  * Two backends, tried in order:
  * 1. Desktop Claude CLI (full power — 11 MCP tools, real-time computer awareness)
@@ -42,7 +42,7 @@ export async function POST(request: Request) {
     .single();
   const userApiKey = profile?.anthropic_api_key;
 
-  // User has their own key — call Anthropic directly. Upstream pays nothing.
+  // User has their own key — call Anthropic directly. Aztrx pays nothing.
   if (userApiKey) {
     try {
       const reply = await callAnthropic(message, history ?? [], userApiKey);
@@ -90,7 +90,7 @@ export async function POST(request: Request) {
     // Nothing available — tell user how to connect.
     return NextResponse.json({
       chatId: "offline",
-      reply: "To unlock unlimited AI:\n\n1. Add your OpenAI, Anthropic, or Gemini API key in Settings — stored in your browser only, never on our servers.\n\n2. Or install the Upstream desktop app — it uses your local Claude Code installation at no extra cost.",
+      reply: "To unlock unlimited AI:\n\n1. Add your OpenAI, Anthropic, or Gemini API key in Settings — stored in your browser only, never on our servers.\n\n2. Or install the Aztrx desktop app — it uses your local Claude Code installation at no extra cost.",
       mode: "offline",
     });
   }
@@ -98,11 +98,11 @@ export async function POST(request: Request) {
 
 async function callAnthropic(message: string, history: ChatTurn[], apiKey: string): Promise<string> {
   const systemPrompt =
-    "You are Upstream AI, the assistant built into Upstream — a focus and productivity app for developers. " +
+    "You are Aztrx AI, the assistant built into Aztrx — a focus and productivity app for developers. " +
     "Be concise, friendly, and sound like you're speaking. Short, natural sentences over lists. " +
     "The user may ask about their coding stats, focus sessions, projects, or ask you to start/end a session. " +
     "If you don't have access to their real-time data (sessions, tools, computer state), be honest about it " +
-    "and suggest they install the Upstream desktop app for full awareness of their computer. " +
+    "and suggest they install the Aztrx desktop app for full awareness of their computer. " +
     "Never pretend to know something you can't actually see.";
 
   const messages = [

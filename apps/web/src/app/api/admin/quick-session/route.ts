@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { getActiveSession, startSession, verifySession, abandonSession } from "@focus-forge/api-client";
+import { getActiveSession, startSession, verifySession, abandonSession } from "@aztrx/api-client";
 import { getServerSupabaseClient } from "@/lib/supabase/server";
 import { getAdminUser } from "@/lib/admin";
 

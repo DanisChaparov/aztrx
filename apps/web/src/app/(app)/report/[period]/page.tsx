@@ -1,5 +1,5 @@
 import { notFound } from "next/navigation";
-import { buildReport, type ReportInput } from "@focus-forge/core";
+import { buildReport, type ReportInput } from "@aztrx/core";
 import { getServerSupabaseClient } from "@/lib/supabase/server";
 import { ReportClient } from "./ReportClient";
 

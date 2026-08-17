@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { Check, Minus, Crown, Sparkles, Clock } from "lucide-react";
-import { FEATURE_STATUS } from "@focus-forge/core";
+import { FEATURE_STATUS } from "@aztrx/core";
 import { toFeatureKey } from "@/lib/plan-features";
 
 interface Feature {

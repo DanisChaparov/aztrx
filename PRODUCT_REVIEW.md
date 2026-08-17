@@ -1,8 +1,8 @@
-# Upstream — Product Overview
+# Aztrx — Product Overview
 
 ## What is it?
 
-**Upstream is a verified focus tracker for developers.** It proves you actually worked — not just that a timer was running. Sessions are cross-checked against real GitHub commits and local IDE activity. Distractions are blocked across browser and desktop. And your honest work generates simulated funding for the open-source dependencies your projects rely on.
+**Aztrx is a verified focus tracker for developers.** It proves you actually worked — not just that a timer was running. Sessions are cross-checked against real GitHub commits and local IDE activity. Distractions are blocked across browser and desktop. And your honest work generates simulated funding for the open-source dependencies your projects rely on.
 
 Think **RescueTime meets Open Collective meets a focus app** — but one that actually verifies, not just measures.
 
@@ -70,7 +70,7 @@ Think **RescueTime meets Open Collective meets a focus app** — but one that ac
 
 ```
 ┌─────────────────────────────────────────────────┐
-│                  Upstream                        │
+│                  Aztrx                        │
 ├────────────┬──────────────┬─────────────────────┤
 │  apps/web  │apps/extension│  apps/desktop       │
 │  Next.js   │  Chrome MV3  │  Electron           │
@@ -134,7 +134,7 @@ Think **RescueTime meets Open Collective meets a focus app** — but one that ac
 
 ## Competitive positioning
 
-| | Upstream | RescueTime | Forest | Toggl Track | WakaTime |
+| | Aztrx | RescueTime | Forest | Toggl Track | WakaTime |
 |--|----------|------------|--------|-------------|----------|
 | **Verification** | ✅ GitHub + local | ❌ | ❌ | ❌ | ✅ GitHub |
 | **Distraction blocking** | ✅ Browser + desktop | ❌ | ✅ Phone only | ❌ | ❌ |
@@ -144,15 +144,15 @@ Think **RescueTime meets Open Collective meets a focus app** — but one that ac
 | **Multi-platform** | ✅ Web+Ext+Desktop | ✅ Desktop | 📱 Phone | ✅ Web+Desktop | 📊 IDE plugins |
 | **Price** | Free (Pro coming) | $12/mo | $4 one-time | $10/mo | Free |
 
-**The gap Upstream fills:** Nobody verifies that focus time was *real work*. Timers can be gamed. Upstream cross-references GitHub commits + local IDE activity to prove you actually shipped code.
+**The gap Aztrx fills:** Nobody verifies that focus time was *real work*. Timers can be gamed. Aztrx cross-references GitHub commits + local IDE activity to prove you actually shipped code.
 
 ---
 
 ## The brand
 
-- **Name:** Upstream
+- **Name:** Aztrx
 - **Tagline:** "Prove your focus is real, fund the code you build on."
-- **Package namespace:** `@focus-forge`
+- **Package namespace:** `@aztrx`
 - **GitHub:** `DanisChaparov/upstream-app`
 - **Live:** `stt-opal.vercel.app`
 - **Supabase:** `cexmcxpdkdxlaqjwrxni.supabase.co`

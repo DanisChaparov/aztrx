@@ -13,7 +13,7 @@ import { validateEvent, WebhookVerificationError } from "@polar-sh/sdk/webhooks"
  *   subscription.revoked          → subscription ended, downgrade to Free
  *
  * Setup: In Polar.sh dashboard → Settings → Webhooks, set:
- *   - URL: https://stt-opal.vercel.app/api/payments/webhook
+ *   - URL: https://aztrx.app/api/payments/webhook
  *   - Events: order.paid, subscription.revoked, subscription.canceled
  *   - Secret: copy to POLAR_WEBHOOK_SECRET on Vercel
  *

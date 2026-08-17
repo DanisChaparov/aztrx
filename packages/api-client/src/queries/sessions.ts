@@ -1,5 +1,5 @@
 import type { SupabaseClient } from "@supabase/supabase-js";
-import type { FocusSession } from "@focus-forge/core";
+import type { FocusSession } from "@aztrx/core";
 import type { Database, FocusSessionRow } from "../database.types";
 
 function toSession(row: FocusSessionRow): FocusSession {

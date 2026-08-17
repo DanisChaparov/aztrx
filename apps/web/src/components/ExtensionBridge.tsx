@@ -4,7 +4,7 @@ import { useEffect } from "react";
 import { getBrowserSupabaseClient } from "@/lib/supabase/browser";
 
 /**
- * Hands the signed-in Supabase session off to the Upstream browser
+ * Hands the signed-in Supabase session off to the Aztrx browser
  * extension (if installed) so it doesn't need its own separate OAuth flow.
  * Requires NEXT_PUBLIC_EXTENSION_ID and the extension's manifest to list this
  * origin under "externally_connectable". No-ops silently if either is missing

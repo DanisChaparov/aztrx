@@ -4,7 +4,7 @@ import { useState } from "react";
 import { Sparkles } from "lucide-react";
 
 /**
- * Opens a Polar.sh hosted checkout for subscribing to Upstream Pro.
+ * Opens a Polar.sh hosted checkout for subscribing to Aztrx Pro.
  *
  * Polar.sh is a Merchant of Record — handles tax/VAT/GST, fraud,
  * compliance, and works worldwide. The flow:

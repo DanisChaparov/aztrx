@@ -1,7 +1,7 @@
 "use client";
 
 import { motion } from "framer-motion";
-import type { LevelInfo } from "@focus-forge/core";
+import type { LevelInfo } from "@aztrx/core";
 
 export function LevelBadge({ levelInfo }: { levelInfo: LevelInfo }) {
   const radius = 24;

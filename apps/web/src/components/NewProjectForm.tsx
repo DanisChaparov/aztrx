@@ -2,7 +2,7 @@
 
 import { useState, type FormEvent } from "react";
 import { useRouter } from "next/navigation";
-import { createProject } from "@focus-forge/api-client";
+import { createProject } from "@aztrx/api-client";
 import { getBrowserSupabaseClient } from "@/lib/supabase/browser";
 import { WaterButton } from "@/components/WaterButton";
 
@@ -64,7 +64,7 @@ export function NewProjectForm() {
           required
           value={name}
           onChange={(e) => setName(e.target.value)}
-          placeholder="e.g. Upstream API"
+          placeholder="e.g. Aztrx API"
           className={inputClass}
         />
       </div>

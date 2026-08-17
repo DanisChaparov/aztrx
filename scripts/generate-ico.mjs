@@ -1,4 +1,4 @@
-// Generates a proper Windows .ico file from the Upstream SVG logo.
+// Generates a proper Windows .ico file from the Aztrx SVG logo.
 // Windows requires .ico (not .png) for app icon, taskbar, window title bar.
 // Run: node scripts/generate-ico.mjs
 import sharp from "sharp";
@@ -52,11 +52,14 @@ for (const img of images) {
 
 const ico = Buffer.concat([header, ...entries, ...images.map((i) => i.data)]);
 
-// Write to both locations
+// Write to all locations (app-dir favicon takes precedence in Next.js App Router)
 const desktopPublic = join(root, "apps", "desktop", "public", "icon.ico");
 const webPublic = join(root, "apps", "web", "public", "favicon.ico");
+const webApp = join(root, "apps", "web", "src", "app", "favicon.ico");
 writeFileSync(desktopPublic, ico);
 writeFileSync(webPublic, ico);
+writeFileSync(webApp, ico);
 console.log(`icon.ico generated — ${ico.length} bytes, ${images.length} sizes: ${sizes.join(", ")}`);
 console.log(`  ${desktopPublic}`);
 console.log(`  ${webPublic}`);
+console.log(`  ${webApp}`);

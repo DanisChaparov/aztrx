@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { buildDeveloperProfile, type ProfileInput } from "@focus-forge/core";
+import { buildDeveloperProfile, type ProfileInput } from "@aztrx/core";
 import { getServerSupabaseClient } from "@/lib/supabase/server";
 
 /**

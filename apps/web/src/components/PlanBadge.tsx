@@ -1,4 +1,4 @@
-import { BILLING_LIVE, type Plan } from "@focus-forge/core";
+import { BILLING_LIVE, type Plan } from "@aztrx/core";
 import { Sparkles } from "lucide-react";
 
 /**

@@ -8,5 +8,5 @@ import { NextResponse } from "next/server";
  * Polar.sh hosted checkout page.
  */
 export async function GET() {
-  return NextResponse.redirect(new URL("/plans", process.env.NEXT_PUBLIC_SITE_URL || "https://stt-opal.vercel.app"));
+  return NextResponse.redirect(new URL("/plans", process.env.NEXT_PUBLIC_SITE_URL || "https://aztrx.app"));
 }

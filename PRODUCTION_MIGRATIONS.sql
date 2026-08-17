@@ -1,5 +1,5 @@
 -- ============================================================================
--- Upstream — All Production Migrations
+-- Aztrx — All Production Migrations
 -- Paste this ENTIRE file into:
 -- https://supabase.com/dashboard/project/cexmcxpdkdxlaqjwrxni/sql/new
 -- Then click "Run"

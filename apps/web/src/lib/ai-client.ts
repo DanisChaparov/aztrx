@@ -3,14 +3,14 @@
  * the server. Direct browser-to-provider requests. Zero-knowledge by design.
  *
  * localStorage keys:
- *   upstream:anthropic-key  — Anthropic (Claude) API key
- *   upstream:openai-key     — OpenAI (ChatGPT) API key
- *   upstream:gemini-key     — Google Gemini API key
+ *   aztrx:anthropic-key  — Anthropic (Claude) API key
+ *   aztrx:openai-key     — OpenAI (ChatGPT) API key
+ *   aztrx:gemini-key     — Google Gemini API key
  */
 
-const LS_ANTHROPIC = "upstream:anthropic-key";
-const LS_OPENAI = "upstream:openai-key";
-const LS_GEMINI = "upstream:gemini-key";
+const LS_ANTHROPIC = "aztrx:anthropic-key";
+const LS_OPENAI = "aztrx:openai-key";
+const LS_GEMINI = "aztrx:gemini-key";
 
 export type AiProvider = "anthropic" | "openai" | "gemini";
 

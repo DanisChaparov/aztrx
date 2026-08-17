@@ -1,4 +1,4 @@
-import { createBrowserSupabaseClient } from "@focus-forge/api-client";
+import { createBrowserSupabaseClient } from "@aztrx/api-client";
 
 let client: ReturnType<typeof createBrowserSupabaseClient> | undefined;
 

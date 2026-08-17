@@ -39,7 +39,7 @@ export function ImpactLedgerList({ items }: { items: ImpactLedgerListItem[] }) {
             >
               <div className="mb-3 rounded-xl border border-[#3B82F6]/20 bg-[#3B82F6]/[0.04] p-4">
                 <p className="font-inter text-sm leading-relaxed text-[#A1A1AA]">
-                  When you complete a verified session on a GitHub-linked project, Upstream calculates simulated
+                  When you complete a verified session on a GitHub-linked project, Aztrx calculates simulated
                   open-source funding for your project&apos;s dependencies — at <strong className="text-white">2¢ per
                   focused minute</strong>, split evenly across every package in your repo&apos;s{" "}
                   <code className="text-neutral-400">package.json</code>. This is a demo of what real
@@ -82,7 +82,7 @@ export function ImpactLedgerList({ items }: { items: ImpactLedgerListItem[] }) {
           >
             <div className="rounded-xl border border-[#3B82F6]/20 bg-[#3B82F6]/[0.04] p-4">
               <p className="font-inter text-sm leading-relaxed text-[#A1A1AA]">
-                When you complete a verified session on a GitHub-linked project, Upstream calculates simulated
+                When you complete a verified session on a GitHub-linked project, Aztrx calculates simulated
                 open-source funding for your project&apos;s dependencies — at <strong className="text-white">2¢ per
                 focused minute</strong>, split evenly across every package in your repo&apos;s{" "}
                 <code className="text-neutral-400">package.json</code>. This is a demo of what real

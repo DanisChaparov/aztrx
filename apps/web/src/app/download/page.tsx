@@ -1,14 +1,14 @@
 import Link from "next/link";
 import { Apple, Monitor, Shield, Zap } from "lucide-react";
 
-export const metadata = { title: "Download — Upstream" };
+export const metadata = { title: "Download — Aztrx" };
 
 export default function DownloadPage() {
   return (
     <main className="min-h-screen bg-[#0c0c0c] text-white flex items-center justify-center px-6 py-20">
       <div className="max-w-2xl w-full flex flex-col items-center text-center gap-10">
         <div>
-          <h1 className="font-inter text-4xl font-extrabold tracking-tight text-white">Download Upstream</h1>
+          <h1 className="font-inter text-4xl font-extrabold tracking-tight text-white">Download Aztrx</h1>
           <p className="mt-3 font-inter text-[17px] leading-relaxed text-[#A1A1AA]">
             The desktop app tracks your real work. The web dashboard shows you the results.
           </p>
@@ -55,7 +55,7 @@ export default function DownloadPage() {
         </div>
 
         <Link href="/" className="font-inter text-sm text-[#A1A1AA] hover:text-white transition-colors">
-          ← Back to Upstream
+          ← Back to Aztrx
         </Link>
       </div>
     </main>

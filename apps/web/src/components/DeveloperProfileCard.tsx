@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { Loader2, TrendingUp, TrendingDown, ArrowRight, Sparkles } from "lucide-react";
-import type { DeveloperProfile } from "@focus-forge/core";
+import type { DeveloperProfile } from "@aztrx/core";
 import { ProUpsell } from "@/components/ProUpsell";
 
 export function DeveloperProfileCard({ plan }: { plan: "free" | "pro" }) {

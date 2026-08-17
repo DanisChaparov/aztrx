@@ -1,8 +1,8 @@
 {
-  "name": "@focus-forge/desktop",
+  "name": "@aztrx/desktop",
   "version": "0.1.0",
-  "description": "Upstream desktop app — verified focus tracking for developers",
-  "author": "Upstream",
+  "description": "Aztrx desktop app — verified focus tracking for developers",
+  "author": "Aztrx",
   "private": true,
   "main": "dist/main.js",
   "scripts": {
@@ -13,8 +13,8 @@
     "dist:all": "npm run build && electron-builder --win --mac"
   },
   "build": {
-    "appId": "app.upstream.desktop",
-    "productName": "Upstream",
+    "appId": "app.aztrx.desktop",
+    "productName": "Aztrx",
     "directories": { "output": "release" },
     "files": ["dist/**/*", "public/**/*"],
     "win": {
@@ -30,8 +30,8 @@
     "nodeGypRebuild": false
   },
   "dependencies": {
-    "@focus-forge/api-client": "*",
-    "@focus-forge/core": "*",
+    "@aztrx/api-client": "*",
+    "@aztrx/core": "*",
     "@modelcontextprotocol/sdk": "^1.12.0",
     "@supabase/supabase-js": "^2.45.4",
     "active-win": "^9.0.0",

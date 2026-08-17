@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { getTtsRequestById, queueTtsRequest } from "@focus-forge/api-client";
+import { getTtsRequestById, queueTtsRequest } from "@aztrx/api-client";
 import { getServerSupabaseClient } from "@/lib/supabase/server";
 
 const ELEVENLABS_BASE_URL = "https://api.elevenlabs.io";

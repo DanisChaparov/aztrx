@@ -18,8 +18,8 @@ const jakarta = Plus_Jakarta_Sans({
 });
 
 export const metadata: Metadata = {
-  metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL || "https://stt-opal.vercel.app"),
-  title: "Upstream",
+  metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL || "https://aztrx.app"),
+  title: "Aztrx",
   description: "Verified focus sessions for programmers, funding the open source you depend on.",
   icons: {
     icon: "/icon.svg",
@@ -27,14 +27,14 @@ export const metadata: Metadata = {
   },
   manifest: "/manifest.json",
   openGraph: {
-    title: "Upstream",
+    title: "Aztrx",
     description: "Verified focus sessions for programmers, funding the open source you depend on.",
     type: "website",
     images: ["/icon.svg"],
   },
   twitter: {
     card: "summary_large_image",
-    title: "Upstream",
+    title: "Aztrx",
     description: "Verified focus sessions for programmers, funding the open source you depend on.",
     images: ["/icon.svg"],
   },

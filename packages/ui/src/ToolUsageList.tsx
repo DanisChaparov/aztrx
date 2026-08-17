@@ -2,7 +2,7 @@
 
 import { AppWindow, BookOpen, Code2, Sparkles, Terminal, type LucideIcon } from "lucide-react";
 import { motion } from "framer-motion";
-import { isAiAssistedTool } from "@focus-forge/core";
+import { isAiAssistedTool } from "@aztrx/core";
 
 export interface ToolUsageItem {
   appName: string;

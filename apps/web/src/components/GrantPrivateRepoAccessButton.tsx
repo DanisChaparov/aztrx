@@ -39,7 +39,7 @@ export function GrantPrivateRepoAccessButton() {
         <h3 className="font-manrope text-sm font-medium text-white">Verifying a private repo?</h3>
       </div>
       <p className="font-inter text-sm leading-relaxed text-[#A1A1AA]">
-        Public repos work already — Upstream reads their commits without any access to your account. Private
+        Public repos work already — Aztrx reads their commits without any access to your account. Private
         repos need GitHub&apos;s <code className="rounded bg-white/5 px-1 py-0.5 text-[12px]">repo</code> scope,
         which is broad: it also grants write access to every repository you own. GitHub offers no narrower
         option. Only grant it if that trade is worth it to you.

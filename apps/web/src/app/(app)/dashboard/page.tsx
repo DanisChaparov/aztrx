@@ -3,9 +3,9 @@ import {
   getPublicProfileEnabled,
   listProjects,
   listSessions,
-} from "@focus-forge/api-client";
-import { calculateStreak, calculateXp, getLevelInfo } from "@focus-forge/core";
-import { LevelBadge, RevealSection, StreakFlame } from "@focus-forge/ui";
+} from "@aztrx/api-client";
+import { calculateStreak, calculateXp, getLevelInfo } from "@aztrx/core";
+import { LevelBadge, RevealSection, StreakFlame } from "@aztrx/ui";
 import { DashboardData } from "./DashboardData";
 import { WelcomeGreeting } from "./WelcomeGreeting";
 import { DeveloperTwin } from "@/components/DeveloperTwin";

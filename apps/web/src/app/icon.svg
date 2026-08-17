@@ -1,18 +1,8 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
-  <!-- Upstream logo — upward chevron in a rounded square, blue on dark -->
-  <rect width="64" height="64" rx="14" fill="#0a0b10"/>
-  <!-- Subtle inner border -->
-  <rect x="1" y="1" width="62" height="62" rx="13" fill="none" stroke="#3B82F6" stroke-width="1.5" stroke-opacity="0.3"/>
-  <!-- Upward chevron — moves up like a stream, like progress -->
-  <polyline
-    points="20,40 32,22 44,40"
-    fill="none"
-    stroke="#60A5FA"
-    stroke-width="5"
-    stroke-linecap="round"
-    stroke-linejoin="round"
-  />
-  <!-- Flow lines under the chevron — the "stream" -->
-  <line x1="24" y1="47" x2="40" y2="47" stroke="#3B82F6" stroke-width="2" stroke-linecap="round" stroke-opacity="0.5"/>
-  <line x1="27" y1="51" x2="37" y2="51" stroke="#3B82F6" stroke-width="2" stroke-linecap="round" stroke-opacity="0.3"/>
+  <!-- Aztrx app mark — three columns forming a peak, center in accent blue -->
+  <rect width="64" height="64" rx="15" fill="#0a0b10"/>
+  <rect x="1" y="1" width="62" height="62" rx="14" fill="none" stroke="#3B82F6" stroke-width="1.5" stroke-opacity="0.35"/>
+  <rect x="15" y="30" width="8" height="18" rx="4" fill="#E6E8EE"/>
+  <rect x="28" y="18" width="8" height="30" rx="4" fill="#3B82F6"/>
+  <rect x="41" y="30" width="8" height="18" rx="4" fill="#E6E8EE"/>
 </svg>

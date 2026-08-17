@@ -68,7 +68,7 @@ export function wrapHtml(body: string): string {
             <td style="padding:32px 40px 0">
               <div style="display:flex;align-items:center;gap:10px">
                 <span style="font-size:22px">⬆️</span>
-                <span style="color:#ffffff;font-size:18px;font-weight:700;letter-spacing:-0.3px">Upstream</span>
+                <span style="color:#ffffff;font-size:18px;font-weight:700;letter-spacing:-0.3px">Aztrx</span>
               </div>
             </td>
           </tr>
@@ -81,7 +81,7 @@ export function wrapHtml(body: string): string {
           <!-- Footer -->
           <tr>
             <td style="padding:20px 40px;border-top:1px solid rgba(255,255,255,0.06);color:#71717a;font-size:12px">
-              Sent by Upstream &mdash; your focus companion.
+              Sent by Aztrx &mdash; your focus companion.
             </td>
           </tr>
         </table>
@@ -97,7 +97,7 @@ async function sendEmail(to: string, subject: string, text: string, html?: strin
   const gmail = getGmail();
   if (gmail) {
     try {
-      await gmail.sendMail({ from: `Upstream <${process.env.EMAIL_FROM}>`, to, subject, text, html });
+      await gmail.sendMail({ from: `Aztrx <${process.env.EMAIL_FROM}>`, to, subject, text, html });
       console.log(`[notify] Gmail sent to ${to}`);
       return "sent";
     } catch (err: any) {
@@ -110,7 +110,7 @@ async function sendEmail(to: string, subject: string, text: string, html?: strin
   if (resend) {
     try {
       const response = await resend.emails.send({
-        from: "Upstream <onboarding@resend.dev>",
+        from: "Aztrx <onboarding@resend.dev>",
         to,
         subject,
         text,
@@ -238,7 +238,7 @@ export async function sendTelegramCode(
 ): Promise<{ sent: boolean; error?: string }> {
   const ok = await sendTelegram(
     chatId,
-    `🔐 Your Upstream verification code: ${code}\n\nIt expires in 10 minutes.`
+    `🔐 Your Aztrx verification code: ${code}\n\nIt expires in 10 minutes.`
   );
   return ok ? { sent: true } : { sent: false, error: "Could not send. Check TELEGRAM_BOT_TOKEN." };
 }

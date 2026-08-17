@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import type { FocusSession, Project } from "@focus-forge/core";
+import type { FocusSession, Project } from "@aztrx/core";
 import {
   buildHeatmap,
   calculateStreak,
@@ -9,14 +9,14 @@ import {
   getAchievementsWithProgress,
   getLevelInfo,
   type AchievementContext,
-} from "@focus-forge/core";
+} from "@aztrx/core";
 import {
   getCommitsForSessions,
   getDailyScreenTime,
   getImpactLedgerSummary,
   getSessionAppUsage,
   type ImpactLedgerSummaryRow,
-} from "@focus-forge/api-client";
+} from "@aztrx/api-client";
 import {
   AchievementGrid,
   DailyScreenTime,
@@ -26,7 +26,7 @@ import {
   SessionCard,
   type DailyScreenTimeItem,
   type ToolUsageItem,
-} from "@focus-forge/ui";
+} from "@aztrx/ui";
 import { getBrowserSupabaseClient } from "@/lib/supabase/browser";
 import { DeveloperProfileCard } from "@/components/DeveloperProfileCard";
 

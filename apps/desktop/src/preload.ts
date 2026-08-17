@@ -1,14 +1,14 @@
 import { contextBridge, ipcRenderer } from "electron";
 
 /**
- * Bridge exposed to the web app running inside the Upstream desktop shell.
+ * Bridge exposed to the web app running inside the Aztrx desktop shell.
  *
  * Most features (sessions, auth, projects, dashboard) go through the web
  * app's existing API routes and Supabase client — no IPC needed. This
  * bridge only exposes what genuinely requires the Electron main process:
  * desktop notifications, local git verification, and monitor sync.
  */
-contextBridge.exposeInMainWorld("upstream", {
+contextBridge.exposeInMainWorld("aztrx", {
   /** True inside the desktop app — lets the web app adjust behavior. */
   isDesktop: true,
 

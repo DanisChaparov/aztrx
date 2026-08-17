@@ -2,7 +2,7 @@ import { Flame, FolderKanban, LayoutDashboard, Timer } from "lucide-react";
 import { Logo } from "@/components/Logo";
 
 /**
- * A hand-built mockup of the real Upstream dashboard for the landing hero.
+ * A hand-built mockup of the real Aztrx dashboard for the landing hero.
  *
  * Deliberately markup rather than a screenshot: it stays sharp on every
  * display, costs no image bytes on the page we most need to load fast, follows
@@ -34,8 +34,8 @@ const LEDGER = [
 ];
 
 const SESSIONS = [
-  { project: "upstream-app", duration: "90 min", sha: "8db3c7c", verified: true },
-  { project: "upstream-app", duration: "50 min", sha: "b4e7e39", verified: true },
+  { project: "aztrx-app", duration: "90 min", sha: "8db3c7c", verified: true },
+  { project: "aztrx-app", duration: "50 min", sha: "b4e7e39", verified: true },
   { project: "api-gateway", duration: "50 min", sha: "0a93193", verified: true },
   { project: "portfolio", duration: "25 min", sha: null, verified: false },
 ];
@@ -89,8 +89,7 @@ export function DashboardPreview() {
       {/* Top bar — mirrors the real in-app nav */}
       <div className="flex items-center justify-between border-b border-white/[0.07] px-5 py-3">
         <div className="flex items-center gap-2">
-          <Logo size={20} />
-          <span className="text-[13px] font-bold tracking-tight">Upstream</span>
+          <Logo size={13} className="font-bold" />
         </div>
         <div className="flex items-center gap-1">
           {NAV.map((item) => (

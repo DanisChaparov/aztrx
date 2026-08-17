@@ -10,9 +10,9 @@ import {
   startSession,
   verifySession,
   type VerifySessionResult,
-} from "@focus-forge/api-client";
-import type { FocusSession, Project } from "@focus-forge/core";
-import { CommitList, Confetti, Timer } from "@focus-forge/ui";
+} from "@aztrx/api-client";
+import type { FocusSession, Project } from "@aztrx/core";
+import { CommitList, Confetti, Timer } from "@aztrx/ui";
 import { getBrowserSupabaseClient } from "@/lib/supabase/browser";
 import { playSessionStart, playSessionComplete, playStreak } from "@/lib/sounds";
 import { Select } from "@/components/Select";
@@ -86,13 +86,13 @@ export function SessionRunner({
     if (!session || remainingSeconds > 0 || timeUpAlertedRef.current) return;
     timeUpAlertedRef.current = true;
     playChime();
-    notifySessionEnd("Time's up — Upstream", "Your focus session finished. Click \"I'm done\" to verify it.");
-    if (document.hidden) document.title = "⏰ Time's up — Upstream";
+    notifySessionEnd("Time's up — Aztrx", "Your focus session finished. Click \"I'm done\" to verify it.");
+    if (document.hidden) document.title = "⏰ Time's up — Aztrx";
   }, [session, remainingSeconds]);
 
   useEffect(() => {
     function resetTitleOnFocus() {
-      if (!document.hidden) document.title = "Upstream";
+      if (!document.hidden) document.title = "Aztrx";
     }
     document.addEventListener("visibilitychange", resetTitleOnFocus);
     return () => document.removeEventListener("visibilitychange", resetTitleOnFocus);

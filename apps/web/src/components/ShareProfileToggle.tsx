@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { Check, Copy, Globe } from "lucide-react";
-import { setPublicProfileEnabled } from "@focus-forge/api-client";
+import { setPublicProfileEnabled } from "@aztrx/api-client";
 import { getBrowserSupabaseClient } from "@/lib/supabase/browser";
 
 /**
@@ -21,7 +21,7 @@ export function ShareProfileToggle({
   initialEnabled: boolean;
 }) {
   const [enabled, setEnabled] = useState(
-    typeof window !== "undefined" && localStorage.getItem("upstream-public-profile") === "1"
+    typeof window !== "undefined" && localStorage.getItem("aztrx-public-profile") === "1"
       ? true
       : initialEnabled
   );
@@ -39,7 +39,7 @@ export function ShareProfileToggle({
     const next = !enabled;
     // Toggle locally first — always works.
     setEnabled(next);
-    localStorage.setItem("upstream-public-profile", next ? "1" : "0");
+    localStorage.setItem("aztrx-public-profile", next ? "1" : "0");
     // Try DB — if migration isn't applied, localStorage already has it.
     try {
       await setPublicProfileEnabled(getBrowserSupabaseClient(), next);

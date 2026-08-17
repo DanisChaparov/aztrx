@@ -1,5 +1,5 @@
 {
-  "name": "@focus-forge/web",
+  "name": "@aztrx/web",
   "version": "0.1.0",
   "private": true,
   "scripts": {
@@ -9,9 +9,9 @@
     "lint": "next lint"
   },
   "dependencies": {
-    "@focus-forge/api-client": "*",
-    "@focus-forge/core": "*",
-    "@focus-forge/ui": "*",
+    "@aztrx/api-client": "*",
+    "@aztrx/core": "*",
+    "@aztrx/ui": "*",
     "@polar-sh/sdk": "^0.49.0",
     "@supabase/ssr": "^0.12.3",
     "@supabase/supabase-js": "^2.45.4",

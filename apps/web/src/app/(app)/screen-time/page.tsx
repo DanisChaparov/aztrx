@@ -1,8 +1,8 @@
 "use client";
 
 import { useEffect, useState, useCallback } from "react";
-import { ScreenTimeDetail, type HourlyBucketItem } from "@focus-forge/ui";
-import { getHourlyScreenTime, getAmbientDailyHours, getAmbientToolSummary, type AmbientToolSummary } from "@focus-forge/api-client";
+import { ScreenTimeDetail, type HourlyBucketItem } from "@aztrx/ui";
+import { getHourlyScreenTime, getAmbientDailyHours, getAmbientToolSummary, type AmbientToolSummary } from "@aztrx/api-client";
 import { getBrowserSupabaseClient } from "@/lib/supabase/browser";
 import { BarChart3, Monitor, Clock } from "lucide-react";
 
@@ -16,13 +16,13 @@ function startOfToday(): Date {
 
 declare global {
   interface Window {
-    upstream?: { isDesktop: boolean };
+    aztrx?: { isDesktop: boolean };
   }
 }
 
 function isRunningInDesktop(): boolean {
   if (typeof window === "undefined") return false;
-  return window.upstream?.isDesktop === true;
+  return window.aztrx?.isDesktop === true;
 }
 
 export default function ScreenTimePage() {

@@ -1,4 +1,4 @@
-import { listProjects } from "@focus-forge/api-client";
+import { listProjects } from "@aztrx/api-client";
 import { getServerSupabaseClient } from "@/lib/supabase/server";
 import { ProjectsClient } from "./ProjectsClient";
 

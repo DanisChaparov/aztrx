@@ -1,5 +1,5 @@
 {
-  "name": "@focus-forge/extension",
+  "name": "@aztrx/extension",
   "version": "0.1.0",
   "private": true,
   "scripts": {
@@ -7,8 +7,8 @@
     "dev": "node build.mjs --watch"
   },
   "dependencies": {
-    "@focus-forge/core": "*",
-    "@focus-forge/api-client": "*",
+    "@aztrx/core": "*",
+    "@aztrx/api-client": "*",
     "@supabase/supabase-js": "^2.45.4"
   },
   "devDependencies": {

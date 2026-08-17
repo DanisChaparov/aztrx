@@ -5,7 +5,7 @@ import { Sun, Moon, Monitor } from "lucide-react";
 
 type Theme = "dark" | "light" | "auto";
 
-const STORAGE_KEY = "upstream-theme";
+const STORAGE_KEY = "aztrx-theme";
 
 function getStoredTheme(): Theme {
   if (typeof window === "undefined") return "dark";

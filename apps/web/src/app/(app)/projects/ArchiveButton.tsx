@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { Archive, Trash2 } from "lucide-react";
-import { archiveProject, deleteProject } from "@focus-forge/api-client";
+import { archiveProject, deleteProject } from "@aztrx/api-client";
 import { getBrowserSupabaseClient } from "@/lib/supabase/browser";
 
 export function ArchiveButton({

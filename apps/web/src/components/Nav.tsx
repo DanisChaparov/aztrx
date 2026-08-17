@@ -24,8 +24,7 @@ export function Nav() {
     <div className="sticky top-0 z-30 px-4 pt-4 sm:px-6">
       <nav className="liquid-glass mx-auto flex max-w-4xl items-center justify-between px-4 py-2.5">
         <Link href="/dashboard" className="flex items-center gap-2">
-          <Logo size={20} />
-          <span className="font-jakarta text-[15px] font-extrabold tracking-tight text-white">Upstream</span>
+          <Logo size={15} className="font-jakarta font-extrabold text-white" />
         </Link>
 
         <div className="flex items-center gap-1">

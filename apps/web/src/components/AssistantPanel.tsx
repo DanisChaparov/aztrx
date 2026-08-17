@@ -14,7 +14,7 @@ const POLL_INTERVAL_MS = 1000;
 const POLL_TIMEOUT_MS = 60_000;
 
 /**
- * Upstream AI — your personal developer assistant.
+ * Aztrx AI — your personal developer assistant.
  *
  * Two backends: direct Anthropic API (works instantly, no setup) and
  * desktop Claude CLI (full power with 11 MCP tools and computer awareness).
@@ -78,7 +78,7 @@ export function AssistantPanel() {
     } catch {
       setMessages([
         ...nextMessages,
-        { role: "assistant", content: "Couldn't reach Upstream AI. Check your connection, or add an Anthropic API key in Settings → API Key for instant responses." },
+        { role: "assistant", content: "Couldn't reach Aztrx AI. Check your connection, or add an Anthropic API key in Settings → API Key for instant responses." },
       ]);
     } finally {
       setBusy(false);
@@ -105,7 +105,7 @@ export function AssistantPanel() {
             <div className="flex items-center justify-between border-b border-white/10 px-4 py-3">
               <div className="flex items-center gap-2">
                 <Sparkles size={14} className="text-[#60A5FA]" />
-                <span className="font-manrope text-sm font-medium text-white">Upstream AI</span>
+                <span className="font-manrope text-sm font-medium text-white">Aztrx AI</span>
               </div>
               <button
                 onClick={() => setOpen(false)}
@@ -186,7 +186,7 @@ export function AssistantPanel() {
                       />
                     ))}
                   </div>
-                  <span className="font-inter text-[11px] text-neutral-500">Upstream AI is thinking…</span>
+                  <span className="font-inter text-[11px] text-neutral-500">Aztrx AI is thinking…</span>
                 </div>
               )}
             </div>
@@ -196,7 +196,7 @@ export function AssistantPanel() {
               <input
                 value={input}
                 onChange={(e) => setInput(e.target.value)}
-                placeholder="Ask Upstream AI anything…"
+                placeholder="Ask Aztrx AI anything…"
                 disabled={busy}
                 className="flex-1 rounded-full border border-white/10 bg-white/[0.03] px-4 py-2 font-inter text-sm text-white outline-none transition-colors focus:border-[#3B82F6] disabled:opacity-50"
               />
@@ -221,7 +221,7 @@ export function AssistantPanel() {
           whileHover={{ scale: 1.06 }}
           whileTap={{ scale: 0.94 }}
           onClick={() => setOpen(true)}
-          aria-label="Open Upstream AI"
+          aria-label="Open Aztrx AI"
           className="relative flex h-14 w-14 items-center justify-center rounded-full"
         >
           <motion.div

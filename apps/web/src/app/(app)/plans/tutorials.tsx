@@ -51,7 +51,7 @@ export const TUTORIALS: Record<string, TutorialEntry> = {
     status: "live",
   },
   "Private repo verification": {
-    what: "Verify focus sessions against private GitHub repositories, not just public ones. Requires granting the Upstream GitHub app access to your private repos.",
+    what: "Verify focus sessions against private GitHub repositories, not just public ones. Requires granting the Aztrx GitHub app access to your private repos.",
     how: "1. Upgrade to Pro (or start a trial)\n2. Link a private GitHub repo to a project\n3. Click \"Grant private repo access\" on the Projects page\n4. Complete a session — verification checks the private repo's commits just like a public one",
     status: "live",
   },

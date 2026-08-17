@@ -1,5 +1,5 @@
 import { cookies } from "next/headers";
-import { createServerSupabaseClient } from "@focus-forge/api-client";
+import { createServerSupabaseClient } from "@aztrx/api-client";
 
 /** Server Components / Route Handlers: reads the session from cookies. */
 export async function getServerSupabaseClient() {

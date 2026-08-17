@@ -34,7 +34,7 @@ export async function POST(request: Request) {
   if (phone) {
     const r = await sendNotification({
       toPhone: phone,
-      title: "Upstream verification code",
+      title: "Aztrx verification code",
       body: `Your code is: ${code}\n\nIt expires in 10 minutes.`,
     });
 

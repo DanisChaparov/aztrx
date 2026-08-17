@@ -17,14 +17,13 @@ export default async function SignUpPage({
       <VideoBackground />
       <div className="relative z-10 flex w-full max-w-sm flex-col items-center gap-6 rounded-3xl border border-white/10 bg-[#0e0f14]/90 px-8 py-10 text-center backdrop-blur-md">
         <Link href="/" className="flex items-center gap-2">
-          <Logo size={24} />
-          <span className="font-inter text-lg font-bold tracking-tight text-white">Upstream</span>
+          <Logo size={18} className="font-inter font-bold text-white" />
         </Link>
         <div className="flex flex-col gap-2">
           <h1 className="font-inter text-2xl font-extrabold tracking-tight text-white">Sign up</h1>
           <p className="font-inter text-sm text-[#A1A1AA]">
             {isDesktop
-              ? "Create your account to connect the Upstream desktop widget."
+              ? "Create your account to connect the Aztrx desktop widget."
               : "Create your account to start tracking verified focus sessions, building streaks, and funding open source."}
           </p>
         </div>

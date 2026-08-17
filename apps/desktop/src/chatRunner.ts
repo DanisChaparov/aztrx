@@ -9,7 +9,7 @@ import spawn from "cross-spawn";
 import { readFileSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
 import { app } from "electron";
-import { getPendingChats, updateChatStatus, type ChatTurn, type Database } from "@focus-forge/api-client";
+import { getPendingChats, updateChatStatus, type ChatTurn, type Database } from "@aztrx/api-client";
 import type { SupabaseClient } from "@supabase/supabase-js";
 
 const POLL_INTERVAL_MS = 5000;
@@ -39,10 +39,10 @@ const TOOL_NAMES = [
   "get_profile",
   "get_daily_screen_time",
 ];
-const ALLOWED_TOOLS = TOOL_NAMES.map((name) => `mcp__upstream__${name}`).join(",");
+const ALLOWED_TOOLS = TOOL_NAMES.map((name) => `mcp__aztrx__${name}`).join(",");
 
 const SYSTEM_PROMPT =
-  "You are Upstream AI, the assistant built into Upstream — an app that verifies developers' focus sessions " +
+  "You are Aztrx AI, the assistant built into Aztrx — an app that verifies developers' focus sessions " +
   "against real GitHub commit activity and funds the open-source dependencies they use. You have real " +
   "awareness of the user's computer: which apps/IDEs are open right now, what's focused, and historical usage " +
   "patterns — you're not a generic chatbot, you actually know what's happening on their machine. Be concise " +
@@ -62,7 +62,7 @@ const SYSTEM_PROMPT =
   "start_focus_session, end_focus_session, or abandon_focus_session when the user " +
   "clearly asks for that specific action. You can read what's happening on the computer and start or stop " +
   "focus sessions, but you cannot act on the machine itself — you can't open apps, run commands, type, or " +
-  "click. If the user asks for any of that, say plainly that Upstream doesn't do it, rather than pretending " +
+  "click. If the user asks for any of that, say plainly that Aztrx doesn't do it, rather than pretending " +
   "or promising it later.";
 
 function ensureMcpConfig(): string {
@@ -70,14 +70,14 @@ function ensureMcpConfig(): string {
   const mcpServerPath = join(__dirname, "mcpServer.js");
   const config = {
     mcpServers: {
-      upstream: {
+      aztrx: {
         type: "stdio",
         command: process.execPath,
         args: [mcpServerPath],
         env: {
-          UPSTREAM_SUPABASE_URL: process.env.SUPABASE_URL ?? "",
-          UPSTREAM_SUPABASE_ANON_KEY: process.env.SUPABASE_ANON_KEY ?? "",
-          UPSTREAM_USERDATA_DIR: app.getPath("userData"),
+          AZTRX_SUPABASE_URL: process.env.SUPABASE_URL ?? "",
+          AZTRX_SUPABASE_ANON_KEY: process.env.SUPABASE_ANON_KEY ?? "",
+          AZTRX_USERDATA_DIR: app.getPath("userData"),
           // `command` below is process.execPath, which inside an Electron main
           // process is the path to electron.exe, not a plain node binary.
           // Without this, spawning it tries to boot a second full Electron app
@@ -210,7 +210,7 @@ function runClaude(
     child.on("close", (code) => {
       clearTimeout(timer);
       // MCP servers commonly print connection/init warnings to stderr even on a
-      // successful (exit 0) run — surfacing it here is how we'd spot "the upstream
+      // successful (exit 0) run — surfacing it here is how we'd spot "the aztrx
       // MCP server failed to start" instead of the CLI just quietly answering
       // without tool access.
       if (stderr.trim()) console.warn("[chatRunner] claude stderr:", stderr.trim().slice(0, 1000));

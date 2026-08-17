@@ -1,4 +1,4 @@
--- Upstream initial schema
+-- Aztrx initial schema
 -- Auth/users come from Supabase Auth (auth.users); every table below scopes rows to auth.uid().
 
 create table if not exists public.projects (

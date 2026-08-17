@@ -35,7 +35,7 @@ export function WeeklyInsight() {
     const items: Insight[] = [];
 
     // Check for AI tool usage (from ambient tracking or window titles).
-    const aiToolsUsed = localStorage.getItem("upstream-ai-tools") || "";
+    const aiToolsUsed = localStorage.getItem("aztrx-ai-tools") || "";
     if (aiToolsUsed) {
       items.push({
         title: "AI-powered",
@@ -47,7 +47,7 @@ export function WeeklyInsight() {
     }
 
     // Session count from localStorage or estimate.
-    const sessionCount = parseInt(localStorage.getItem("upstream-weekly-sessions") || "0");
+    const sessionCount = parseInt(localStorage.getItem("aztrx-weekly-sessions") || "0");
     if (sessionCount > 0) {
       const label = sessionCount === 1 ? "session" : "sessions";
       items.push({
@@ -60,7 +60,7 @@ export function WeeklyInsight() {
     }
 
     // Project count.
-    const projectCount = parseInt(localStorage.getItem("upstream-weekly-projects") || "0");
+    const projectCount = parseInt(localStorage.getItem("aztrx-weekly-projects") || "0");
     if (projectCount > 0) {
       items.push({
         title: "Creator",

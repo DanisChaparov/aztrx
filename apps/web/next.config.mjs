@@ -15,7 +15,7 @@ const securityHeaders = [
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  transpilePackages: ["@focus-forge/core", "@focus-forge/ui", "@focus-forge/api-client"],
+  transpilePackages: ["@aztrx/core", "@aztrx/ui", "@aztrx/api-client"],
   async headers() {
     return [{ source: "/:path*", headers: securityHeaders }];
   },

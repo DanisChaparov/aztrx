@@ -1,6 +1,6 @@
 import { Notification } from "electron";
-import { getActiveSession, type Database } from "@focus-forge/api-client";
-import { matchTrackedTool } from "@focus-forge/core";
+import { getActiveSession, type Database } from "@aztrx/api-client";
+import { matchTrackedTool } from "@aztrx/core";
 import type { SupabaseClient } from "@supabase/supabase-js";
 
 const POLL_INTERVAL_MS = 30_000;
@@ -47,7 +47,7 @@ export function startIdleNudge(supabase: SupabaseClient<Database>): () => void {
       lastNudgeAt = Date.now();
       new Notification({
         title: "Still heads-down?",
-        body: `You've been in ${tracked.name} for a while with no focus session running — open Upstream to start one and back-fill the streak.`,
+        body: `You've been in ${tracked.name} for a while with no focus session running — open Aztrx to start one and back-fill the streak.`,
       }).show();
     } catch (err) {
       console.error("[idleNudge] poll failed:", err);

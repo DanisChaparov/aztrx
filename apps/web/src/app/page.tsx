@@ -54,7 +54,7 @@ export default function LandingPage() {
             <motion.div initial={{ opacity:0,y:20 }} whileInView={{ opacity:1,y:0 }} viewport={{ once:true }} transition={{ duration:0.7 }}>
               <div className="flex items-center gap-3 mb-5"><span className="w-1.5 h-1.5 rounded-full bg-white" /><span className="text-white/70 text-sm font-medium">Verification</span><span className="px-2 py-0.5 rounded-full border border-white/10 text-white/50 text-xs">AI-powered</span></div>
               <h2 className="text-3xl md:text-5xl font-semibold tracking-tight leading-[1.02]">Proof, not<br />promises.</h2>
-              <p className="mt-6 text-white/60 text-base leading-[1.6] max-w-md">Upstream cross-references your GitHub commits and local IDE activity against every session. A timer can be gamed — real work can't.</p>
+              <p className="mt-6 text-white/60 text-base leading-[1.6] max-w-md">Aztrx cross-references your GitHub commits and local IDE activity against every session. A timer can be gamed — real work can't.</p>
               <div className="flex flex-wrap gap-2 mt-5">
                 {["GitHub commits","IDE activity","Desktop tracking","Browser extension"].map(c => (
                   <span key={c} className="text-xs text-white/70 px-3 py-1.5 rounded-full border border-white/10 bg-white/[0.03]">{c}</span>
@@ -138,7 +138,7 @@ export default function LandingPage() {
         {/* Footer */}
         <footer className="relative z-10 border-t border-white/10 px-6 py-10">
           <div className="max-w-6xl mx-auto flex items-center justify-between">
-            <div className="flex items-center gap-2.5"><span className="text-sm font-semibold text-white/40">Upstream</span></div>
+            <div className="flex items-center gap-2.5"><span className="text-sm font-semibold text-white/40">Aztrx</span></div>
             <div className="flex items-center gap-6 text-xs text-white/40">
               <Link href="/download" className="hover:text-white/70">Download</Link>
               <Link href="/privacy" className="hover:text-white/70">Privacy</Link>

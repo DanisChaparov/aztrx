@@ -13,8 +13,8 @@ export async function POST() {
 
   const result = await sendNotification({
     toEmail: email,
-    title: "Upstream — test notification",
-    body: "This is a test email from Upstream. If you received this, email notifications are working!",
+    title: "Aztrx — test notification",
+    body: "This is a test email from Aztrx. If you received this, email notifications are working!",
   });
 
   return NextResponse.json({

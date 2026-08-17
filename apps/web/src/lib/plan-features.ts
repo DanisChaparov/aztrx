@@ -1,6 +1,6 @@
 /**
  * Shared mapping from plan feature display names (FREE_FEATURES in the plans page)
- * to PlanFeatures keys in @focus-forge/core/plans.
+ * to PlanFeatures keys in @aztrx/core/plans.
  *
  * Always-free features (no corresponding PlanFeature key) return null — they are
  * never gated behind a subscription and never show "Coming soon" badges.

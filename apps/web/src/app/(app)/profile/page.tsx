@@ -1,5 +1,5 @@
-import { getPlan, getPublicProfileEnabled, listProjects, listSessions } from "@focus-forge/api-client";
-import { calculateStreak, calculateXp, getLevelInfo } from "@focus-forge/core";
+import { getPlan, getPublicProfileEnabled, listProjects, listSessions } from "@aztrx/api-client";
+import { calculateStreak, calculateXp, getLevelInfo } from "@aztrx/core";
 import { getServerSupabaseClient } from "@/lib/supabase/server";
 import { ProfileCard } from "./ProfileCard";
 import Link from "next/link";
@@ -87,7 +87,7 @@ export default async function ProfilePage() {
           { href: "/projects", icon: FolderKanban, label: "Manage projects", desc: `${projects.length} project${projects.length !== 1 ? "s" : ""}` },
           { href: "/settings", icon: Settings, label: "Notification settings", desc: "Email, push, preferences" },
           { href: "/plans", icon: Crown, label: `${plan === "pro" ? "Pro plan" : "Upgrade to Pro"}`, desc: plan === "pro" ? "You have full access" : "Unlock AI mentor & reports" },
-          ...(publicUrl ? [{ href: publicUrl, icon: ExternalLink, label: "Your public twin", desc: `upstream.dev${publicUrl}` }] : []),
+          ...(publicUrl ? [{ href: publicUrl, icon: ExternalLink, label: "Your public twin", desc: `aztrx.app${publicUrl}` }] : []),
         ].map((link) => (
           <Link
             key={link.href}

@@ -1,20 +1,20 @@
 import type { Metadata } from "next";
-import { calculateStreak, calculateXp, getLevelInfo } from "@focus-forge/core";
+import { calculateStreak, calculateXp, getLevelInfo } from "@aztrx/core";
 import { getServerSupabaseClient } from "@/lib/supabase/server";
 import Link from "next/link";
 
 export async function generateMetadata(): Promise<Metadata> {
   return {
-    title: "My coding stats — Upstream",
-    description: "Track · Focus · Verify · Grow. See your developer stats on Upstream.",
+    title: "My coding stats — Aztrx",
+    description: "Track · Focus · Verify · Grow. See your developer stats on Aztrx.",
     openGraph: {
-      title: "My coding stats — Upstream",
+      title: "My coding stats — Aztrx",
       description: "Productive Focus for Developers. Track your coding journey.",
       images: [{ url: "/api/og/share?type=stats", width: 1200, height: 630 }],
     },
     twitter: {
       card: "summary_large_image",
-      title: "My coding stats — Upstream",
+      title: "My coding stats — Aztrx",
       description: "Productive Focus for Developers",
       images: ["/api/og/share?type=stats"],
     },
@@ -30,7 +30,7 @@ export default async function SharePage() {
     return (
       <main className="flex min-h-screen items-center justify-center bg-[#0b0c10] px-6">
         <div className="flex flex-col items-center gap-6 text-center">
-          <span className="font-manrope text-4xl font-bold text-white">Upstream</span>
+          <span className="font-manrope text-4xl font-bold text-white">Aztrx</span>
           <p className="font-inter text-lg text-[#A1A1AA]">Productive Focus for Developers</p>
           <Link href="/login" className="rounded-xl bg-[#3B82F6] px-6 py-3 font-manrope font-semibold text-white">
             Sign in to see your stats
@@ -76,7 +76,7 @@ export default async function SharePage() {
         {/* Header */}
         <div className="flex items-center justify-between">
           <div>
-            <span className="font-manrope text-xs font-semibold uppercase tracking-[0.2em] text-[#60A5FA]">Upstream</span>
+            <span className="font-manrope text-xs font-semibold uppercase tracking-[0.2em] text-[#60A5FA]">Aztrx</span>
             <h1 className="mt-1 font-manrope text-2xl font-bold text-white">{username}</h1>
           </div>
           <span className="rounded-full border border-[#60A5FA]/30 px-4 py-1.5 font-manrope text-xs font-semibold text-[#60A5FA]">

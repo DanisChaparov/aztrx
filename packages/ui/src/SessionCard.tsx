@@ -3,8 +3,8 @@
 import { useState } from "react";
 import { CheckCircle2, CircleDashed, XCircle, ChevronDown } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
-import type { FocusSession } from "@focus-forge/core";
-import { SESSION_TAGS } from "@focus-forge/core";
+import type { FocusSession } from "@aztrx/core";
+import { SESSION_TAGS } from "@aztrx/core";
 import { CommitList, type CommitListItem } from "./CommitList";
 import { ToolUsageList, type ToolUsageItem } from "./ToolUsageList";
 

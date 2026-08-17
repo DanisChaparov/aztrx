@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { listProjects, listSessions } from "@focus-forge/api-client";
+import { listProjects, listSessions } from "@aztrx/api-client";
 import { getServerSupabaseClient } from "@/lib/supabase/server";
 
 /**

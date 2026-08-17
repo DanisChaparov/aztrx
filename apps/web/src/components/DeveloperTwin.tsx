@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { Loader2, Minus, TrendingDown, TrendingUp } from "lucide-react";
-import type { CodingClock, LanguageSlice, ProjectLifecycle, TwinInsight } from "@focus-forge/core";
+import type { CodingClock, LanguageSlice, ProjectLifecycle, TwinInsight } from "@aztrx/core";
 
 interface TwinResponse {
   ready: boolean;
@@ -30,7 +30,7 @@ function Stat({ value, label }: { value: string; label: string }) {
 
 /**
  * A portrait of how the user actually codes, read out of their commit history
- * rather than out of what Upstream has watched. It's here so a brand-new
+ * rather than out of what Aztrx has watched. It's here so a brand-new
  * account has something real to look at on day one instead of an empty
  * dashboard waiting weeks for data.
  */

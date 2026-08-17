@@ -1,5 +1,5 @@
 /**
- * Upstream's mascot — a small round creature that reacts to what's actually
+ * Aztrx's mascot — a small round creature that reacts to what's actually
  * happening rather than looping one idle animation.
  *
  * Drawn as inline SVG with CSS keyframes: no image assets to bundle, sharp at
