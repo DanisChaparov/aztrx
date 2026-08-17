@@ -42,7 +42,7 @@ const PROVIDERS: ProviderInfo[] = [
  * 🔒 KEY NEVER LEAVES THE BROWSER. Stored in localStorage, sent directly
  * to the AI provider from the browser. Aztrx's servers never see it,
  * never log it, never store it. You can verify this in the Network tab
- * and in the source code (github.com/DanisChaparov/upstream-app).
+ * and in the source code (github.com/DanisChaparov/aztrx).
  */
 export function ApiKeyInput() {
   const [provider, setProvider] = useState<AiProvider>("anthropic");
@@ -114,7 +114,7 @@ export function ApiKeyInput() {
           Stored in localStorage, sent directly to {p.name} from your browser.
           Aztrx's servers never see it.{" "}
           <a
-            href="https://github.com/DanisChaparov/upstream-app/blob/master/apps/web/src/lib/ai-client.ts"
+            href="https://github.com/DanisChaparov/aztrx/blob/master/apps/web/src/lib/ai-client.ts"
             target="_blank"
             rel="noopener noreferrer"
             className="text-neutral-500 underline underline-offset-2 hover:text-neutral-400"

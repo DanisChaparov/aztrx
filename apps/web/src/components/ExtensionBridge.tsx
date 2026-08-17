@@ -28,7 +28,7 @@ export function ExtensionBridge() {
       chromeRuntime.sendMessage(
         extensionId,
         {
-          type: "UPSTREAM_SET_SESSION",
+          type: "AZTRX_SET_SESSION",
           accessToken: session.access_token,
           refreshToken: session.refresh_token,
         },

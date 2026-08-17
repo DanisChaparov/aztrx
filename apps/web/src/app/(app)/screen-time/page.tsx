@@ -168,7 +168,7 @@ export default function ScreenTimePage() {
           </div>
           {!inDesktop && (
             <a
-              href="https://github.com/DanisChaparov/upstream-app/releases"
+              href="https://github.com/DanisChaparov/aztrx/releases"
               target="_blank"
               rel="noopener noreferrer"
               className="hidden sm:flex items-center gap-2 rounded-full bg-white text-black font-medium text-sm px-5 py-2.5 transition-all hover:bg-white/90 active:scale-[0.98]"
@@ -186,7 +186,7 @@ export default function ScreenTimePage() {
               Browsers can't see what programs you use — that's an OS-level security restriction.
               Our native macOS & Windows app tracks your real tools (VS Code, terminal, browser tabs)
               and syncs to your dashboard.{" "}
-              <a href="https://github.com/DanisChaparov/upstream-app/releases" target="_blank" rel="noopener" className="text-[#3B82F6] underline">Download it here</a>.
+              <a href="https://github.com/DanisChaparov/aztrx/releases" target="_blank" rel="noopener" className="text-[#3B82F6] underline">Download it here</a>.
             </p>
           </div>
         )}

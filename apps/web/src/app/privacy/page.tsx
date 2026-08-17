@@ -22,7 +22,7 @@ const SECTIONS = [
   {
     icon: Github,
     title: "Open source, verifiable",
-    body: "The entire Aztrx codebase is open source at github.com/DanisChaparov/upstream-app. You can audit exactly what the desktop app monitors, what data it sends, and how the backend processes it. No black boxes. No hidden telemetry.",
+    body: "The entire Aztrx codebase is open source at github.com/DanisChaparov/aztrx. You can audit exactly what the desktop app monitors, what data it sends, and how the backend processes it. No black boxes. No hidden telemetry.",
   },
   {
     icon: Lock,
@@ -66,7 +66,7 @@ export default function PrivacyPage() {
         <div className="rounded-2xl border border-white/[0.06] bg-white/[0.02] p-6 text-center">
           <p className="font-inter text-sm text-[#A1A1AA]">
             Questions?{" "}
-            <a href="https://github.com/DanisChaparov/upstream-app" className="text-[#3B82F6] underline">Open an issue on GitHub</a>.
+            <a href="https://github.com/DanisChaparov/aztrx" className="text-[#3B82F6] underline">Open an issue on GitHub</a>.
           </p>
         </div>
       </div>

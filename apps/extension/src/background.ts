@@ -79,7 +79,7 @@ chrome.alarms.onAlarm.addListener((alarm) => {
 // doesn't need its own separate OAuth flow. See apps/web ExtensionBridge.
 chrome.runtime.onMessageExternal.addListener((message, _sender, sendResponse) => {
   (async () => {
-    if (message?.type === "UPSTREAM_SET_SESSION") {
+    if (message?.type === "AZTRX_SET_SESSION") {
       const { error } = await supabase.auth.setSession({
         access_token: message.accessToken,
         refresh_token: message.refreshToken,

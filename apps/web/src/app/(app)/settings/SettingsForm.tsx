@@ -218,7 +218,7 @@ export function SettingsForm({ profile }: { profile: ProfileData }) {
           <li>• Session verification checks GitHub for commits you made — we <strong className="text-white">never ask for write access</strong> to your repos.</li>
           <li>• Your developer twin is <strong className="text-white">opt-in only</strong>. Nothing is public unless you explicitly enable it.</li>
           <li>• Source code is <strong className="text-white">fully open source</strong> — audit what the app does at{" "}
-            <a href="https://github.com/DanisChaparov/upstream-app" target="_blank" rel="noopener" className="text-[#60A5FA] underline">github.com/DanisChaparov/upstream-app</a>.</li>
+            <a href="https://github.com/DanisChaparov/aztrx" target="_blank" rel="noopener" className="text-[#60A5FA] underline">github.com/DanisChaparov/aztrx</a>.</li>
           <li>• <strong className="text-white">Never any ads, never any data selling.</strong> Funded by Pro subscriptions.</li>
         </ul>
       </div>
